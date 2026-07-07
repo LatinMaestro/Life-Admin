@@ -5,21 +5,33 @@ import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ItemRow } from "@/components/item-row";
 import { PageHeader } from "@/components/page-header";
-import { billReminders, dashboardItems, shoppingLists } from "@/lib/demo-data";
-
-const summary = [
-  { label: "Today", value: "2", detail: "Household items", icon: ListChecks },
-  { label: "Inbox", value: "3", detail: "Manual items", icon: Inbox },
-  { label: "Shopping", value: "2", detail: "Active lists", icon: ShoppingCart },
-  { label: "Bills", value: "3", detail: "Source-linked reminders", icon: ClipboardList },
-];
+import {
+  getCurrentHouseholdBillReminders,
+  getCurrentHouseholdDashboardItems,
+  getCurrentHouseholdInboxItems,
+  getCurrentHouseholdShoppingLists,
+  getSourceReferenceLabel,
+} from "@/lib/demo-data";
+import { getCurrentHousehold } from "@/lib/household";
 
 export default function DashboardPage() {
+  const household = getCurrentHousehold();
+  const dashboardItems = getCurrentHouseholdDashboardItems();
+  const inboxItems = getCurrentHouseholdInboxItems();
+  const shoppingLists = getCurrentHouseholdShoppingLists();
+  const billReminders = getCurrentHouseholdBillReminders();
+  const summary = [
+    { label: "Today", value: String(dashboardItems.today.length), detail: "Household items", icon: ListChecks },
+    { label: "Inbox", value: String(inboxItems.length), detail: "Manual items", icon: Inbox },
+    { label: "Shopping", value: String(shoppingLists.length), detail: "Active lists", icon: ShoppingCart },
+    { label: "Bills", value: String(billReminders.length), detail: "Source-linked reminders", icon: ClipboardList },
+  ];
+
   return (
     <>
       <PageHeader
         title="Dashboard"
-        description="A quiet household overview for today, overdue items, shopping, and upcoming bill or renewal reminders."
+        description={`A quiet overview for ${household.name}: today, overdue items, shopping, and upcoming bill or renewal reminders.`}
         action={
           <Link href="/inbox" className={buttonVariants({ variant: "default" })}>
             Add inbox item
@@ -57,7 +69,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             {[...dashboardItems.today, ...dashboardItems.overdue].map((item) => (
-              <ItemRow key={item.title} title={item.title} detail={item.detail} status={item.status} />
+              <ItemRow key={item.id} title={item.title} detail={item.detail} status={item.status} />
             ))}
           </CardContent>
         </Card>
@@ -69,7 +81,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             {dashboardItems.upcoming.map((item) => (
-              <ItemRow key={item.title} title={item.title} detail={item.detail} status={item.status} />
+              <ItemRow key={item.id} title={item.title} detail={item.detail} status={item.status} />
             ))}
           </CardContent>
         </Card>
@@ -82,7 +94,7 @@ export default function DashboardPage() {
           <CardContent>
             {shoppingLists.map((list) => (
               <ItemRow
-                key={list.name}
+                key={list.id}
                 title={list.name}
                 detail={`${list.detail} - ${list.items.length} placeholder items`}
                 status="Active"
@@ -104,9 +116,9 @@ export default function DashboardPage() {
           <CardContent>
             {billReminders.slice(0, 2).map((bill) => (
               <ItemRow
-                key={bill.title}
+                key={bill.id}
                 title={bill.title}
-                detail={`${bill.provider} - ${bill.source}`}
+                detail={`${bill.provider} - ${getSourceReferenceLabel(bill.sourceReferenceId)}`}
                 status={bill.due}
               />
             ))}

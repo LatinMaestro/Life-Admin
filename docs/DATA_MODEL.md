@@ -13,6 +13,21 @@ This is a proposed data model only. Do not create a database schema until the ap
 - Bills and renewals are admin reminders, not finance analytics.
 - Source documents/links are references and must follow privacy rules.
 
+## Phase 2 Static Mock Architecture
+
+Phase 2 adds a typed static data layer before real persistence. This is not a Prisma schema and does not create migrations or a database connection.
+
+The static layer includes:
+
+- current household
+- current household members
+- current member
+- household admin and household member roles
+- household-scoped demo records using `householdId`
+- member ownership placeholders such as `assignedMemberId` and `createdByMemberId`
+
+This allows the app to validate household workspace structure and user experience before choosing production authentication, invite flow, database hosting, or persistence details.
+
 ## Proposed Core Entities
 
 ### User

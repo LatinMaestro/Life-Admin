@@ -49,9 +49,16 @@ Exit criteria:
 
 Implement household-scoped workspace foundations.
 
+Approved Phase 2 boundary:
+
+- Static UI/data architecture only.
+- Typed mock current household and current member models.
+- Household-scoped demo records with member ownership placeholders.
+- No production authentication, database connection, Prisma schema, migrations, invite flows, uploads, integrations, or native app work.
+
 Exit criteria:
 
-- Household ownership is enforced in app logic.
+- Household ownership is represented in static app logic.
 - MVP can optimise for one primary household.
 - Schema remains compatible with future multi-household support.
 

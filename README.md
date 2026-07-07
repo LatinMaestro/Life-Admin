@@ -60,7 +60,7 @@ The app foundation uses these choices. Database schema, auth, uploads, and integ
 
 ## Current Status
 
-Phase 1 app foundation is in progress. The app contains static placeholder routes only, with no persistence, authentication, uploads, email forwarding, AI, OCR, voice capture, notifications, or native iOS implementation.
+Phase 2 static household workspace architecture has been added. The app contains typed household-scoped demo data and static placeholder routes only, with no persistence, authentication, uploads, email forwarding, AI, OCR, voice capture, notifications, or native iOS implementation.
 
 ## Local Development
 

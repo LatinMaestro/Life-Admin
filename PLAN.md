@@ -2,7 +2,7 @@
 
 ## Current Objective
 
-Set up the Phase 1 app foundation for Family Life Admin with static placeholder routes only.
+Complete Phase 2 static household workspace architecture for Family Life Admin without adding persistence, production authentication, database schema, or integrations.
 
 ## Product Summary
 
@@ -61,4 +61,4 @@ Out of scope:
 
 ## Immediate Next Step After Review
 
-After Phase 1 review, choose whether to proceed to the household workspace phase. Do not add authentication, database schema, uploads, email forwarding, AI, OCR, voice capture, notifications, or native iOS until separately approved.
+After Phase 2 review, choose whether to proceed to members/roles behavior or another approved MVP slice. Do not add authentication, database schema, uploads, email forwarding, AI, OCR, voice capture, notifications, or native iOS until separately approved.

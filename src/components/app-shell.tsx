@@ -12,7 +12,8 @@ import {
   Users,
 } from "lucide-react";
 import type { PropsWithChildren } from "react";
-import { householdName } from "@/lib/demo-data";
+import { Badge } from "@/components/ui/badge";
+import { getCurrentHousehold, getCurrentMember, getRoleLabel } from "@/lib/household";
 import { cn } from "@/lib/utils";
 
 const navigation = [
@@ -27,14 +28,25 @@ const navigation = [
 
 export function AppShell({ children }: PropsWithChildren) {
   const pathname = usePathname();
+  const household = getCurrentHousehold();
+  const currentMember = getCurrentMember();
 
   return (
     <div className="min-h-screen bg-background">
       <aside className="fixed inset-y-0 left-0 hidden w-64 border-r bg-card px-4 py-5 lg:block">
         <Link href="/" className="block">
           <p className="text-sm font-medium text-muted-foreground">Family Life Admin</p>
-          <p className="mt-1 text-lg font-semibold">{householdName}</p>
+          <p className="mt-1 text-lg font-semibold">{household.name}</p>
         </Link>
+        <div className="mt-4 rounded-md border bg-background p-3">
+          <p className="text-xs font-medium text-muted-foreground">Active household</p>
+          <p className="mt-1 text-sm font-medium">{household.name}</p>
+          <p className="mt-1 text-xs text-muted-foreground">{household.timezone}</p>
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <Badge>{getRoleLabel(currentMember.role)}</Badge>
+            <span className="text-xs text-muted-foreground">{currentMember.displayName}</span>
+          </div>
+        </div>
         <nav aria-label="Primary" className="mt-8 space-y-1">
           {navigation.map((item) => {
             const isActive = pathname === item.href;
@@ -63,8 +75,12 @@ export function AppShell({ children }: PropsWithChildren) {
             <p className="text-xs font-medium uppercase tracking-normal text-muted-foreground">
               Family Life Admin
             </p>
-            <p className="text-base font-semibold">{householdName}</p>
+            <p className="text-base font-semibold">{household.name}</p>
           </Link>
+          <div className="mt-2 flex items-center gap-2">
+            <Badge>{getRoleLabel(currentMember.role)}</Badge>
+            <span className="text-xs text-muted-foreground">{currentMember.displayName}</span>
+          </div>
         </header>
 
         <main className="mx-auto min-h-screen w-full max-w-6xl px-4 pb-28 pt-5 sm:px-6 lg:px-8 lg:pb-10 lg:pt-8">
