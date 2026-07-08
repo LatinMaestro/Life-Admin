@@ -61,6 +61,8 @@ export interface Reminder extends HouseholdScopedRecord {
 export interface ShoppingListItem extends HouseholdScopedRecord {
   shoppingListId: string;
   label: string;
+  quantity: string;
+  notes: string;
   checked: boolean;
   assignedMemberId?: string;
   createdByMemberId: string;
@@ -309,6 +311,8 @@ const shoppingLists: ShoppingList[] = [
         householdId: household.id,
         shoppingListId: "list_groceries",
         label: "Milk",
+        quantity: "2 L",
+        notes: "Regular milk for breakfasts.",
         checked: false,
         createdByMemberId: memberIds.alex,
       },
@@ -317,6 +321,8 @@ const shoppingLists: ShoppingList[] = [
         householdId: household.id,
         shoppingListId: "list_groceries",
         label: "Bread",
+        quantity: "1 loaf",
+        notes: "Already picked up.",
         checked: true,
         assignedMemberId: memberIds.taylor,
         createdByMemberId: memberIds.morgan,
@@ -326,6 +332,8 @@ const shoppingLists: ShoppingList[] = [
         householdId: household.id,
         shoppingListId: "list_groceries",
         label: "Lunchbox fruit",
+        quantity: "6 pieces",
+        notes: "Apples or mandarins are fine.",
         checked: false,
         createdByMemberId: memberIds.alex,
       },
@@ -344,6 +352,8 @@ const shoppingLists: ShoppingList[] = [
         householdId: household.id,
         shoppingListId: "list_home_supplies",
         label: "Laundry powder",
+        quantity: "1 box",
+        notes: "Low in the laundry cupboard.",
         checked: false,
         createdByMemberId: memberIds.morgan,
       },
@@ -352,6 +362,8 @@ const shoppingLists: ShoppingList[] = [
         householdId: household.id,
         shoppingListId: "list_home_supplies",
         label: "Kitchen cloths",
+        quantity: "1 pack",
+        notes: "Replace worn cloths.",
         checked: false,
         createdByMemberId: memberIds.jordan,
       },

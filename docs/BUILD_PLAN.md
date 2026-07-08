@@ -136,6 +136,12 @@ Exit criteria:
 
 Create household shopping lists and items.
 
+Approved Phase 7 boundary:
+
+- Static shopping workflow using household-scoped demo data.
+- List items may show checked state, quantity, notes, owner/assignee labels, and creator placeholders.
+- No persistence, barcode scanning, automated list generation, store integrations, uploads, or notifications.
+
 Exit criteria:
 
 - Lists are household-scoped.

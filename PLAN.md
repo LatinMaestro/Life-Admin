@@ -2,7 +2,7 @@
 
 ## Current Objective
 
-Complete Phase 6 static tasks and reminders workflow for Family Life Admin without adding persistence, production authentication, notification integrations, database schema, or automated reminders.
+Complete Phase 7 static shopping lists workflow for Family Life Admin without adding persistence, production authentication, database schema, uploads, integrations, notification behavior, or automated list generation.
 
 ## Product Summary
 
@@ -61,4 +61,4 @@ Out of scope:
 
 ## Immediate Next Step After Review
 
-After Phase 6 review, choose whether to proceed to shopping lists workflow or another approved MVP slice. Do not add authentication, database schema, uploads, email forwarding, AI, OCR, voice capture, notifications, or native iOS until separately approved.
+After Phase 7 review, proceed to bills and renewals as the next approved MVP slice. Do not add authentication, database schema, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, or finance analytics until separately approved.
