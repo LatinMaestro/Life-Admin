@@ -10,9 +10,10 @@ import { getCurrentHousehold, getMemberDisplayName } from "@/lib/household";
 export default function ListsPage() {
   const household = getCurrentHousehold();
   const shoppingLists = getCurrentHouseholdShoppingLists();
-  const items = shoppingLists.flatMap((list) => list.items);
+  const items = shoppingLists.flatMap((list) => list.items.map((item) => ({ ...item, listName: list.name })));
   const checkedItems = items.filter((item) => item.checked);
   const openItems = items.filter((item) => !item.checked);
+  const openCategories = Array.from(new Set(openItems.map((item) => item.category)));
 
   return (
     <>
@@ -27,7 +28,7 @@ export default function ListsPage() {
         }
       />
 
-      <section className="grid gap-3 sm:grid-cols-3">
+      <section className="grid gap-3 sm:grid-cols-4">
         <Card>
           <CardHeader className="pb-3">
             <CardDescription>Active lists</CardDescription>
@@ -46,7 +47,49 @@ export default function ListsPage() {
             <CardTitle className="text-2xl">{checkedItems.length}</CardTitle>
           </CardHeader>
         </Card>
+        <Card>
+          <CardHeader className="pb-3">
+            <CardDescription>Open categories</CardDescription>
+            <CardTitle className="text-2xl">{openCategories.length}</CardTitle>
+          </CardHeader>
+        </Card>
       </section>
+
+      <Card>
+        <CardHeader>
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <CardTitle>Next shop view</CardTitle>
+              <CardDescription>Open household items grouped for a quick manual shop.</CardDescription>
+            </div>
+            <Badge>{openItems.length} open</Badge>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+            {openItems.map((item) => {
+              const owner = getMemberDisplayName(item.assignedMemberId ?? item.createdByMemberId);
+
+              return (
+                <article key={item.id} className="rounded-md border p-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <h2 className="text-sm font-semibold leading-6">{item.label}</h2>
+                      <p className="text-sm leading-5 text-muted-foreground">{item.notes}</p>
+                    </div>
+                    <Badge>{item.quantity}</Badge>
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <Badge>{item.category}</Badge>
+                    <Badge>{item.listName}</Badge>
+                    <Badge>{owner}</Badge>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
 
       <div className="grid gap-4 lg:grid-cols-2">
         {shoppingLists.map((list) => {
@@ -62,7 +105,7 @@ export default function ListsPage() {
                       <span className="text-xs font-medium uppercase tracking-wide">{list.status}</span>
                     </div>
                     <CardTitle>{list.name}</CardTitle>
-                    <CardDescription>{list.detail}</CardDescription>
+                    <CardDescription>{list.detail} - {list.nextShop}</CardDescription>
                   </div>
                   <Badge className="shrink-0">{listOpenItems.length} open</Badge>
                 </div>
@@ -86,6 +129,7 @@ export default function ListsPage() {
                                 {item.label}
                               </p>
                               <Badge>{item.quantity}</Badge>
+                              <Badge>{item.category}</Badge>
                             </div>
                             <p className="text-sm leading-5 text-muted-foreground">{item.notes}</p>
                             <p className="text-xs font-medium text-muted-foreground">Owner: {owner}</p>
