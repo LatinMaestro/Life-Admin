@@ -29,7 +29,7 @@ export default function FamilyPage() {
     <>
       <PageHeader
         title="Family"
-        description={`Members and static MVP roles for ${household.name}. Production sign-in and invite flows remain deferred.`}
+        description={`Members, roles, and household access for ${household.name}.`}
       />
 
       <div className="grid gap-4 lg:grid-cols-[1fr_0.85fr]">
@@ -69,7 +69,7 @@ export default function FamilyPage() {
         <Card>
           <CardHeader>
             <CardTitle>Role model</CardTitle>
-            <CardDescription>Static role behavior for the MVP household workspace.</CardDescription>
+            <CardDescription>What each household role can do.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             {roleDefinitions.map((definition) => (
