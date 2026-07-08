@@ -84,7 +84,7 @@ export default function ListsPage() {
                               <p className={item.checked ? "text-sm font-medium text-muted-foreground line-through" : "text-sm font-medium"}>
                                 {item.label}
                               </p>
-                              <Badge variant="secondary">{item.quantity}</Badge>
+                              <Badge>{item.quantity}</Badge>
                             </div>
                             <p className="text-sm leading-5 text-muted-foreground">{item.notes}</p>
                             <p className="text-xs font-medium text-muted-foreground">Owner: {owner}</p>
