@@ -23,6 +23,8 @@ export interface HouseholdMember {
   role: HouseholdRole;
   status: "active";
   initials: string;
+  focusLabel: string;
+  responsibilities: string[];
   joinedAt: string;
 }
 
@@ -78,6 +80,8 @@ const householdMembers: HouseholdMember[] = [
     role: "household_admin",
     status: "active",
     initials: "AL",
+    focusLabel: "Household coordination",
+    responsibilities: ["Inbox triage", "Bills and renewals", "Source references"],
     joinedAt: "2026-07-01T00:00:00.000Z",
   },
   {
@@ -87,6 +91,8 @@ const householdMembers: HouseholdMember[] = [
     role: "household_admin",
     status: "active",
     initials: "MO",
+    focusLabel: "Shared reminders",
+    responsibilities: ["Appointments", "Shopping lists", "Household notes"],
     joinedAt: "2026-07-01T00:00:00.000Z",
   },
   {
@@ -96,6 +102,8 @@ const householdMembers: HouseholdMember[] = [
     role: "household_member",
     status: "active",
     initials: "JO",
+    focusLabel: "Everyday tasks",
+    responsibilities: ["Quick tasks", "Home supplies", "Renewal checks"],
     joinedAt: "2026-07-02T00:00:00.000Z",
   },
   {
@@ -105,6 +113,8 @@ const householdMembers: HouseholdMember[] = [
     role: "household_member",
     status: "active",
     initials: "TA",
+    focusLabel: "List participation",
+    responsibilities: ["Shopping updates", "Personal tasks", "Household comments"],
     joinedAt: "2026-07-02T00:00:00.000Z",
   },
 ];
