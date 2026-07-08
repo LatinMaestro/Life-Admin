@@ -23,7 +23,7 @@ import {
   getCurrentHouseholdShoppingLists,
   getSourceReferenceLabel,
 } from "@/lib/demo-data";
-import { getCommentEntityLabel, getCurrentHouseholdComments } from "@/lib/collaboration-data";
+import { getCommentEntityLabel, getCurrentHouseholdComments, getCurrentHouseholdOpenComments } from "@/lib/collaboration-data";
 import { getCurrentHousehold, getCurrentMember, getMemberDisplayName } from "@/lib/household";
 
 export default function DashboardPage() {
@@ -34,6 +34,7 @@ export default function DashboardPage() {
   const shoppingLists = getCurrentHouseholdShoppingLists();
   const billReminders = getCurrentHouseholdBillReminders();
   const comments = getCurrentHouseholdComments();
+  const openComments = getCurrentHouseholdOpenComments();
   const activity = getCurrentHouseholdActivity();
   const todayAndOverdue = [...dashboardItems.overdue, ...dashboardItems.today];
   const assignedToCurrentMember = [
@@ -222,7 +223,7 @@ export default function DashboardPage() {
                   <CardTitle>Recent comments</CardTitle>
                   <CardDescription>Household notes on shared items.</CardDescription>
                 </div>
-                <Badge>{comments.length} comments</Badge>
+                <Badge>{openComments.length} open</Badge>
               </div>
             </CardHeader>
             <CardContent>
@@ -232,6 +233,7 @@ export default function DashboardPage() {
                   title={comment.entityTitle}
                   detail={`${comment.body} - ${getMemberDisplayName(comment.createdByMemberId)}`}
                   status={`${getCommentEntityLabel(comment.entityType)} - ${comment.createdAtLabel}`}
+                  href="/activity"
                 />
               ))}
             </CardContent>
@@ -254,6 +256,7 @@ export default function DashboardPage() {
                   title={event.summary}
                   detail={`Recorded by ${getMemberDisplayName(event.actorMemberId)}`}
                   status="Activity"
+                  href="/activity"
                 />
               ))}
             </CardContent>
