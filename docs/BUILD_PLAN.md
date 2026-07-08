@@ -88,6 +88,12 @@ Exit criteria:
 
 Create the mobile-first dashboard.
 
+Approved Phase 4 boundary:
+
+- Static dashboard refinement using existing household-scoped demo data.
+- Household-level priority, assigned, inbox, shopping, bills/renewals, and activity summaries.
+- No analytics, forecasting, automated intake, notifications, persistence, or finance dashboard behavior.
+
 Exit criteria:
 
 - Dashboard shows household-level today/upcoming/overdue summaries.
