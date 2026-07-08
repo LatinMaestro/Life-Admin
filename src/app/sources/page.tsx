@@ -1,10 +1,12 @@
+import Link from "next/link";
 import { FileText, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { PageHeader } from "@/components/page-header";
 import { getCurrentHouseholdSourceReferences, getSourceKindLabel } from "@/lib/demo-data";
 import { getCurrentHousehold, getMemberDisplayName } from "@/lib/household";
+import { cn } from "@/lib/utils";
 
 export default function SourcesPage() {
   const household = getCurrentHousehold();
@@ -18,10 +20,10 @@ export default function SourcesPage() {
         title="Sources"
         description={`Saved source references for ${household.name} household admin items.`}
         action={
-          <Button type="button">
+          <Link href="/inbox" className={buttonVariants()}>
             <Plus className="h-4 w-4" aria-hidden="true" />
-            Add reference
-          </Button>
+            Capture source
+          </Link>
         }
       />
 
@@ -75,9 +77,9 @@ export default function SourcesPage() {
                     </p>
                   </div>
                 </div>
-                <Button type="button" variant="outline" className="mt-4 w-full">
-                  Open reference
-                </Button>
+                <Link href={source.relatedHref} className={cn(buttonVariants({ variant: "outline" }), "mt-4 w-full")}>
+                  View related item
+                </Link>
               </article>
             ))}
           </div>

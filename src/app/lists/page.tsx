@@ -1,6 +1,7 @@
+import Link from "next/link";
 import { CheckCircle2, Circle, Plus, ShoppingCart } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { PageHeader } from "@/components/page-header";
 import { getCurrentHouseholdShoppingLists } from "@/lib/demo-data";
@@ -19,10 +20,10 @@ export default function ListsPage() {
         title="Shopping lists"
         description={`Shared ${household.name} lists for groceries, supplies, and errands.`}
         action={
-          <Button type="button">
+          <Link href="/inbox" className={buttonVariants()}>
             <Plus className="h-4 w-4" aria-hidden="true" />
-            Add list
-          </Button>
+            Capture item
+          </Link>
         }
       />
 

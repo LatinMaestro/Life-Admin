@@ -1,10 +1,12 @@
+import Link from "next/link";
 import { Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { PageHeader } from "@/components/page-header";
 import { getCurrentHouseholdBillReminders, getSourceReferenceLabel } from "@/lib/demo-data";
 import { getCurrentHousehold, getMemberDisplayName } from "@/lib/household";
+import { cn } from "@/lib/utils";
 
 export default function BillsPage() {
   const household = getCurrentHousehold();
@@ -18,10 +20,10 @@ export default function BillsPage() {
         title="Bills and renewals"
         description={`Admin reminders for ${household.name} due dates and renewals. Original sources stay the reference point.`}
         action={
-          <Button type="button">
+          <Link href="/inbox" className={buttonVariants()}>
             <Plus className="h-4 w-4" aria-hidden="true" />
-            Add reminder
-          </Button>
+            Capture reminder
+          </Link>
         }
       />
 
@@ -98,9 +100,9 @@ export default function BillsPage() {
                     </div>
                   </dl>
 
-                  <Button type="button" variant="outline" className="mt-4 w-full">
+                  <Link href="/sources" className={cn(buttonVariants({ variant: "outline" }), "mt-4 w-full")}>
                     Open source
-                  </Button>
+                  </Link>
                 </article>
               );
             })}

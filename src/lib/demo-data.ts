@@ -17,6 +17,7 @@ export interface SourceReference extends HouseholdScopedRecord {
   title: string;
   kind: SourceKind;
   label: string;
+  relatedHref: string;
   createdByMemberId: string;
 }
 
@@ -104,6 +105,7 @@ const sourceReferences: SourceReference[] = [
     title: "School excursion note",
     kind: "source_link",
     label: "Source link",
+    relatedHref: "/inbox",
     createdByMemberId: memberIds.alex,
   },
   {
@@ -112,6 +114,7 @@ const sourceReferences: SourceReference[] = [
     title: "Vet appointment card",
     kind: "source_image_reference",
     label: "Image reference",
+    relatedHref: "/inbox",
     createdByMemberId: memberIds.morgan,
   },
   {
@@ -120,6 +123,7 @@ const sourceReferences: SourceReference[] = [
     title: "Home service renewal notice",
     kind: "source_document_reference",
     label: "Original notice reference",
+    relatedHref: "/inbox",
     createdByMemberId: memberIds.alex,
   },
   {
@@ -128,6 +132,7 @@ const sourceReferences: SourceReference[] = [
     title: "Council rates notice",
     kind: "source_document_reference",
     label: "Original PDF reference",
+    relatedHref: "/bills",
     createdByMemberId: memberIds.alex,
   },
   {
@@ -136,6 +141,7 @@ const sourceReferences: SourceReference[] = [
     title: "Home insurance renewal",
     kind: "source_link",
     label: "Provider portal link",
+    relatedHref: "/bills",
     createdByMemberId: memberIds.morgan,
   },
   {
@@ -144,6 +150,7 @@ const sourceReferences: SourceReference[] = [
     title: "Car registration reminder",
     kind: "source_document_reference",
     label: "Original notice reference",
+    relatedHref: "/bills",
     createdByMemberId: memberIds.jordan,
   },
 ];
