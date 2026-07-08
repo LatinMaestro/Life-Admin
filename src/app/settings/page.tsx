@@ -17,32 +17,32 @@ export default function SettingsPage() {
   const currentMember = getCurrentMember();
   const currentRole = getRoleDefinition(currentMember.role);
   const settings = [
-    { title: "Household name", detail: household.name, status: "Static state" },
-    { title: "Timezone", detail: household.timezone, status: "Static state" },
+    { title: "Household name", detail: household.name, status: "Active" },
+    { title: "Timezone", detail: household.timezone, status: "Active" },
     { title: "Current member", detail: currentMember.displayName, status: getRoleLabel(currentMember.role) },
     {
       title: "Settings access",
       detail: canManageHouseholdSettings(currentMember)
-        ? "Current member is an admin in the static role model."
-        : "Current member can view settings placeholders only.",
+        ? "Current member can manage household settings."
+        : "Current member can view household settings.",
       status: canManageHouseholdSettings(currentMember) ? "Admin" : "Member",
     },
-    { title: "Source references", detail: "Links and references only until uploads are approved.", status: "Deferred uploads" },
-    { title: "Notifications", detail: "No notification integrations are enabled in Phase 3.", status: "Deferred" },
+    { title: "Source references", detail: "Links and references are available from the source library.", status: "Enabled" },
+    { title: "Notifications", detail: "Reminder preferences will appear here when enabled.", status: "Planned" },
   ];
 
   return (
     <>
       <PageHeader
         title="Settings"
-        description={`Basic ${household.name} settings placeholders with static role-aware access labels.`}
+        description={`Basic ${household.name} settings and role-aware access.`}
       />
 
       <div className="grid gap-4 lg:grid-cols-[1fr_0.8fr]">
         <Card>
           <CardHeader>
             <CardTitle>Household settings</CardTitle>
-            <CardDescription>Static configuration examples for the future settings workflow.</CardDescription>
+            <CardDescription>Profile, access, and preference settings for the household.</CardDescription>
           </CardHeader>
           <CardContent>
             {settings.map((item) => (
@@ -76,7 +76,7 @@ export default function SettingsPage() {
               <p className="text-sm font-medium leading-6">Member management</p>
               <p className="text-sm leading-5 text-muted-foreground">
                 {canManageHouseholdMembers(currentMember)
-                  ? "Admin-only member and role controls can attach here after sign-in is approved."
+                  ? "Admin member and role controls belong here."
                   : "Member and role controls are reserved for household admins."}
               </p>
             </div>
