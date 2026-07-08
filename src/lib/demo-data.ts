@@ -1,6 +1,9 @@
 import { getCurrentHousehold, memberIds } from "@/lib/household";
 
 type SourceKind = "source_link" | "source_document_reference" | "source_image_reference";
+export type SourceReviewStatus = "Confirmed" | "Needs review" | "Linked";
+export type SourceSensitivity = "Standard" | "Sensitive";
+export type SourceLinkedArea = "Inbox" | "Tasks" | "Bills and renewals";
 export type InboxStatus = "New" | "Needs review" | "Linked";
 export type InboxCategory = "school" | "appointment" | "renewal";
 export type InboxDestination = "task" | "reminder" | "bill_or_renewal" | "source_reference";
@@ -19,6 +22,11 @@ export interface SourceReference extends HouseholdScopedRecord {
   title: string;
   kind: SourceKind;
   label: string;
+  reviewStatus: SourceReviewStatus;
+  sensitivity: SourceSensitivity;
+  linkedArea: SourceLinkedArea;
+  lastReviewedLabel: string;
+  handlingNotes: string;
   relatedHref: string;
   createdByMemberId: string;
 }
@@ -116,6 +124,11 @@ const sourceReferences: SourceReference[] = [
     title: "School excursion note",
     kind: "source_link",
     label: "Source link",
+    reviewStatus: "Needs review",
+    sensitivity: "Standard",
+    linkedArea: "Inbox",
+    lastReviewedLabel: "Not reviewed yet",
+    handlingNotes: "Confirm the note belongs with the school task before moving it out of the inbox.",
     relatedHref: "/inbox",
     createdByMemberId: memberIds.alex,
   },
@@ -125,6 +138,11 @@ const sourceReferences: SourceReference[] = [
     title: "Vet appointment card",
     kind: "source_image_reference",
     label: "Image reference",
+    reviewStatus: "Needs review",
+    sensitivity: "Standard",
+    linkedArea: "Inbox",
+    lastReviewedLabel: "Today",
+    handlingNotes: "Confirm the appointment date from the original image before creating the reminder.",
     relatedHref: "/inbox",
     createdByMemberId: memberIds.morgan,
   },
@@ -134,6 +152,11 @@ const sourceReferences: SourceReference[] = [
     title: "Home service renewal notice",
     kind: "source_document_reference",
     label: "Original notice reference",
+    reviewStatus: "Linked",
+    sensitivity: "Sensitive",
+    linkedArea: "Inbox",
+    lastReviewedLabel: "Yesterday",
+    handlingNotes: "Keep this as a reference to the original notice; avoid copying source contents into notes.",
     relatedHref: "/inbox",
     createdByMemberId: memberIds.alex,
   },
@@ -143,6 +166,11 @@ const sourceReferences: SourceReference[] = [
     title: "Council rates notice",
     kind: "source_document_reference",
     label: "Original PDF reference",
+    reviewStatus: "Confirmed",
+    sensitivity: "Sensitive",
+    linkedArea: "Bills and renewals",
+    lastReviewedLabel: "This week",
+    handlingNotes: "Open the original PDF before household action; keep this app as the reminder and source pointer only.",
     relatedHref: "/bills",
     createdByMemberId: memberIds.alex,
   },
@@ -152,6 +180,11 @@ const sourceReferences: SourceReference[] = [
     title: "Home insurance renewal",
     kind: "source_link",
     label: "Provider portal link",
+    reviewStatus: "Needs review",
+    sensitivity: "Sensitive",
+    linkedArea: "Bills and renewals",
+    lastReviewedLabel: "Yesterday",
+    handlingNotes: "Use the provider portal as the original source and keep household notes high level.",
     relatedHref: "/bills",
     createdByMemberId: memberIds.morgan,
   },
@@ -161,6 +194,11 @@ const sourceReferences: SourceReference[] = [
     title: "Car registration reminder",
     kind: "source_document_reference",
     label: "Original notice reference",
+    reviewStatus: "Linked",
+    sensitivity: "Sensitive",
+    linkedArea: "Bills and renewals",
+    lastReviewedLabel: "This week",
+    handlingNotes: "Open the original notice to confirm dates; do not duplicate private notice contents in activity summaries.",
     relatedHref: "/bills",
     createdByMemberId: memberIds.jordan,
   },
@@ -576,6 +614,14 @@ export function getSourceKindLabel(kind: SourceKind) {
   };
 
   return labels[kind];
+}
+
+export function getSourceReviewStatusLabel(status: SourceReviewStatus) {
+  return status;
+}
+
+export function getSourceSensitivityLabel(sensitivity: SourceSensitivity) {
+  return sensitivity === "Sensitive" ? "Sensitive source" : "Standard source";
 }
 
 export function getSourceReferenceLabel(sourceReferenceId: string) {
