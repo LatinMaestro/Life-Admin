@@ -184,6 +184,13 @@ Exit criteria:
 
 Implement collaboration history.
 
+Approved Phase 10 boundary:
+
+- Static comments and activity history using household-scoped demo data.
+- Comment records may show target item, body, author, date label, and target type.
+- Activity records may show action summary, actor, and entity type without exposing sensitive source contents.
+- No persistence, audit backend, notifications, email forwarding, AI, OCR, uploads, or auth enforcement.
+
 Exit criteria:
 
 - Core items support comments.
