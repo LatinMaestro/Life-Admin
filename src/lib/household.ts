@@ -1,5 +1,12 @@
 export type HouseholdRole = "household_admin" | "household_member";
 
+export type RoleCapability =
+  | "manage_household_settings"
+  | "manage_household_members"
+  | "manage_shared_items"
+  | "comment_on_items"
+  | "view_source_references";
+
 export interface Household {
   id: string;
   name: string;
@@ -19,12 +26,40 @@ export interface HouseholdMember {
   joinedAt: string;
 }
 
+export interface RoleDefinition {
+  role: HouseholdRole;
+  label: string;
+  summary: string;
+  capabilities: RoleCapability[];
+}
+
 export const memberIds = {
   alex: "member_alex",
   morgan: "member_morgan",
   jordan: "member_jordan",
   taylor: "member_taylor",
 } as const;
+
+const roleDefinitions: Record<HouseholdRole, RoleDefinition> = {
+  household_admin: {
+    role: "household_admin",
+    label: "Household admin",
+    summary: "Can manage the household profile, member roles, and shared household admin items.",
+    capabilities: [
+      "manage_household_settings",
+      "manage_household_members",
+      "manage_shared_items",
+      "comment_on_items",
+      "view_source_references",
+    ],
+  },
+  household_member: {
+    role: "household_member",
+    label: "Household member",
+    summary: "Can participate in shared household tasks, lists, reminders, comments, and source references.",
+    capabilities: ["manage_shared_items", "comment_on_items", "view_source_references"],
+  },
+};
 
 const currentHousehold: Household = {
   id: "household_rivergum",
@@ -100,10 +135,34 @@ export function getMemberDisplayName(memberId: string | null | undefined) {
   return getMemberById(memberId)?.displayName ?? "Household";
 }
 
-export function getRoleLabel(role: HouseholdRole) {
-  if (role === "household_admin") {
-    return "Household admin";
-  }
+export function getRoleDefinition(role: HouseholdRole) {
+  return roleDefinitions[role];
+}
 
-  return "Household member";
+export function getHouseholdRoleDefinitions() {
+  return [roleDefinitions.household_admin, roleDefinitions.household_member];
+}
+
+export function getRoleLabel(role: HouseholdRole) {
+  return getRoleDefinition(role).label;
+}
+
+export function getRoleCapabilityLabel(capability: RoleCapability) {
+  const labels: Record<RoleCapability, string> = {
+    manage_household_settings: "Manage household settings",
+    manage_household_members: "Manage members and roles",
+    manage_shared_items: "Create and update shared items",
+    comment_on_items: "Comment on household items",
+    view_source_references: "View source references",
+  };
+
+  return labels[capability];
+}
+
+export function canManageHouseholdSettings(member: HouseholdMember) {
+  return member.role === "household_admin";
+}
+
+export function canManageHouseholdMembers(member: HouseholdMember) {
+  return member.role === "household_admin";
 }
