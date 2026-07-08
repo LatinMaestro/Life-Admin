@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   ClipboardList,
   FileText,
+  History,
   Home,
   Inbox,
   ListChecks,
@@ -18,15 +19,18 @@ import { getCurrentHousehold, getCurrentMember, getRoleLabel } from "@/lib/house
 import { cn } from "@/lib/utils";
 
 const navigation = [
-  { href: "/", label: "Home", icon: Home },
-  { href: "/inbox", label: "Inbox", icon: Inbox },
-  { href: "/tasks", label: "Tasks", icon: ListChecks },
-  { href: "/lists", label: "Lists", icon: ShoppingCart },
-  { href: "/bills", label: "Bills", icon: ClipboardList },
-  { href: "/sources", label: "Sources", icon: FileText },
-  { href: "/family", label: "Family", icon: Users },
-  { href: "/settings", label: "Settings", icon: Settings },
+  { href: "/", label: "Home", icon: Home, mobile: true },
+  { href: "/inbox", label: "Inbox", icon: Inbox, mobile: true },
+  { href: "/tasks", label: "Tasks", icon: ListChecks, mobile: true },
+  { href: "/lists", label: "Lists", icon: ShoppingCart, mobile: true },
+  { href: "/bills", label: "Bills", icon: ClipboardList, mobile: true },
+  { href: "/sources", label: "Sources", icon: FileText, mobile: true },
+  { href: "/activity", label: "Activity", icon: History, mobile: false },
+  { href: "/family", label: "Family", icon: Users, mobile: true },
+  { href: "/settings", label: "Settings", icon: Settings, mobile: true },
 ] as const;
+
+const mobileNavigation = navigation.filter((item) => item.mobile);
 
 export function AppShell({ children }: PropsWithChildren) {
   const pathname = usePathname();
@@ -95,7 +99,7 @@ export function AppShell({ children }: PropsWithChildren) {
         className="fixed inset-x-0 bottom-0 z-30 border-t bg-card px-2 pb-2 pt-1 shadow-lg lg:hidden"
       >
         <div className="grid grid-cols-4 gap-1">
-          {navigation.map((item) => {
+          {mobileNavigation.map((item) => {
             const isActive = pathname === item.href;
             const Icon = item.icon;
 
