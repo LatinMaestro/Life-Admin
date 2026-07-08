@@ -55,7 +55,7 @@ export default function ListsPage() {
         </Card>
       </section>
 
-      <Card>
+      <Card className="mt-6">
         <CardHeader>
           <div className="flex items-start justify-between gap-3">
             <div>
@@ -91,7 +91,7 @@ export default function ListsPage() {
         </CardContent>
       </Card>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="mt-6 grid gap-4 lg:grid-cols-2">
         {shoppingLists.map((list) => {
           const listOpenItems = list.items.filter((item) => !item.checked);
 
