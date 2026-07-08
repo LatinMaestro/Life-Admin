@@ -29,6 +29,7 @@ export default function SettingsPage() {
     },
     { title: "Manual capture", detail: "New household admin items start in the shared inbox.", status: "Active", href: "/inbox" },
     { title: "Source references", detail: "Original-source references are available from the source library.", status: "Active", href: "/sources" },
+    { title: "Activity trail", detail: "Comments and household activity stay scoped to this workspace.", status: "Active", href: "/activity" },
     { title: "Household privacy", detail: "Shared items stay scoped to this household workspace.", status: "Active" },
   ];
 
