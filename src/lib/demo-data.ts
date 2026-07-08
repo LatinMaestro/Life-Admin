@@ -7,6 +7,7 @@ export type SourceLinkedArea = "Inbox" | "Tasks" | "Bills and renewals";
 export type InboxStatus = "New" | "Needs review" | "Linked";
 export type InboxCategory = "school" | "appointment" | "renewal";
 export type InboxDestination = "task" | "reminder" | "bill_or_renewal" | "source_reference";
+export type InboxPriority = "Low" | "Normal" | "High";
 export type TaskStatus = "Open" | "Done";
 export type TaskPriority = "Low" | "Normal" | "High";
 export type TaskStage = "Capture" | "Action" | "Review" | "Done";
@@ -44,7 +45,10 @@ export interface InboxItem extends HouseholdScopedRecord {
   description: string;
   status: InboxStatus;
   category: InboxCategory;
+  priority: InboxPriority;
   suggestedDestination: InboxDestination;
+  routingReason: string;
+  triageSteps: string[];
   assignedMemberId?: string;
   createdByMemberId: string;
   sourceReferenceId: string;
@@ -266,7 +270,10 @@ const inboxItems: InboxItem[] = [
     description: "Manual inbox item for review and follow-up.",
     status: "New",
     category: "school",
+    priority: "High",
     suggestedDestination: "task",
+    routingReason: "Needs a clear owner and follow-up task before the excursion date.",
+    triageSteps: ["Open the source reference", "Confirm the action needed", "Create or update the task"],
     assignedMemberId: memberIds.alex,
     createdByMemberId: memberIds.morgan,
     sourceReferenceId: "source_school_excursion",
@@ -278,7 +285,10 @@ const inboxItems: InboxItem[] = [
     description: "Turn into a household reminder after confirming the date.",
     status: "Needs review",
     category: "appointment",
+    priority: "Normal",
     suggestedDestination: "reminder",
+    routingReason: "Appointment cards should become reminders after the date is checked against the original source.",
+    triageSteps: ["Open original image reference", "Confirm date and owner", "Create reminder"],
     assignedMemberId: memberIds.morgan,
     createdByMemberId: memberIds.alex,
     sourceReferenceId: "source_vet_card",
@@ -290,7 +300,10 @@ const inboxItems: InboxItem[] = [
     description: "Link to a renewal reminder with the saved notice as the source.",
     status: "Linked",
     category: "renewal",
+    priority: "Normal",
     suggestedDestination: "bill_or_renewal",
+    routingReason: "The source notice is already linked to a renewal reminder for household review.",
+    triageSteps: ["Keep source linked", "Review renewal reminder", "Record household action"],
     assignedMemberId: memberIds.jordan,
     createdByMemberId: memberIds.morgan,
     sourceReferenceId: "source_home_service_notice",
@@ -557,6 +570,10 @@ export function getInboxDestinationLabel(destination: InboxDestination) {
   };
 
   return labels[destination];
+}
+
+export function getInboxPriorityLabel(priority: InboxPriority) {
+  return `${priority} priority`;
 }
 
 export function getCurrentHouseholdTasks() {
