@@ -55,7 +55,7 @@ export default function BillsPage() {
         </Card>
       </section>
 
-      <Card>
+      <Card className="mt-6">
         <CardHeader>
           <div className="flex items-start justify-between gap-3">
             <div>
@@ -83,7 +83,7 @@ export default function BillsPage() {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="mt-6">
         <CardHeader>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
