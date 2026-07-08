@@ -104,6 +104,12 @@ Exit criteria:
 
 Create manual shared inbox workflow.
 
+Approved Phase 5 boundary:
+
+- Static shared inbox triage using existing household-scoped demo data.
+- Manual status, category, suggested destination, assignee, and source reference labels.
+- No email forwarding, AI classification, OCR extraction, persistence, uploads, or automated routing.
+
 Exit criteria:
 
 - Household members can create and triage inbox items manually.
