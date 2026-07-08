@@ -57,6 +57,7 @@ The app foundation uses these choices. Database schema, auth, uploads, and integ
 - `docs/EMAIL_FORWARDING_DESIGN.md` - future email forwarding design notes
 - `docs/BILL_PAYMENT_SOURCE_OF_TRUTH_RULES.md` - strict bill/payment rules
 - `docs/IOS_FUTURE_ROADMAP.md` - later native iOS direction
+- `docs/PHASE_11_QA_REVIEW.md` - static MVP QA review result
 
 ## Current Status
 
