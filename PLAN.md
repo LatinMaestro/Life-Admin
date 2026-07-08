@@ -2,7 +2,7 @@
 
 ## Current Objective
 
-Complete Phase 10 static comments and activity history workflow for Family Life Admin as household-scoped collaboration demo data only, without adding persistence, production authentication, database schema, audit backend, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, or finance features.
+Complete Phase 11 QA and scope review for the static Family Life Admin MVP, including user-facing copy polish, route review, scope guardrail checks, and build verification. Do not add persistence, production authentication, database schema, audit backend, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, or finance features.
 
 ## Product Summary
 
@@ -61,4 +61,4 @@ Out of scope:
 
 ## Immediate Next Step After Review
 
-After Phase 10 review, proceed to QA and scope review. Do not add authentication, database schema, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, or finance analytics until separately approved.
+After Phase 11 review, decide whether to approve the next major layer: production authentication, database persistence, file/source storage, notification integrations, or continued static UX refinement. Do not add authentication, database schema, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, or finance analytics until separately approved.
