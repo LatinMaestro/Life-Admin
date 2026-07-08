@@ -7,7 +7,7 @@ export default function NotFound() {
     <Card>
       <CardHeader>
         <CardTitle>Page not found</CardTitle>
-        <CardDescription>This placeholder route is not part of the current app foundation.</CardDescription>
+        <CardDescription>That page is not available in this household workspace.</CardDescription>
       </CardHeader>
       <CardContent>
         <Link href="/" className={buttonVariants({ variant: "default" })}>
