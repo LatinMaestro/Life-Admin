@@ -3,14 +3,18 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { PageHeader } from "@/components/page-header";
-import { shoppingLists } from "@/lib/demo-data";
+import { getCurrentHouseholdShoppingLists } from "@/lib/demo-data";
+import { getCurrentHousehold } from "@/lib/household";
 
 export default function ListsPage() {
+  const household = getCurrentHousehold();
+  const shoppingLists = getCurrentHouseholdShoppingLists();
+
   return (
     <>
       <PageHeader
         title="Shopping lists"
-        description="Shared household lists for groceries, supplies, and errands. Items shown here are static placeholders."
+        description={`Shared ${household.name} lists for groceries, supplies, and errands. Items shown here are static placeholders.`}
         action={
           <Button type="button">
             <Plus className="h-4 w-4" aria-hidden="true" />
@@ -21,7 +25,7 @@ export default function ListsPage() {
 
       <div className="grid gap-4 lg:grid-cols-2">
         {shoppingLists.map((list) => (
-          <Card key={list.name}>
+          <Card key={list.id}>
             <CardHeader>
               <div className="flex items-start justify-between gap-3">
                 <div>
@@ -34,7 +38,7 @@ export default function ListsPage() {
             <CardContent>
               <ul className="space-y-3">
                 {list.items.map((item) => (
-                  <li key={item.label} className="flex min-h-10 items-center gap-3">
+                  <li key={item.id} className="flex min-h-10 items-center gap-3">
                     <span
                       aria-hidden="true"
                       className={

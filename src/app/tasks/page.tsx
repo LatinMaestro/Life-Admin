@@ -3,14 +3,19 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ItemRow } from "@/components/item-row";
 import { PageHeader } from "@/components/page-header";
-import { reminders, tasks } from "@/lib/demo-data";
+import { getCurrentHouseholdReminders, getCurrentHouseholdTasks } from "@/lib/demo-data";
+import { getCurrentHousehold, getMemberDisplayName } from "@/lib/household";
 
 export default function TasksPage() {
+  const household = getCurrentHousehold();
+  const tasks = getCurrentHouseholdTasks();
+  const reminders = getCurrentHouseholdReminders();
+
   return (
     <>
       <PageHeader
         title="Tasks and reminders"
-        description="Manual household tasks and reminders with simple ownership, due dates, and status placeholders."
+        description={`Manual ${household.name} tasks and reminders with simple ownership, due dates, and status placeholders.`}
         action={
           <Button type="button">
             <Plus className="h-4 w-4" aria-hidden="true" />
@@ -28,9 +33,9 @@ export default function TasksPage() {
           <CardContent>
             {tasks.map((task) => (
               <ItemRow
-                key={task.title}
+                key={task.id}
                 title={task.title}
-                detail={`Due ${task.due} - Assigned to ${task.assignee}`}
+                detail={`Due ${task.due} - Assigned to ${getMemberDisplayName(task.assignedMemberId)}`}
                 status={task.status}
               />
             ))}
@@ -45,9 +50,9 @@ export default function TasksPage() {
           <CardContent>
             {reminders.map((reminder) => (
               <ItemRow
-                key={reminder.title}
+                key={reminder.id}
                 title={reminder.title}
-                detail={`Reminder for ${reminder.assignee}`}
+                detail={`Reminder for ${getMemberDisplayName(reminder.assignedMemberId)}`}
                 status={reminder.due}
               />
             ))}

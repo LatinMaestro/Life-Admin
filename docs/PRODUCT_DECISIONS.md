@@ -24,6 +24,8 @@ This document records approved product, architecture, and scope decisions for Fa
 18. Payment-related reminders must point users back to original source documents, links, emails, images, or user-confirmed source crops/references.
 19. MVP UI may optimise for one primary household while the schema remains future-ready for multi-household support.
 20. The app should use calm, mobile-first, household-friendly UI patterns and avoid finance-dashboard language.
+21. Phase 2 should validate static household workspace architecture before production authentication, database hosting, invite flow, or persistence details are selected.
+22. Phase 2 should not add dynamic `/households/[householdId]` routes; it should use typed current-household state first.
 
 ## Practical Effect
 
