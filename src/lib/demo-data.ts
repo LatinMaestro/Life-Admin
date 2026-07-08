@@ -6,7 +6,9 @@ export type InboxCategory = "school" | "appointment" | "renewal";
 export type InboxDestination = "task" | "reminder" | "bill_or_renewal" | "source_reference";
 export type TaskStatus = "Open" | "Done";
 export type TaskPriority = "Low" | "Normal" | "High";
+export type TaskStage = "Capture" | "Action" | "Review" | "Done";
 export type ReminderCadence = "Once" | "Weekly" | "Monthly";
+export type ReminderStage = "Scheduled" | "Review";
 
 interface HouseholdScopedRecord {
   id: string;
@@ -44,8 +46,11 @@ export interface Task extends HouseholdScopedRecord {
   title: string;
   due: string;
   status: TaskStatus;
+  stage: TaskStage;
   priority: TaskPriority;
   notes: string;
+  checklist: string[];
+  sourceReferenceId?: string;
   assignedMemberId: string;
   createdByMemberId: string;
 }
@@ -54,6 +59,8 @@ export interface Reminder extends HouseholdScopedRecord {
   title: string;
   due: string;
   cadence: ReminderCadence;
+  stage: ReminderStage;
+  nextStep: string;
   notes: string;
   assignedMemberId?: string;
   createdByMemberId: string;
@@ -63,6 +70,7 @@ export interface ShoppingListItem extends HouseholdScopedRecord {
   shoppingListId: string;
   label: string;
   quantity: string;
+  category: string;
   notes: string;
   checked: boolean;
   assignedMemberId?: string;
@@ -73,6 +81,7 @@ export interface ShoppingList extends HouseholdScopedRecord {
   name: string;
   detail: string;
   status: "Active";
+  nextShop: string;
   createdByMemberId: string;
   items: ShoppingListItem[];
 }
@@ -82,6 +91,8 @@ export interface BillReminder extends HouseholdScopedRecord {
   provider: string;
   due: string;
   reminderWindow: string;
+  nextStep: string;
+  reviewChecklist: string[];
   notes: string;
   status: "Upcoming" | "Needs review" | "Scheduled";
   type: "bill" | "renewal";
@@ -255,7 +266,9 @@ const tasks: Task[] = [
     title: "Put bins out",
     due: "Tonight",
     priority: "High",
+    stage: "Action",
     notes: "Move bins to the kerb before bedtime.",
+    checklist: ["Check collection calendar", "Move bins to kerb", "Bring bins back after collection"],
     assignedMemberId: memberIds.jordan,
     createdByMemberId: memberIds.alex,
     status: "Open",
@@ -266,7 +279,10 @@ const tasks: Task[] = [
     title: "Prepare sports bag",
     due: "Tomorrow morning",
     priority: "Normal",
+    stage: "Capture",
     notes: "Pack shoes, uniform, water bottle, and permission slip.",
+    checklist: ["Confirm uniform is dry", "Pack water bottle", "Add permission slip"],
+    sourceReferenceId: "source_school_excursion",
     assignedMemberId: memberIds.taylor,
     createdByMemberId: memberIds.morgan,
     status: "Open",
@@ -277,7 +293,9 @@ const tasks: Task[] = [
     title: "Confirm school pickup",
     due: "Today",
     priority: "Normal",
+    stage: "Done",
     notes: "Pickup confirmed for the usual afternoon time.",
+    checklist: ["Confirm pickup owner", "Share update with household"],
     assignedMemberId: memberIds.alex,
     createdByMemberId: memberIds.alex,
     status: "Done",
@@ -291,6 +309,8 @@ const reminders: Reminder[] = [
     title: "Check smoke alarm date",
     due: "Saturday",
     cadence: "Monthly",
+    stage: "Scheduled",
+    nextStep: "Check date and mark the monthly review complete.",
     notes: "Check the date during the monthly household review.",
     assignedMemberId: memberIds.morgan,
     createdByMemberId: memberIds.alex,
@@ -301,6 +321,8 @@ const reminders: Reminder[] = [
     title: "Library books due",
     due: "Next Tuesday",
     cadence: "Once",
+    stage: "Review",
+    nextStep: "Confirm whether books should be returned or renewed.",
     notes: "Return or renew before the due date.",
     createdByMemberId: memberIds.jordan,
   },
@@ -313,6 +335,7 @@ const shoppingLists: ShoppingList[] = [
     name: "Groceries",
     detail: "Shared weekly list",
     status: "Active",
+    nextShop: "Weekly supermarket run",
     createdByMemberId: memberIds.alex,
     items: [
       {
@@ -321,6 +344,7 @@ const shoppingLists: ShoppingList[] = [
         shoppingListId: "list_groceries",
         label: "Milk",
         quantity: "2 L",
+        category: "Fridge",
         notes: "Regular milk for breakfasts.",
         checked: false,
         createdByMemberId: memberIds.alex,
@@ -331,6 +355,7 @@ const shoppingLists: ShoppingList[] = [
         shoppingListId: "list_groceries",
         label: "Bread",
         quantity: "1 loaf",
+        category: "Bakery",
         notes: "Already picked up.",
         checked: true,
         assignedMemberId: memberIds.taylor,
@@ -342,6 +367,7 @@ const shoppingLists: ShoppingList[] = [
         shoppingListId: "list_groceries",
         label: "Lunchbox fruit",
         quantity: "6 pieces",
+        category: "Produce",
         notes: "Apples or mandarins are fine.",
         checked: false,
         createdByMemberId: memberIds.alex,
@@ -354,6 +380,7 @@ const shoppingLists: ShoppingList[] = [
     name: "Home supplies",
     detail: "Household basics",
     status: "Active",
+    nextShop: "Next household supply top-up",
     createdByMemberId: memberIds.morgan,
     items: [
       {
@@ -362,6 +389,7 @@ const shoppingLists: ShoppingList[] = [
         shoppingListId: "list_home_supplies",
         label: "Laundry powder",
         quantity: "1 box",
+        category: "Laundry",
         notes: "Low in the laundry cupboard.",
         checked: false,
         createdByMemberId: memberIds.morgan,
@@ -372,6 +400,7 @@ const shoppingLists: ShoppingList[] = [
         shoppingListId: "list_home_supplies",
         label: "Kitchen cloths",
         quantity: "1 pack",
+        category: "Kitchen",
         notes: "Replace worn cloths.",
         checked: false,
         createdByMemberId: memberIds.jordan,
@@ -388,6 +417,8 @@ const billReminders: BillReminder[] = [
     provider: "Local council",
     due: "Due 18 Jul",
     reminderWindow: "Review this week",
+    nextStep: "Open the original PDF reference and confirm the due date before taking action.",
+    reviewChecklist: ["Open original source", "Confirm due date", "Record household action taken"],
     notes: "Open the original PDF reference before taking action.",
     status: "Upcoming",
     type: "bill",
@@ -402,6 +433,8 @@ const billReminders: BillReminder[] = [
     provider: "Insurance provider",
     due: "Renewal 28 Jul",
     reminderWindow: "Compare renewal notice",
+    nextStep: "Review the provider portal source and decide whether the renewal needs household discussion.",
+    reviewChecklist: ["Open provider source", "Review cover dates", "Add household comment"],
     notes: "Review cover dates and keep the provider portal as the source reference.",
     status: "Needs review",
     type: "renewal",
@@ -416,6 +449,8 @@ const billReminders: BillReminder[] = [
     provider: "Transport service",
     due: "Due 4 Aug",
     reminderWindow: "Scheduled check-in",
+    nextStep: "Confirm the renewal notice in the saved source reference.",
+    reviewChecklist: ["Open original notice", "Confirm renewal date", "Keep source reference attached"],
     notes: "Confirm the renewal notice in the saved source reference.",
     status: "Scheduled",
     type: "renewal",
@@ -498,8 +533,23 @@ export function getTaskPriorityLabel(priority: TaskPriority) {
   return `${priority} priority`;
 }
 
+export function getTaskStageLabel(stage: TaskStage) {
+  const labels: Record<TaskStage, string> = {
+    Capture: "Captured",
+    Action: "Action needed",
+    Review: "Ready to review",
+    Done: "Done",
+  };
+
+  return labels[stage];
+}
+
 export function getReminderCadenceLabel(cadence: ReminderCadence) {
   return cadence === "Once" ? "One-off" : cadence;
+}
+
+export function getReminderStageLabel(stage: ReminderStage) {
+  return stage === "Scheduled" ? "Scheduled" : "Needs review";
 }
 
 export function getCurrentHouseholdShoppingLists() {
