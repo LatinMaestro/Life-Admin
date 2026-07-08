@@ -120,6 +120,12 @@ Exit criteria:
 
 Create task and reminder workflows.
 
+Approved Phase 6 boundary:
+
+- Static tasks and reminders workflow using existing household-scoped demo data.
+- Manual task status, priority, assignee, due date, notes, and reminder cadence labels.
+- No persistence, notification integrations, automated scheduling, or recurrence engine.
+
 Exit criteria:
 
 - Users can create, assign, complete, and review household tasks/reminders.

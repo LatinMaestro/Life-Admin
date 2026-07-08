@@ -2,7 +2,7 @@
 
 ## Current Objective
 
-Complete Phase 5 static shared inbox workflow for Family Life Admin without adding persistence, production authentication, email forwarding, AI intake, database schema, or integrations.
+Complete Phase 6 static tasks and reminders workflow for Family Life Admin without adding persistence, production authentication, notification integrations, database schema, or automated reminders.
 
 ## Product Summary
 
@@ -61,4 +61,4 @@ Out of scope:
 
 ## Immediate Next Step After Review
 
-After Phase 5 review, choose whether to proceed to tasks/reminders workflow or another approved MVP slice. Do not add authentication, database schema, uploads, email forwarding, AI, OCR, voice capture, notifications, or native iOS until separately approved.
+After Phase 6 review, choose whether to proceed to shopping lists workflow or another approved MVP slice. Do not add authentication, database schema, uploads, email forwarding, AI, OCR, voice capture, notifications, or native iOS until separately approved.
