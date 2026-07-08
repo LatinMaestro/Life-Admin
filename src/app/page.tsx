@@ -117,7 +117,7 @@ export default function DashboardPage() {
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <CardTitle>Upcoming</CardTitle>
-                  <CardDescription>Near-term reminders without automated extraction or notifications.</CardDescription>
+                  <CardDescription>Near-term reminders and household admin items.</CardDescription>
                 </div>
                 <CalendarClock className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
               </div>
@@ -158,7 +158,7 @@ export default function DashboardPage() {
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <CardTitle>Assigned to {currentMember.displayName}</CardTitle>
-                  <CardDescription>Static current-member worklist for this household.</CardDescription>
+                  <CardDescription>Personal household worklist for this member.</CardDescription>
                 </div>
                 <Badge>{assignedToCurrentMember.length} items</Badge>
               </div>
