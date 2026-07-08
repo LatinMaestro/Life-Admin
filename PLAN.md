@@ -2,7 +2,7 @@
 
 ## Current Objective
 
-Complete Phase 8 static bills and renewals workflow for Family Life Admin as household admin reminders only, without adding persistence, production authentication, database schema, uploads, integrations, notifications, finance analytics, or payment identifier storage/transcription.
+Complete Phase 9 static source documents and links workflow for Family Life Admin as household-scoped source reference metadata only, without adding persistence, production authentication, database schema, uploads, extracted document content, email forwarding, AI, OCR, voice capture, notifications, native iOS, or finance features.
 
 ## Product Summary
 
@@ -61,4 +61,4 @@ Out of scope:
 
 ## Immediate Next Step After Review
 
-After Phase 8 review, proceed to source documents and links as the next approved MVP slice. Do not add authentication, database schema, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, or finance analytics until separately approved.
+After Phase 9 review, proceed to comments and activity history as the next approved MVP slice. Do not add authentication, database schema, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, or finance analytics until separately approved.
