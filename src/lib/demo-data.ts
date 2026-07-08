@@ -4,6 +4,9 @@ type SourceKind = "source_link" | "source_document_reference" | "source_image_re
 export type InboxStatus = "New" | "Needs review" | "Linked";
 export type InboxCategory = "school" | "appointment" | "renewal";
 export type InboxDestination = "task" | "reminder" | "bill_or_renewal" | "source_reference";
+export type TaskStatus = "Open" | "Done";
+export type TaskPriority = "Low" | "Normal" | "High";
+export type ReminderCadence = "Once" | "Weekly" | "Monthly";
 
 interface HouseholdScopedRecord {
   id: string;
@@ -39,7 +42,9 @@ export interface InboxItem extends HouseholdScopedRecord {
 export interface Task extends HouseholdScopedRecord {
   title: string;
   due: string;
-  status: "Open" | "Done";
+  status: TaskStatus;
+  priority: TaskPriority;
+  notes: string;
   assignedMemberId: string;
   createdByMemberId: string;
 }
@@ -47,6 +52,8 @@ export interface Task extends HouseholdScopedRecord {
 export interface Reminder extends HouseholdScopedRecord {
   title: string;
   due: string;
+  cadence: ReminderCadence;
+  notes: string;
   assignedMemberId?: string;
   createdByMemberId: string;
 }
@@ -236,6 +243,8 @@ const tasks: Task[] = [
     householdId: household.id,
     title: "Put bins out",
     due: "Tonight",
+    priority: "High",
+    notes: "Move bins to the kerb before bedtime.",
     assignedMemberId: memberIds.jordan,
     createdByMemberId: memberIds.alex,
     status: "Open",
@@ -245,6 +254,8 @@ const tasks: Task[] = [
     householdId: household.id,
     title: "Prepare sports bag",
     due: "Tomorrow morning",
+    priority: "Normal",
+    notes: "Pack shoes, uniform, water bottle, and permission slip.",
     assignedMemberId: memberIds.taylor,
     createdByMemberId: memberIds.morgan,
     status: "Open",
@@ -254,6 +265,8 @@ const tasks: Task[] = [
     householdId: household.id,
     title: "Confirm school pickup",
     due: "Today",
+    priority: "Normal",
+    notes: "Pickup confirmed for the usual afternoon time.",
     assignedMemberId: memberIds.alex,
     createdByMemberId: memberIds.alex,
     status: "Done",
@@ -266,6 +279,8 @@ const reminders: Reminder[] = [
     householdId: household.id,
     title: "Check smoke alarm date",
     due: "Saturday",
+    cadence: "Monthly",
+    notes: "Manual reminder only; notifications are deferred.",
     assignedMemberId: memberIds.morgan,
     createdByMemberId: memberIds.alex,
   },
@@ -274,6 +289,8 @@ const reminders: Reminder[] = [
     householdId: household.id,
     title: "Library books due",
     due: "Next Tuesday",
+    cadence: "Once",
+    notes: "Return or renew before the due date.",
     createdByMemberId: memberIds.jordan,
   },
 ];
@@ -448,6 +465,14 @@ export function getCurrentHouseholdTasks() {
 
 export function getCurrentHouseholdReminders() {
   return forCurrentHousehold(reminders);
+}
+
+export function getTaskPriorityLabel(priority: TaskPriority) {
+  return `${priority} priority`;
+}
+
+export function getReminderCadenceLabel(cadence: ReminderCadence) {
+  return cadence === "Once" ? "One-off" : cadence;
 }
 
 export function getCurrentHouseholdShoppingLists() {
