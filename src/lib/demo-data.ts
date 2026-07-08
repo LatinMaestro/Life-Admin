@@ -80,6 +80,8 @@ export interface BillReminder extends HouseholdScopedRecord {
   title: string;
   provider: string;
   due: string;
+  reminderWindow: string;
+  notes: string;
   status: "Upcoming" | "Needs review" | "Scheduled";
   type: "bill" | "renewal";
   assignedMemberId: string;
@@ -378,6 +380,8 @@ const billReminders: BillReminder[] = [
     title: "Council rates notice",
     provider: "Local council",
     due: "Due 18 Jul",
+    reminderWindow: "Review this week",
+    notes: "Open the original PDF reference before taking action.",
     status: "Upcoming",
     type: "bill",
     assignedMemberId: memberIds.alex,
@@ -390,6 +394,8 @@ const billReminders: BillReminder[] = [
     title: "Home insurance renewal",
     provider: "Insurance provider",
     due: "Renewal 28 Jul",
+    reminderWindow: "Compare renewal notice",
+    notes: "Review cover dates and keep the provider portal as the source reference.",
     status: "Needs review",
     type: "renewal",
     assignedMemberId: memberIds.morgan,
@@ -402,6 +408,8 @@ const billReminders: BillReminder[] = [
     title: "Car registration reminder",
     provider: "Transport service",
     due: "Due 4 Aug",
+    reminderWindow: "Scheduled check-in",
+    notes: "Confirm the renewal notice in the saved source reference.",
     status: "Scheduled",
     type: "renewal",
     assignedMemberId: memberIds.jordan,

@@ -152,6 +152,12 @@ Exit criteria:
 
 Create bill and renewal admin reminder workflows.
 
+Approved Phase 8 boundary:
+
+- Static bills and renewals workflow using household-scoped demo data.
+- Bill and renewal records may show provider, timing, reminder window, notes, status, assignee, and source reference labels.
+- No payment instruction generation, payment identifier storage/transcription, finance analytics, persistence, uploads, notifications, email forwarding, AI, or OCR.
+
 Exit criteria:
 
 - Bills/renewals track due dates, renewal dates, provider, status, notes, assignee, and source references.
