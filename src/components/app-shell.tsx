@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   ClipboardList,
+  FileText,
   Home,
   Inbox,
   ListChecks,
@@ -22,6 +23,7 @@ const navigation = [
   { href: "/tasks", label: "Tasks", icon: ListChecks },
   { href: "/lists", label: "Lists", icon: ShoppingCart },
   { href: "/bills", label: "Bills", icon: ClipboardList },
+  { href: "/sources", label: "Sources", icon: FileText },
   { href: "/family", label: "Family", icon: Users },
   { href: "/settings", label: "Settings", icon: Settings },
 ] as const;
@@ -83,7 +85,7 @@ export function AppShell({ children }: PropsWithChildren) {
           </div>
         </header>
 
-        <main className="mx-auto min-h-screen w-full max-w-6xl px-4 pb-28 pt-5 sm:px-6 lg:px-8 lg:pb-10 lg:pt-8">
+        <main className="mx-auto min-h-screen w-full max-w-6xl px-4 pb-40 pt-5 sm:px-6 lg:px-8 lg:pb-10 lg:pt-8">
           {children}
         </main>
       </div>
@@ -92,7 +94,7 @@ export function AppShell({ children }: PropsWithChildren) {
         aria-label="Mobile primary"
         className="fixed inset-x-0 bottom-0 z-30 border-t bg-card px-2 pb-2 pt-1 shadow-lg lg:hidden"
       >
-        <div className="grid grid-cols-7 gap-1">
+        <div className="grid grid-cols-4 gap-1">
           {navigation.map((item) => {
             const isActive = pathname === item.href;
             const Icon = item.icon;

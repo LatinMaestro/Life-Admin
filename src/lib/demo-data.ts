@@ -503,8 +503,22 @@ export function getCurrentHouseholdBillReminders() {
   return forCurrentHousehold(billReminders);
 }
 
+export function getCurrentHouseholdSourceReferences() {
+  return forCurrentHousehold(sourceReferences);
+}
+
 export function getCurrentHouseholdActivity() {
   return forCurrentHousehold(activity);
+}
+
+export function getSourceKindLabel(kind: SourceKind) {
+  const labels: Record<SourceKind, string> = {
+    source_link: "Source link",
+    source_document_reference: "Document reference",
+    source_image_reference: "Image reference",
+  };
+
+  return labels[kind];
 }
 
 export function getSourceReferenceLabel(sourceReferenceId: string) {

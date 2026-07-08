@@ -168,6 +168,12 @@ Exit criteria:
 
 Implement approved source reference behavior.
 
+Approved Phase 9 boundary:
+
+- Static source reference library using household-scoped demo metadata.
+- Source records may show title, source kind, label, created-by member, and source-reference actions.
+- No file uploads, storage provider, external link validation, document previews, extracted document content, email forwarding, AI, OCR, or payment identifier transcription.
+
 Exit criteria:
 
 - References are household-scoped.
