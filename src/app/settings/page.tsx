@@ -27,8 +27,9 @@ export default function SettingsPage() {
         : "Current member can view household settings.",
       status: canManageHouseholdSettings(currentMember) ? "Admin" : "Member",
     },
-    { title: "Source references", detail: "Links and references are available from the source library.", status: "Enabled" },
-    { title: "Notifications", detail: "Reminder preferences will appear here when enabled.", status: "Planned" },
+    { title: "Manual capture", detail: "New household admin items start in the shared inbox.", status: "Active", href: "/inbox" },
+    { title: "Source references", detail: "Original-source references are available from the source library.", status: "Active", href: "/sources" },
+    { title: "Household privacy", detail: "Shared items stay scoped to this household workspace.", status: "Active" },
   ];
 
   return (
@@ -46,7 +47,7 @@ export default function SettingsPage() {
           </CardHeader>
           <CardContent>
             {settings.map((item) => (
-              <ItemRow key={item.title} title={item.title} detail={item.detail} status={item.status} />
+              <ItemRow key={item.title} title={item.title} detail={item.detail} status={item.status} href={item.href} />
             ))}
           </CardContent>
         </Card>

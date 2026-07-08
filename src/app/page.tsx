@@ -46,12 +46,12 @@ export default function DashboardPage() {
     0,
   );
   const summary = [
-    { label: "Overdue", value: String(dashboardItems.overdue.length), detail: "Needs attention", icon: AlertCircle },
-    { label: "Today", value: String(dashboardItems.today.length), detail: "Household items", icon: ListChecks },
-    { label: "Assigned", value: String(assignedToCurrentMember.length), detail: `For ${currentMember.displayName}`, icon: UserRoundCheck },
-    { label: "Inbox", value: String(inboxItems.length), detail: "Manual items", icon: Inbox },
-    { label: "Shopping", value: String(openShoppingItems), detail: "Open items", icon: ShoppingCart },
-    { label: "Bills", value: String(billReminders.length), detail: "Source-linked", icon: ClipboardList },
+    { label: "Overdue", value: String(dashboardItems.overdue.length), detail: "Needs attention", icon: AlertCircle, href: "/tasks" },
+    { label: "Today", value: String(dashboardItems.today.length), detail: "Household items", icon: ListChecks, href: "/tasks" },
+    { label: "Assigned", value: String(assignedToCurrentMember.length), detail: `For ${currentMember.displayName}`, icon: UserRoundCheck, href: "/tasks" },
+    { label: "Inbox", value: String(inboxItems.length), detail: "Manual items", icon: Inbox, href: "/inbox" },
+    { label: "Shopping", value: String(openShoppingItems), detail: "Open items", icon: ShoppingCart, href: "/lists" },
+    { label: "Bills", value: String(billReminders.length), detail: "Source-linked", icon: ClipboardList, href: "/bills" },
   ];
 
   return (
@@ -72,18 +72,20 @@ export default function DashboardPage() {
           const Icon = item.icon;
 
           return (
-            <Card key={item.label}>
-              <CardContent className="flex items-center gap-3 p-4 xl:flex-col xl:items-start">
-                <div className="flex h-10 w-10 items-center justify-center rounded-md bg-accent text-accent-foreground">
-                  <Icon className="h-5 w-5" aria-hidden="true" />
-                </div>
-                <div>
-                  <p className="text-2xl font-semibold leading-none">{item.value}</p>
-                  <p className="mt-1 text-sm font-medium">{item.label}</p>
-                  <p className="text-xs text-muted-foreground">{item.detail}</p>
-                </div>
-              </CardContent>
-            </Card>
+            <Link key={item.label} href={item.href} className="block rounded-md transition-transform hover:-translate-y-0.5">
+              <Card>
+                <CardContent className="flex items-center gap-3 p-4 xl:flex-col xl:items-start">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-md bg-accent text-accent-foreground">
+                    <Icon className="h-5 w-5" aria-hidden="true" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-semibold leading-none">{item.value}</p>
+                    <p className="mt-1 text-sm font-medium">{item.label}</p>
+                    <p className="text-xs text-muted-foreground">{item.detail}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
           );
         })}
       </div>
@@ -107,6 +109,7 @@ export default function DashboardPage() {
                   title={item.title}
                   detail={`${item.detail} - ${getMemberDisplayName(item.assignedMemberId)}`}
                   status={item.status}
+                  href="/tasks"
                 />
               ))}
             </CardContent>
@@ -129,6 +132,7 @@ export default function DashboardPage() {
                   title={item.title}
                   detail={`${item.detail} - ${getMemberDisplayName(item.assignedMemberId)}`}
                   status={item.status}
+                  href="/tasks"
                 />
               ))}
             </CardContent>
@@ -146,6 +150,7 @@ export default function DashboardPage() {
                   title={bill.title}
                   detail={`${bill.provider} - ${getMemberDisplayName(bill.assignedMemberId)} - Source: ${getSourceReferenceLabel(bill.sourceReferenceId)}`}
                   status={bill.due}
+                  href="/bills"
                 />
               ))}
             </CardContent>
@@ -165,7 +170,7 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               {assignedToCurrentMember.map((item) => (
-                <ItemRow key={item.id} title={item.title} detail={item.detail} status={item.status} />
+                <ItemRow key={item.id} title={item.title} detail={item.detail} status={item.status} href="/tasks" />
               ))}
             </CardContent>
           </Card>
@@ -182,6 +187,7 @@ export default function DashboardPage() {
                   title={item.title}
                   detail={`${item.description} Assigned to ${getMemberDisplayName(item.assignedMemberId)}.`}
                   status={item.status}
+                  href="/inbox"
                 />
               ))}
             </CardContent>
@@ -202,6 +208,7 @@ export default function DashboardPage() {
                     title={list.name}
                     detail={`${list.detail} - ${openItems} open of ${list.items.length}`}
                     status={list.status}
+                    href="/lists"
                   />
                 );
               })}

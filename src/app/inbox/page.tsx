@@ -1,7 +1,10 @@
 import { ArrowRight, Inbox, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { ItemRow } from "@/components/item-row";
 import { PageHeader } from "@/components/page-header";
 import {
@@ -9,14 +12,33 @@ import {
   getInboxCategoryLabel,
   getInboxDestinationLabel,
   getSourceReferenceLabel,
+  type InboxDestination,
   type InboxStatus,
 } from "@/lib/demo-data";
-import { getCurrentHousehold, getMemberDisplayName } from "@/lib/household";
+import { getCurrentHousehold, getCurrentHouseholdMembers, getMemberDisplayName } from "@/lib/household";
 
 const inboxStatuses: InboxStatus[] = ["New", "Needs review", "Linked"];
+const captureDestinations: Array<{ value: InboxDestination; label: string }> = [
+  { value: "task", label: "Task" },
+  { value: "reminder", label: "Reminder" },
+  { value: "bill_or_renewal", label: "Bill or renewal" },
+  { value: "source_reference", label: "Source reference" },
+];
+
+function getInboxDestinationHref(destination: InboxDestination) {
+  const hrefs: Record<InboxDestination, string> = {
+    task: "/tasks",
+    reminder: "/tasks",
+    bill_or_renewal: "/bills",
+    source_reference: "/sources",
+  };
+
+  return hrefs[destination] ?? "/inbox";
+}
 
 export default function InboxPage() {
   const household = getCurrentHousehold();
+  const members = getCurrentHouseholdMembers();
   const inboxItems = getCurrentHouseholdInboxItems();
   const newItems = inboxItems.filter((item) => item.status === "New").length;
   const reviewItems = inboxItems.filter((item) => item.status === "Needs review").length;
@@ -28,10 +50,10 @@ export default function InboxPage() {
         title="Shared inbox"
         description={`A manual triage space for ${household.name} items before they become tasks, reminders, bills, renewals, or source references.`}
         action={
-          <Button type="button">
+          <a href="#quick-capture" className={buttonVariants()}>
             <Plus className="h-4 w-4" aria-hidden="true" />
             Add item
-          </Button>
+          </a>
         }
       />
 
@@ -74,6 +96,69 @@ export default function InboxPage() {
         </Card>
       </div>
 
+      <Card id="quick-capture" className="mt-6 scroll-mt-24">
+        <CardHeader>
+          <CardTitle>Quick capture</CardTitle>
+          <CardDescription>Manual intake for household admin items.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form className="grid gap-4 md:grid-cols-2">
+            <div className="space-y-2 md:col-span-2">
+              <label htmlFor="capture-title" className="text-sm font-medium">
+                Title
+              </label>
+              <Input id="capture-title" name="title" placeholder="School form, home service note, or errand" />
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="capture-owner" className="text-sm font-medium">
+                Owner
+              </label>
+              <Select id="capture-owner" name="owner" defaultValue={members[0]?.id}>
+                {members.map((member) => (
+                  <option key={member.id} value={member.id}>
+                    {member.displayName}
+                  </option>
+                ))}
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="capture-destination" className="text-sm font-medium">
+                Destination
+              </label>
+              <Select id="capture-destination" name="destination" defaultValue="task">
+                {captureDestinations.map((destination) => (
+                  <option key={destination.value} value={destination.value}>
+                    {destination.label}
+                  </option>
+                ))}
+              </Select>
+            </div>
+
+            <div className="space-y-2 md:col-span-2">
+              <label htmlFor="capture-notes" className="text-sm font-medium">
+                Notes
+              </label>
+              <Textarea id="capture-notes" name="notes" placeholder="What needs to happen, who is involved, and any timing to remember." />
+            </div>
+
+            <div className="space-y-2 md:col-span-2">
+              <label htmlFor="capture-source" className="text-sm font-medium">
+                Source reference
+              </label>
+              <Input id="capture-source" name="sourceReference" placeholder="Original email, PDF, link, image, or note reference" />
+            </div>
+
+            <div className="md:col-span-2">
+              <Button type="reset" variant="outline" className="w-full sm:w-auto">
+                Clear draft
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+
       <div className="mt-6 grid gap-4 xl:grid-cols-[1.2fr_0.8fr]">
         <Card>
           <CardHeader>
@@ -102,6 +187,7 @@ export default function InboxPage() {
                         title={item.title}
                         detail={`${item.description} Assigned to ${getMemberDisplayName(item.assignedMemberId)}.`}
                         status={getInboxCategoryLabel(item.category)}
+                        href={getInboxDestinationHref(item.suggestedDestination)}
                       />
                     ))}
                   </div>
@@ -124,6 +210,7 @@ export default function InboxPage() {
                   title={item.title}
                   detail={`Create as ${getInboxDestinationLabel(item.suggestedDestination).toLowerCase()}.`}
                   status={item.status}
+                  href={getInboxDestinationHref(item.suggestedDestination)}
                 />
               ))}
             </CardContent>
@@ -141,6 +228,7 @@ export default function InboxPage() {
                   title={item.title}
                   detail={getSourceReferenceLabel(item.sourceReferenceId)}
                   status="Source"
+                  href="/sources"
                 />
               ))}
             </CardContent>

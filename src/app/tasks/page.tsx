@@ -1,6 +1,7 @@
+import Link from "next/link";
 import { Bell, CheckCircle2, Clock, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ItemRow } from "@/components/item-row";
 import { PageHeader } from "@/components/page-header";
@@ -27,10 +28,10 @@ export default function TasksPage() {
         title="Tasks and reminders"
         description={`${household.name} tasks and reminders with owners, due dates, priorities, and cadence.`}
         action={
-          <Button type="button">
+          <Link href="/inbox" className={buttonVariants()}>
             <Plus className="h-4 w-4" aria-hidden="true" />
-            Add task
-          </Button>
+            Capture task
+          </Link>
         }
       />
 
