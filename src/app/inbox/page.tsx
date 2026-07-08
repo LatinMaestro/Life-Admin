@@ -1,4 +1,5 @@
-import { ArrowRight, Inbox, Plus } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, Inbox, Plus, Route } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,11 +12,13 @@ import {
   getCurrentHouseholdInboxItems,
   getInboxCategoryLabel,
   getInboxDestinationLabel,
+  getInboxPriorityLabel,
   getSourceReferenceLabel,
   type InboxDestination,
   type InboxStatus,
 } from "@/lib/demo-data";
 import { getCurrentHousehold, getCurrentHouseholdMembers, getMemberDisplayName } from "@/lib/household";
+import { cn } from "@/lib/utils";
 
 const inboxStatuses: InboxStatus[] = ["New", "Needs review", "Linked"];
 const captureDestinations: Array<{ value: InboxDestination; label: string }> = [
@@ -43,6 +46,7 @@ export default function InboxPage() {
   const newItems = inboxItems.filter((item) => item.status === "New").length;
   const reviewItems = inboxItems.filter((item) => item.status === "Needs review").length;
   const linkedItems = inboxItems.filter((item) => item.status === "Linked").length;
+  const highPriorityItems = inboxItems.filter((item) => item.priority === "High").length;
 
   return (
     <>
@@ -57,7 +61,7 @@ export default function InboxPage() {
         }
       />
 
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-4">
         <Card>
           <CardContent className="flex items-center gap-3 p-4">
             <div className="flex h-10 w-10 items-center justify-center rounded-md bg-accent text-accent-foreground">
@@ -91,6 +95,18 @@ export default function InboxPage() {
               <p className="text-2xl font-semibold leading-none">{linkedItems}</p>
               <p className="mt-1 text-sm font-medium">Linked</p>
               <p className="text-xs text-muted-foreground">Already routed</p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="flex items-center gap-3 p-4">
+            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-accent text-accent-foreground">
+              <Route className="h-5 w-5" aria-hidden="true" />
+            </div>
+            <div>
+              <p className="text-2xl font-semibold leading-none">{highPriorityItems}</p>
+              <p className="mt-1 text-sm font-medium">High priority</p>
+              <p className="text-xs text-muted-foreground">Needs routing</p>
             </div>
           </CardContent>
         </Card>
@@ -134,6 +150,24 @@ export default function InboxPage() {
                   </option>
                 ))}
               </Select>
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="capture-priority" className="text-sm font-medium">
+                Priority
+              </label>
+              <Select id="capture-priority" name="priority" defaultValue="Normal">
+                <option>High</option>
+                <option>Normal</option>
+                <option>Low</option>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="capture-category" className="text-sm font-medium">
+                Category
+              </label>
+              <Input id="capture-category" name="category" placeholder="School, appointment, renewal, or errand" />
             </div>
 
             <div className="space-y-2 md:col-span-2">
@@ -180,15 +214,47 @@ export default function InboxPage() {
                     <h2 className="text-sm font-semibold leading-6">{status}</h2>
                     <Badge>{statusItems.length}</Badge>
                   </div>
-                  <div className="border-t">
+                  <div className="grid gap-3 border-t pt-3">
                     {statusItems.map((item) => (
-                      <ItemRow
-                        key={item.id}
-                        title={item.title}
-                        detail={`${item.description} Assigned to ${getMemberDisplayName(item.assignedMemberId)}.`}
-                        status={getInboxCategoryLabel(item.category)}
-                        href={getInboxDestinationHref(item.suggestedDestination)}
-                      />
+                      <article key={item.id} className="rounded-md border p-4">
+                        <div className="flex flex-wrap items-start justify-between gap-3">
+                          <div>
+                            <h3 className="text-sm font-semibold leading-6">{item.title}</h3>
+                            <p className="text-sm leading-5 text-muted-foreground">{item.description}</p>
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            <Badge>{getInboxCategoryLabel(item.category)}</Badge>
+                            <Badge>{getInboxPriorityLabel(item.priority)}</Badge>
+                          </div>
+                        </div>
+                        <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
+                          <div>
+                            <dt className="font-medium">Owner</dt>
+                            <dd className="text-muted-foreground">{getMemberDisplayName(item.assignedMemberId)}</dd>
+                          </div>
+                          <div>
+                            <dt className="font-medium">Suggested route</dt>
+                            <dd className="text-muted-foreground">{getInboxDestinationLabel(item.suggestedDestination)}</dd>
+                          </div>
+                        </dl>
+                        <div className="mt-4 rounded-md bg-muted/50 p-3">
+                          <p className="text-sm font-medium leading-6">Routing reason</p>
+                          <p className="text-sm leading-5 text-muted-foreground">{item.routingReason}</p>
+                        </div>
+                        <div className="mt-4">
+                          <p className="text-sm font-medium leading-6">Triage steps</p>
+                          <ul className="mt-2 grid gap-2 sm:grid-cols-3">
+                            {item.triageSteps.map((step) => (
+                              <li key={step} className="rounded-md bg-muted/50 px-3 py-2 text-sm text-muted-foreground">
+                                {step}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                        <Link href={getInboxDestinationHref(item.suggestedDestination)} className={cn(buttonVariants({ variant: "outline" }), "mt-4 w-full")}>
+                          Open suggested route
+                        </Link>
+                      </article>
                     ))}
                   </div>
                 </section>
@@ -208,8 +274,8 @@ export default function InboxPage() {
                 <ItemRow
                   key={item.id}
                   title={item.title}
-                  detail={`Create as ${getInboxDestinationLabel(item.suggestedDestination).toLowerCase()}.`}
-                  status={item.status}
+                  detail={`${item.routingReason} Owner: ${getMemberDisplayName(item.assignedMemberId)}.`}
+                  status={getInboxDestinationLabel(item.suggestedDestination)}
                   href={getInboxDestinationHref(item.suggestedDestination)}
                 />
               ))}
