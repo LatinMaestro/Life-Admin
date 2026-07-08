@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ArrowRight, Inbox, Plus, Route } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -17,6 +18,7 @@ import {
   type InboxStatus,
 } from "@/lib/demo-data";
 import { getCurrentHousehold, getCurrentHouseholdMembers, getMemberDisplayName } from "@/lib/household";
+import { cn } from "@/lib/utils";
 
 const inboxStatuses: InboxStatus[] = ["New", "Needs review", "Linked"];
 const captureDestinations: Array<{ value: InboxDestination; label: string }> = [
@@ -249,9 +251,9 @@ export default function InboxPage() {
                             ))}
                           </ul>
                         </div>
-                        <a href={getInboxDestinationHref(item.suggestedDestination)} className={buttonVariants({ variant: "outline" }) + " mt-4 w-full"}>
+                        <Link href={getInboxDestinationHref(item.suggestedDestination)} className={cn(buttonVariants({ variant: "outline" }), "mt-4 w-full")}>
                           Open suggested route
-                        </a>
+                        </Link>
                       </article>
                     ))}
                   </div>
