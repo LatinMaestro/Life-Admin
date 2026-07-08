@@ -1,6 +1,9 @@
 import { getCurrentHousehold, memberIds } from "@/lib/household";
 
 type SourceKind = "source_link" | "source_document_reference" | "source_image_reference";
+export type InboxStatus = "New" | "Needs review" | "Linked";
+export type InboxCategory = "school" | "appointment" | "renewal";
+export type InboxDestination = "task" | "reminder" | "bill_or_renewal" | "source_reference";
 
 interface HouseholdScopedRecord {
   id: string;
@@ -25,8 +28,9 @@ export interface DashboardItem extends HouseholdScopedRecord {
 export interface InboxItem extends HouseholdScopedRecord {
   title: string;
   description: string;
-  status: "New" | "Needs review" | "Linked";
-  category: "school" | "appointment" | "renewal";
+  status: InboxStatus;
+  category: InboxCategory;
+  suggestedDestination: InboxDestination;
   assignedMemberId?: string;
   createdByMemberId: string;
   sourceReferenceId: string;
@@ -195,6 +199,7 @@ const inboxItems: InboxItem[] = [
     description: "Manual inbox item for review and follow-up.",
     status: "New",
     category: "school",
+    suggestedDestination: "task",
     assignedMemberId: memberIds.alex,
     createdByMemberId: memberIds.morgan,
     sourceReferenceId: "source_school_excursion",
@@ -206,6 +211,7 @@ const inboxItems: InboxItem[] = [
     description: "Turn into a household reminder after confirming the date.",
     status: "Needs review",
     category: "appointment",
+    suggestedDestination: "reminder",
     assignedMemberId: memberIds.morgan,
     createdByMemberId: memberIds.alex,
     sourceReferenceId: "source_vet_card",
@@ -217,6 +223,7 @@ const inboxItems: InboxItem[] = [
     description: "Link to a renewal reminder without copying payment details.",
     status: "Linked",
     category: "renewal",
+    suggestedDestination: "bill_or_renewal",
     assignedMemberId: memberIds.jordan,
     createdByMemberId: memberIds.morgan,
     sourceReferenceId: "source_home_service_notice",
@@ -412,6 +419,27 @@ export function getCurrentHouseholdDashboardItems() {
 
 export function getCurrentHouseholdInboxItems() {
   return forCurrentHousehold(inboxItems);
+}
+
+export function getInboxCategoryLabel(category: InboxCategory) {
+  const labels: Record<InboxCategory, string> = {
+    school: "School",
+    appointment: "Appointment",
+    renewal: "Renewal",
+  };
+
+  return labels[category];
+}
+
+export function getInboxDestinationLabel(destination: InboxDestination) {
+  const labels: Record<InboxDestination, string> = {
+    task: "Task",
+    reminder: "Reminder",
+    bill_or_renewal: "Bill or renewal",
+    source_reference: "Source reference",
+  };
+
+  return labels[destination];
 }
 
 export function getCurrentHouseholdTasks() {
