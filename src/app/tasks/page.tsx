@@ -25,7 +25,7 @@ export default function TasksPage() {
     <>
       <PageHeader
         title="Tasks and reminders"
-        description={`Manual ${household.name} tasks and reminders with ownership, due dates, priorities, and reminder cadence placeholders.`}
+        description={`${household.name} tasks and reminders with owners, due dates, priorities, and cadence.`}
         action={
           <Button type="button">
             <Plus className="h-4 w-4" aria-hidden="true" />
@@ -100,7 +100,7 @@ export default function TasksPage() {
           <Card>
             <CardHeader>
               <CardTitle>Completed</CardTitle>
-              <CardDescription>Static examples of done household tasks.</CardDescription>
+              <CardDescription>Recently completed household tasks.</CardDescription>
             </CardHeader>
             <CardContent>
               {doneTasks.map((task) => (
@@ -121,7 +121,7 @@ export default function TasksPage() {
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <CardTitle>Assigned to {currentMember.displayName}</CardTitle>
-                  <CardDescription>Current-member task view, still backed by static demo data.</CardDescription>
+                  <CardDescription>Tasks owned by the current household member.</CardDescription>
                 </div>
                 <Badge>{assignedToCurrentMember.length}</Badge>
               </div>
@@ -141,7 +141,7 @@ export default function TasksPage() {
           <Card>
             <CardHeader>
               <CardTitle>Reminders</CardTitle>
-              <CardDescription>Manual reminder placeholders. Notification integrations are not implemented.</CardDescription>
+              <CardDescription>Household reminders with owners and cadence.</CardDescription>
             </CardHeader>
             <CardContent>
               {reminders.map((reminder) => (

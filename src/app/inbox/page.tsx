@@ -80,7 +80,7 @@ export default function InboxPage() {
             <div className="flex items-start justify-between gap-3">
               <div>
                 <CardTitle>Manual triage board</CardTitle>
-                <CardDescription>Email forwarding and automated intake remain future phases.</CardDescription>
+                <CardDescription>Review new household items and decide where they belong.</CardDescription>
               </div>
               <Badge>{inboxItems.length} items</Badge>
             </div>
@@ -115,7 +115,7 @@ export default function InboxPage() {
           <Card>
             <CardHeader>
               <CardTitle>Suggested routing</CardTitle>
-              <CardDescription>Static hints for what each item should become next.</CardDescription>
+              <CardDescription>Next-step suggestions for each inbox item.</CardDescription>
             </CardHeader>
             <CardContent>
               {inboxItems.map((item) => (

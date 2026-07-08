@@ -60,7 +60,7 @@ The app foundation uses these choices. Database schema, auth, uploads, and integ
 
 ## Current Status
 
-Phase 2 static household workspace architecture has been added. The app contains typed household-scoped demo data and static placeholder routes only, with no persistence, authentication, uploads, email forwarding, AI, OCR, voice capture, notifications, or native iOS implementation.
+The static web MVP now covers the approved household workspace modules through comments and activity history. Phase 11 QA/review is in progress. The app remains static/demo-data only, with no persistence, authentication, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS implementation, finance analytics, or payment identifier storage.
 
 ## Local Development
 
