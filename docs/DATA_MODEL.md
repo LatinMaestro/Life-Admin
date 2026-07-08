@@ -28,6 +28,19 @@ The static layer includes:
 
 This allows the app to validate household workspace structure and user experience before choosing production authentication, invite flow, database hosting, or persistence details.
 
+## Phase 3 Static Role Model
+
+Phase 3 represents MVP role behavior in TypeScript before production authentication or authorisation exists. This is not access control enforcement.
+
+The static role model includes:
+
+- household admin and household member role definitions
+- role capability labels for family and settings UI
+- helper functions for static admin/member decisions
+- member status and current member display in the household workspace
+
+Production role enforcement must wait until authentication, membership queries, and database-backed access checks are approved.
+
 ## Proposed Core Entities
 
 ### User

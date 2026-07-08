@@ -2,7 +2,7 @@
 
 ## Current Objective
 
-Complete Phase 2 static household workspace architecture for Family Life Admin without adding persistence, production authentication, database schema, or integrations.
+Complete Phase 3 static members and roles behavior for Family Life Admin without adding persistence, production authentication, invite flows, database schema, or integrations.
 
 ## Product Summary
 
@@ -61,4 +61,4 @@ Out of scope:
 
 ## Immediate Next Step After Review
 
-After Phase 2 review, choose whether to proceed to members/roles behavior or another approved MVP slice. Do not add authentication, database schema, uploads, email forwarding, AI, OCR, voice capture, notifications, or native iOS until separately approved.
+After Phase 3 review, choose whether to proceed to dashboard refinement or another approved MVP slice. Do not add authentication, database schema, uploads, email forwarding, AI, OCR, voice capture, notifications, or native iOS until separately approved.

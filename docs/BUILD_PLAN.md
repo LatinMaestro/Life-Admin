@@ -66,6 +66,13 @@ Exit criteria:
 
 Implement simple household roles.
 
+Approved Phase 3 boundary:
+
+- Static role behavior and role-aware UI only.
+- Household admin and household member capabilities may be modeled in TypeScript.
+- Family and settings pages may show static role labels, member status, and future access boundaries.
+- No production authentication, authorisation enforcement, invite flow, database schema, migrations, or member mutation behavior.
+
 MVP roles:
 
 - Household admin
@@ -74,8 +81,8 @@ MVP roles:
 Exit criteria:
 
 - Members are visible within a household.
-- Role behavior is documented and enforced.
-- Admin-only actions are defined before implementation.
+- Role behavior is documented and represented in static app logic.
+- Admin-only actions are defined before production implementation.
 
 ## Phase 4: Dashboard
 
