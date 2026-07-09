@@ -4,9 +4,11 @@ This document defines the access-control posture for Family Life Admin as the ap
 
 ## Current State
 
-The app has a static MVP and a Prisma schema checkpoint. Production authentication, sessions, middleware, database queries, and authorization enforcement are not wired yet.
+The app has a static MVP, a Prisma schema checkpoint, and server-side access-control foundations. Production authentication, sessions, middleware, live database reads, live database writes, and authorization enforcement in routes are not wired yet.
 
 `src/lib/access-control.ts` defines pure TypeScript helpers for the future live-data layer. These helpers do not authenticate a user by themselves. They define the shape and checks every live route, server action, and data query should use once authentication and persistence are added.
+
+`src/lib/server/household-access.ts` defines the server-only resolver that will bridge a future authenticated user id to a verified active `HouseholdMember` row. It does not implement an auth provider or session handling. Future server routes and server actions should resolve the authenticated user from the session first, then call this resolver to build `HouseholdAccessContext`.
 
 ## Core Rule
 
@@ -29,6 +31,16 @@ A future authenticated request should resolve a `HouseholdAccessContext` contain
 - `role`
 
 This context should come from the authenticated session plus a verified `HouseholdMember` row. It should not come from arbitrary client input.
+
+When authentication is added, the intended server-side flow is:
+
+1. Resolve `userId` from the trusted session.
+2. Optionally accept an active `householdId` selected by the user.
+3. Call `resolveHouseholdAccessContext({ userId, householdId })`.
+4. Require the resulting context before live reads or writes.
+5. Apply role/capability checks at the data boundary and mutation boundary.
+
+For routes/actions that require access, use `requireHouseholdAccessContext(...)` so missing or inactive household membership fails closed.
 
 ## Role Model
 
@@ -81,7 +93,7 @@ Bill and renewal records may store source references, but must not store generat
 
 1. Add an auth provider and session strategy.
 2. Resolve the active user from the session.
-3. Resolve household membership from the database.
+3. Resolve household membership from the database with `src/lib/server/household-access.ts`.
 4. Build `HouseholdAccessContext` server-side.
 5. Require permissions before live reads/mutations.
 6. Move modules from static data to live persistence one at a time.
