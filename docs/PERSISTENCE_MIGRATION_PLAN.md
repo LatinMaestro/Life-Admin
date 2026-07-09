@@ -13,6 +13,7 @@ The app has:
 - a server-only Prisma client boundary in `src/lib/server/prisma.ts`
 - household access-control helpers
 - persistence contracts in `src/lib/persistence/contracts.ts`
+- a read-only Prisma adapter foundation in `src/lib/persistence/prisma-adapter.ts`
 
 The app does not yet have:
 
@@ -20,7 +21,7 @@ The app does not yet have:
 - live database connection
 - production authentication
 - session resolution
-- live reads or writes
+- wired live reads or writes in app routes
 
 ## Migration Principles
 
@@ -41,14 +42,16 @@ The initial contract is `HouseholdPersistenceAdapter`, which combines:
 
 Server-side repository implementations should import Prisma from `src/lib/server/prisma.ts`. Do not create additional Prisma clients in pages, components, route handlers, or server actions.
 
+The Prisma adapter must require `HouseholdAccessContext` and scope every query by `householdId`. It should not read records by id alone.
+
 This keeps household scoping and access context visible at the data boundary.
 
 ## Suggested Implementation Order
 
 1. Add Prisma dependencies and regenerate the pnpm lockfile. Done.
 2. Add schema validation scripts. Done.
-3. Add a Prisma client singleton for server-side use. In progress.
-4. Add an adapter that implements `HouseholdPersistenceAdapter` using Prisma.
+3. Add a Prisma client singleton for server-side use. Done.
+4. Add an adapter that implements `HouseholdPersistenceAdapter` using Prisma. In progress.
 5. Add auth/session resolution.
 6. Resolve `HouseholdAccessContext` from session plus `HouseholdMember` row.
 7. Move dashboard read models to the adapter.
