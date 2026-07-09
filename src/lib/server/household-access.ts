@@ -39,7 +39,9 @@ export async function resolveHouseholdAccessContext({
   };
 }
 
-export async function requireHouseholdAccessContext(options: ResolveHouseholdAccessOptions) {
+export async function requireHouseholdAccessContext(
+  options: ResolveHouseholdAccessOptions,
+): Promise<HouseholdAccessContext> {
   const context = await resolveHouseholdAccessContext(options);
 
   if (!context) {
