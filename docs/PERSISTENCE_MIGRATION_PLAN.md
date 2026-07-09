@@ -13,6 +13,7 @@ The app has:
 - a server-only Prisma client boundary in `src/lib/server/prisma.ts`
 - household access-control helpers
 - a server-only household access resolver in `src/lib/server/household-access.ts`
+- provider-neutral auth/session contracts in `src/lib/auth/session.ts`
 - persistence contracts in `src/lib/persistence/contracts.ts`
 - a read-only Prisma adapter foundation in `src/lib/persistence/prisma-adapter.ts`
 
@@ -20,8 +21,8 @@ The app does not yet have:
 
 - migrations
 - live database connection
-- production authentication
-- session resolution
+- production authentication provider
+- real session resolution
 - wired live reads or writes in app routes
 
 ## Migration Principles
@@ -47,19 +48,20 @@ The Prisma adapter must require `HouseholdAccessContext` and scope every query b
 
 This keeps household scoping and access context visible at the data boundary.
 
-## Access Resolution Boundary
+## Auth And Access Resolution Boundary
 
 Future authenticated routes and server actions should not construct household access context from client input alone.
 
 The intended flow is:
 
-1. Resolve `userId` from the trusted session.
-2. Pass `userId` and an optional selected `householdId` to `src/lib/server/household-access.ts`.
-3. Verify an active `HouseholdMember` row exists.
-4. Pass the returned `HouseholdAccessContext` to repository/adapters.
-5. Apply role/capability checks before reads or writes.
+1. Resolve `userId` from the trusted session provider.
+2. Populate the provider-neutral `AuthSession` boundary in `src/lib/auth/session.ts`.
+3. Pass `userId` and an optional selected `householdId` to `src/lib/server/household-access.ts`.
+4. Verify an active `HouseholdMember` row exists.
+5. Pass the returned `HouseholdAccessContext` to repository/adapters.
+6. Apply role/capability checks before reads or writes.
 
-This boundary is present now as a foundation only. It does not add a production auth provider, session handling, middleware, live page queries, or database writes.
+This boundary is present now as a foundation only. It does not add a production auth provider, real session handling, middleware, live page queries, or database writes.
 
 ## Suggested Implementation Order
 
@@ -68,14 +70,15 @@ This boundary is present now as a foundation only. It does not add a production 
 3. Add a Prisma client singleton for server-side use. Done.
 4. Add an adapter that implements `HouseholdPersistenceAdapter` using Prisma. Done for read-only foundation.
 5. Add a server-side household access resolver. Done.
-6. Add auth/session resolution.
-7. Move dashboard read models to the adapter.
-8. Move shared inbox reads, then writes.
-9. Move tasks and reminders.
-10. Move shopping lists.
-11. Move bills and renewals with source-of-truth review.
-12. Move source references as metadata/pointers only.
-13. Move comments and activity history.
+6. Add provider-neutral auth/session contracts. Done.
+7. Select and add production auth/session provider.
+8. Move dashboard read models to the adapter.
+9. Move shared inbox reads, then writes.
+10. Move tasks and reminders.
+11. Move shopping lists.
+12. Move bills and renewals with source-of-truth review.
+13. Move source references as metadata/pointers only.
+14. Move comments and activity history.
 
 ## Bill And Source Safety
 

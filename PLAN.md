@@ -2,7 +2,7 @@
 
 ## Current Objective
 
-Continue the approved production foundation in scoped batches. The current foundation includes a Prisma/PostgreSQL schema checkpoint, access-control helpers, and persistence contracts. The running app still uses static demo data: no live persistence, production authentication, migrations, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, or finance features.
+Continue the approved production foundation in scoped batches. The current foundation includes a Prisma/PostgreSQL schema checkpoint, access-control helpers, a server-only household access resolver, persistence contracts, a read-only Prisma adapter foundation, and auth/session contracts. The running app still uses static demo data: no live persistence, production authentication, migrations, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, or finance features.
 
 ## Product Summary
 
@@ -20,6 +20,8 @@ In scope for the production foundation path:
 - Future authentication-ready user and membership model
 - Household admin and household member roles
 - Household access-control helpers
+- Server-side household access resolver
+- Auth/session contracts before provider wiring
 - Persistence contracts for future module migration
 - Module-by-module persistence migration after schema validation
 - Source references as metadata/pointers only
@@ -61,22 +63,25 @@ Out of scope until separately approved:
 
 ## Production Foundation Path
 
-1. Prisma/PostgreSQL schema checkpoint
-2. Household access-control foundation
-3. Persistence repository contracts
-4. Prisma package, lockfile, and schema validation setup
-5. Authentication provider and session strategy
-6. Household membership enforcement
-7. Seed/demo migration path from static data
-8. Persist dashboard source queries
-9. Persist shared inbox
-10. Persist tasks and reminders
-11. Persist shopping lists
-12. Persist bills and renewals with source-of-truth guardrails
-13. Persist source references as metadata/pointers
-14. Persist comments and activity history
-15. Production QA and privacy review
+1. Prisma/PostgreSQL schema checkpoint. Done.
+2. Household access-control foundation. Done.
+3. Persistence repository contracts. Done.
+4. Prisma package, lockfile, and schema validation setup. Done.
+5. Prisma client boundary and read-only adapter foundation. Done.
+6. Household access resolver. Done.
+7. Auth/session contract boundary. In progress.
+8. Authentication provider and session strategy.
+9. Household membership enforcement in live routes/actions.
+10. Seed/demo migration path from static data.
+11. Persist dashboard source queries.
+12. Persist shared inbox.
+13. Persist tasks and reminders.
+14. Persist shopping lists.
+15. Persist bills and renewals with source-of-truth guardrails.
+16. Persist source references as metadata/pointers.
+17. Persist comments and activity history.
+18. Production QA and privacy review.
 
 ## Immediate Next Step
 
-Add Prisma dependencies and validation scripts with a regenerated lockfile in a safe build environment. Do not wire app pages to the database until schema validation passes and access-control helpers are connected to an authenticated household membership context.
+Finish the auth/session contract boundary and keep it provider-neutral. Do not add production login, middleware, invite flows, live database reads in pages, or database writes until the authentication provider and persistence rollout are separately approved.
