@@ -2,7 +2,7 @@
 
 ## Current Objective
 
-Begin the approved production layer in scoped batches. The current batch is a Prisma/PostgreSQL schema checkpoint only: no live persistence, production authentication, migrations, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, or finance features.
+Continue the approved production foundation in scoped batches. The current foundation includes a Prisma/PostgreSQL schema checkpoint, access-control helpers, and persistence contracts. The running app still uses static demo data: no live persistence, production authentication, migrations, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, or finance features.
 
 ## Product Summary
 
@@ -19,6 +19,8 @@ In scope for the production foundation path:
 - Household-first Prisma/PostgreSQL schema
 - Future authentication-ready user and membership model
 - Household admin and household member roles
+- Household access-control helpers
+- Persistence contracts for future module migration
 - Module-by-module persistence migration after schema validation
 - Source references as metadata/pointers only
 - Bills and renewals as admin reminders only
@@ -60,19 +62,21 @@ Out of scope until separately approved:
 ## Production Foundation Path
 
 1. Prisma/PostgreSQL schema checkpoint
-2. Prisma package, lockfile, and schema validation setup
-3. Authentication provider and session strategy
-4. Household membership enforcement
-5. Seed/demo migration path from static data
-6. Persist dashboard source queries
-7. Persist shared inbox
-8. Persist tasks and reminders
-9. Persist shopping lists
-10. Persist bills and renewals with source-of-truth guardrails
-11. Persist source references as metadata/pointers
-12. Persist comments and activity history
-13. Production QA and privacy review
+2. Household access-control foundation
+3. Persistence repository contracts
+4. Prisma package, lockfile, and schema validation setup
+5. Authentication provider and session strategy
+6. Household membership enforcement
+7. Seed/demo migration path from static data
+8. Persist dashboard source queries
+9. Persist shared inbox
+10. Persist tasks and reminders
+11. Persist shopping lists
+12. Persist bills and renewals with source-of-truth guardrails
+13. Persist source references as metadata/pointers
+14. Persist comments and activity history
+15. Production QA and privacy review
 
 ## Immediate Next Step
 
-After the schema checkpoint is merged, add Prisma dependencies and validation scripts with a regenerated lockfile in a safe build environment. Do not wire app pages to the database until schema validation passes and access-control helpers are in place.
+Add Prisma dependencies and validation scripts with a regenerated lockfile in a safe build environment. Do not wire app pages to the database until schema validation passes and access-control helpers are connected to an authenticated household membership context.
