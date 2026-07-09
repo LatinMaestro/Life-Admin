@@ -76,6 +76,10 @@ The running app still uses static/demo data. It does not yet have live persisten
 4. Household membership enforcement
 5. Module-by-module persistence migration from static data
 
+## Cloud Checks
+
+GitHub Actions runs install, lint, typecheck, and build checks on pull requests and pushes to `main`. This is the preferred verification path when local storage is constrained.
+
 ## Local Development
 
 Install dependencies:
