@@ -1,6 +1,6 @@
 # Data Model
 
-This is a proposed data model only. Do not create a database schema until the app foundation phase is approved.
+This document defines the household-first data model direction for Family Life Admin.
 
 ## Data Model Principles
 
@@ -13,9 +13,41 @@ This is a proposed data model only. Do not create a database schema until the ap
 - Bills and renewals are admin reminders, not finance analytics.
 - Source documents/links are references and must follow privacy rules.
 
+## Production Prisma Schema Checkpoint
+
+The first production data-model checkpoint is `prisma/schema.prisma`. It defines a PostgreSQL-backed Prisma schema for the core household workspace entities, but it does not yet connect the running app to a database.
+
+Current checkpoint includes:
+
+- `User`
+- `Household`
+- `HouseholdMember`
+- `Invitation`
+- `InboxItem`
+- `Task`
+- `Reminder`
+- `RecurrenceRule`
+- `ShoppingList`
+- `ShoppingListItem`
+- `BillOrRenewal`
+- `BillReminder`
+- `SourceReference`
+- `Comment`
+- `ActivityEvent`
+- `HouseholdSettings`
+
+Important boundaries:
+
+- No migrations have been created yet.
+- No production database connection has been configured yet.
+- The app still renders from typed static demo data until persistence is wired in a later approved batch.
+- The schema includes invitation-ready entities but does not implement invite flows.
+- Source references are metadata/pointers only and do not implement uploads or document previews.
+- Bills and renewals do not include generated or transcribed payment identifier fields.
+
 ## Phase 2 Static Mock Architecture
 
-Phase 2 adds a typed static data layer before real persistence. This is not a Prisma schema and does not create migrations or a database connection.
+Phase 2 added a typed static data layer before real persistence. This is not a database connection.
 
 The static layer includes:
 
@@ -26,7 +58,7 @@ The static layer includes:
 - household-scoped demo records using `householdId`
 - member ownership placeholders such as `assignedMemberId` and `createdByMemberId`
 
-This allows the app to validate household workspace structure and user experience before choosing production authentication, invite flow, database hosting, or persistence details.
+This allowed the app to validate household workspace structure and user experience before choosing production authentication, invite flow, database hosting, or persistence details.
 
 ## Phase 3 Static Role Model
 
@@ -39,9 +71,9 @@ The static role model includes:
 - helper functions for static admin/member decisions
 - member status and current member display in the household workspace
 
-Production role enforcement must wait until authentication, membership queries, and database-backed access checks are approved.
+Production role enforcement must wait until authentication, membership queries, and database-backed access checks are approved and implemented.
 
-## Proposed Core Entities
+## Core Entities
 
 ### User
 
@@ -82,9 +114,10 @@ Relationships:
 - reminders
 - shopping lists
 - bills and renewals
-- source documents/links
+- source references
 - comments
 - activity events
+- settings
 
 ### HouseholdMember
 
@@ -96,15 +129,16 @@ Fields:
 - householdId
 - userId
 - role: household_admin or household_member
-- displayName
 - status
+- displayName
+- initials
 - joinedAt
 - createdAt
 - updatedAt
 
 ### Invitation
 
-Invitation-ready model for family sharing.
+Invitation-ready model for family sharing. This does not implement invite sending or acceptance yet.
 
 Fields:
 
@@ -113,12 +147,13 @@ Fields:
 - invitedEmail
 - role
 - status
+- createdByUserId
 - expiresAt
 - acceptedAt
 - createdAt
 - updatedAt
 
-## Proposed Work Entities
+## Work Entities
 
 ### InboxItem
 
@@ -132,9 +167,12 @@ Fields:
 - description
 - status
 - category
+- priority
+- suggestedDestination
+- routingReason
+- triageSteps
 - assignedMemberId
-- sourceDocumentId
-- sourceLinkId
+- sourceReferenceId
 - createdByMemberId
 - createdAt
 - updatedAt
@@ -150,10 +188,13 @@ Fields:
 - title
 - notes
 - status
+- stage
 - priority
 - dueAt
+- checklist
 - assignedMemberId
 - createdByMemberId
+- sourceReferenceId
 - completedAt
 - createdAt
 - updatedAt
@@ -170,6 +211,7 @@ Fields:
 - notes
 - remindAt
 - status
+- cadence
 - linkedEntityType
 - linkedEntityId
 - assignedMemberId
@@ -180,7 +222,7 @@ Fields:
 
 ### RecurrenceRule
 
-Reusable recurrence description for reminders and tasks.
+Reusable recurrence description for reminders.
 
 Fields:
 
@@ -194,7 +236,7 @@ Fields:
 - createdAt
 - updatedAt
 
-## Proposed Shopping Entities
+## Shopping Entities
 
 ### ShoppingList
 
@@ -222,19 +264,22 @@ Fields:
 - label
 - notes
 - quantity
+- category
 - checked
 - assignedMemberId
+- createdByMemberId
+- checkedByMemberId
 - checkedAt
 - createdAt
 - updatedAt
 
-## Proposed Bill And Renewal Entities
+## Bill And Renewal Entities
 
 ### BillOrRenewal
 
 Admin reminder for a bill, renewal, policy, subscription, licence, service, or household obligation.
 
-Fields:
+Allowed fields:
 
 - id
 - householdId
@@ -244,31 +289,24 @@ Fields:
 - status
 - dueAt
 - renewalAt
+- reminderWindow
+- nextStep
+- reviewChecklist
 - notes
 - assignedMemberId
-- sourceDocumentId
-- sourceLinkId
+- sourceReferenceId
 - createdByMemberId
 - createdAt
 - updatedAt
 
-Allowed data:
-
-- Provider
-- Due date
-- Renewal date
-- Notes
-- Status
-- Source references
-- Reminder metadata
-
-Forbidden data:
+Forbidden fields:
 
 - Generated/transcribed BPAY biller codes
 - Generated/transcribed BSBs
 - Generated/transcribed account numbers
 - Generated/transcribed customer reference numbers
 - Generated/transcribed payment reference values
+- Any equivalent payment identifier
 
 ### BillReminder
 
@@ -284,56 +322,31 @@ Fields:
 - createdAt
 - updatedAt
 
-## Proposed Source Entities
+## Source Entities
 
-### SourceDocument
+### SourceReference
 
-Reference to an original source document. Upload implementation is deferred until approved.
-
-Fields:
-
-- id
-- householdId
-- title
-- sourceType
-- storageKey
-- originalFilename
-- mimeType
-- uploadedByMemberId
-- createdAt
-- updatedAt
-
-### SourceLink
-
-Reference to an external source.
+Reference to an original source. Upload implementation is deferred until separately approved.
 
 Fields:
 
 - id
 - householdId
 - title
+- kind
+- label
 - url
-- notes
+- externalRef
+- reviewStatus
+- sensitivity
+- handlingNotes
 - createdByMemberId
 - createdAt
 - updatedAt
 
-### SourceCropReference
+The `externalRef` field is for non-sensitive source labels or external IDs only. It must not be used for generated/transcribed payment identifiers.
 
-Future model for user-confirmed source crops, including payment instruction references without transcribing values.
-
-Fields:
-
-- id
-- householdId
-- sourceDocumentId
-- label
-- cropMetadata
-- confirmedByMemberId
-- createdAt
-- updatedAt
-
-## Proposed Collaboration Entities
+## Collaboration Entities
 
 ### Comment
 
@@ -346,6 +359,7 @@ Fields:
 - entityType
 - entityId
 - body
+- createdByUserId
 - createdByMemberId
 - createdAt
 - updatedAt
@@ -358,6 +372,7 @@ Fields:
 
 - id
 - householdId
+- actorUserId
 - actorMemberId
 - entityType
 - entityId
@@ -366,7 +381,9 @@ Fields:
 - metadata
 - createdAt
 
-## Proposed Settings Entity
+Activity summaries should describe actions without reproducing sensitive source document contents.
+
+## Settings Entity
 
 ### HouseholdSettings
 
@@ -389,8 +406,11 @@ Likely indexes:
 - householdId + status on operational lists
 - householdId + dueAt/remindAt for dashboard queries
 - householdId + userId on household memberships
+- householdId + entityType + entityId on comments and activity
 
 Access checks:
 
 - Query by householdId and membership.
 - Never fetch core records by id alone without household membership validation.
+- Do not expose source references outside authorised household members.
+- Do not log sensitive source metadata or private household content.
