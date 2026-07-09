@@ -1,3 +1,5 @@
+export { prismaHouseholdPersistenceAdapter } from "@/lib/persistence/prisma-adapter";
+
 export type {
   ActivityEventSummary,
   BillOrRenewalSummary,
