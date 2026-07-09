@@ -53,6 +53,7 @@ The app foundation uses these choices. The Prisma/PostgreSQL schema checkpoint e
 - `docs/DESIGN_SYSTEM.md` - mobile-first design direction
 - `docs/SECURITY_AND_PRIVACY.md` - household privacy and document rules
 - `docs/ACCESS_CONTROL.md` - household membership and permission enforcement rules
+- `docs/AUTH_SESSION_DESIGN.md` - future auth/session boundary and current placeholder behavior
 - `docs/DATA_MODEL.md` - household-scoped data model and Prisma schema checkpoint
 - `docs/PERSISTENCE_MIGRATION_PLAN.md` - module-by-module static-to-live data migration plan
 - `docs/FUTURE_PHASES.md` - deferred capabilities and boundaries
@@ -64,7 +65,7 @@ The app foundation uses these choices. The Prisma/PostgreSQL schema checkpoint e
 
 ## Current Status
 
-The static web MVP covers the approved household workspace modules through comments, activity history, source references, and basic settings. A Prisma/PostgreSQL schema checkpoint has started the production foundation path, access-control helpers define the future household membership enforcement pattern, and persistence contracts define the future live-data boundary.
+The static web MVP covers the approved household workspace modules through comments, activity history, source references, and basic settings. A Prisma/PostgreSQL schema checkpoint has started the production foundation path, access-control helpers define the future household membership enforcement pattern, persistence contracts define the future live-data boundary, and auth/session contracts define where a future provider will plug in.
 
 The running app still uses static/demo data. It does not yet have live persistence, production authentication, migrations, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS implementation, finance analytics, or payment identifier storage.
 
@@ -72,13 +73,14 @@ The running app still uses static/demo data. It does not yet have live persisten
 
 1. Prisma/PostgreSQL schema checkpoint
 2. Prisma package, lockfile, and schema validation setup
-3. Authentication provider and session strategy
-4. Household membership enforcement
-5. Module-by-module persistence migration from static data
+3. Auth/session contract boundary
+4. Authentication provider and session strategy
+5. Household membership enforcement
+6. Module-by-module persistence migration from static data
 
 ## Cloud Checks
 
-GitHub Actions runs install, lint, typecheck, and build checks on pull requests and pushes to `main`. This is the preferred verification path when local storage is constrained.
+GitHub Actions runs install, lint, typecheck, Prisma validation, Prisma client generation, and build checks on pull requests and pushes to `main`. This is the preferred verification path when local storage is constrained.
 
 ## Local Development
 
