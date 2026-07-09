@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   quality:
-    name: Lint, typecheck, Prisma validate, and build
+    name: Lint, Prisma validate, generate, typecheck, and build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -35,13 +35,18 @@ jobs:
       - name: Lint
         run: pnpm lint
 
-      - name: Typecheck
-        run: pnpm typecheck
-
       - name: Validate Prisma schema
         run: pnpm db:validate
         env:
           DATABASE_URL: postgresql://user:password@localhost:5432/family_life_admin?schema=public
+
+      - name: Generate Prisma client
+        run: pnpm db:generate
+        env:
+          DATABASE_URL: postgresql://user:password@localhost:5432/family_life_admin?schema=public
+
+      - name: Typecheck
+        run: pnpm typecheck
 
       - name: Build
         run: pnpm build
