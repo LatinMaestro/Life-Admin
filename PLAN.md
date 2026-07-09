@@ -2,7 +2,7 @@
 
 ## Current Objective
 
-Continue the approved production foundation in scoped batches. The current foundation includes a Prisma/PostgreSQL schema checkpoint, access-control helpers, a server-only household access resolver, persistence contracts, a read-only Prisma adapter foundation, and auth/session contracts. The running app still uses static demo data: no live persistence, production authentication, migrations, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, or finance features.
+Continue the approved production foundation in scoped batches. The current foundation includes a Prisma/PostgreSQL schema checkpoint, access-control helpers, a server-only household access resolver, persistence contracts, a read-only Prisma adapter foundation, auth/session contracts, and a pure static-demo seed snapshot mapper. The running app still uses static demo data: no live persistence, production authentication, migrations, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, or finance features.
 
 ## Product Summary
 
@@ -23,6 +23,7 @@ In scope for the production foundation path:
 - Server-side household access resolver
 - Auth/session contracts before provider wiring
 - Persistence contracts for future module migration
+- Static demo data to future seed snapshot mapping
 - Module-by-module persistence migration after schema validation
 - Source references as metadata/pointers only
 - Bills and renewals as admin reminders only
@@ -69,10 +70,10 @@ Out of scope until separately approved:
 4. Prisma package, lockfile, and schema validation setup. Done.
 5. Prisma client boundary and read-only adapter foundation. Done.
 6. Household access resolver. Done.
-7. Auth/session contract boundary. In progress.
-8. Authentication provider and session strategy.
-9. Household membership enforcement in live routes/actions.
-10. Seed/demo migration path from static data.
+7. Auth/session contract boundary. Done.
+8. Seed/demo migration bridge. In progress.
+9. Authentication provider and session strategy.
+10. Household membership enforcement in live routes/actions.
 11. Persist dashboard source queries.
 12. Persist shared inbox.
 13. Persist tasks and reminders.
@@ -84,4 +85,4 @@ Out of scope until separately approved:
 
 ## Immediate Next Step
 
-Finish the auth/session contract boundary and keep it provider-neutral. Do not add production login, middleware, invite flows, live database reads in pages, or database writes until the authentication provider and persistence rollout are separately approved.
+Finish the static-demo seed snapshot bridge without adding executable seed scripts, migrations, live database reads in pages, or database writes. Production auth and persistence wiring remain separate future batches.
