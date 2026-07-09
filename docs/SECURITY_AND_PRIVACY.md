@@ -17,6 +17,9 @@ Family Life Admin will contain private household information. Privacy and access
 - Household admin users can manage household settings and members.
 - Household members can participate in household workflows according to approved role rules.
 - Future multi-household support must prevent accidental cross-household data exposure.
+- Production reads and writes must use a verified household access context; never query core records by id alone.
+
+The implementation pattern is documented in `docs/ACCESS_CONTROL.md` and started in `src/lib/access-control.ts`.
 
 ## Source Document Rules
 
@@ -43,15 +46,17 @@ Payment reminders should point users back to the original source email, PDF, lin
 
 ## Authentication And Authorisation
 
-The architecture should be auth-ready from the app foundation phase, but authentication is not implemented during this documentation-only pass.
+The architecture should be auth-ready from the app foundation phase. Production authentication is not wired into the running app yet.
 
-Before implementation, approve:
+Before implementation, approve or record:
 
 - Auth provider
 - Session strategy
 - Invite flow
 - Role enforcement approach
 - Passwordless/social login requirements, if any
+
+Once authentication is implemented, server-side code should resolve the active user and verified household membership before constructing a `HouseholdAccessContext`.
 
 ## Storage And Uploads
 
