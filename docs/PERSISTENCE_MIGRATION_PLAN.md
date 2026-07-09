@@ -12,6 +12,7 @@ The app has:
 - a generated Prisma client in CI
 - a server-only Prisma client boundary in `src/lib/server/prisma.ts`
 - household access-control helpers
+- a server-only household access resolver in `src/lib/server/household-access.ts`
 - persistence contracts in `src/lib/persistence/contracts.ts`
 - a read-only Prisma adapter foundation in `src/lib/persistence/prisma-adapter.ts`
 
@@ -46,14 +47,28 @@ The Prisma adapter must require `HouseholdAccessContext` and scope every query b
 
 This keeps household scoping and access context visible at the data boundary.
 
+## Access Resolution Boundary
+
+Future authenticated routes and server actions should not construct household access context from client input alone.
+
+The intended flow is:
+
+1. Resolve `userId` from the trusted session.
+2. Pass `userId` and an optional selected `householdId` to `src/lib/server/household-access.ts`.
+3. Verify an active `HouseholdMember` row exists.
+4. Pass the returned `HouseholdAccessContext` to repository/adapters.
+5. Apply role/capability checks before reads or writes.
+
+This boundary is present now as a foundation only. It does not add a production auth provider, session handling, middleware, live page queries, or database writes.
+
 ## Suggested Implementation Order
 
 1. Add Prisma dependencies and regenerate the pnpm lockfile. Done.
 2. Add schema validation scripts. Done.
 3. Add a Prisma client singleton for server-side use. Done.
-4. Add an adapter that implements `HouseholdPersistenceAdapter` using Prisma. In progress.
-5. Add auth/session resolution.
-6. Resolve `HouseholdAccessContext` from session plus `HouseholdMember` row.
+4. Add an adapter that implements `HouseholdPersistenceAdapter` using Prisma. Done for read-only foundation.
+5. Add a server-side household access resolver. Done.
+6. Add auth/session resolution.
 7. Move dashboard read models to the adapter.
 8. Move shared inbox reads, then writes.
 9. Move tasks and reminders.
