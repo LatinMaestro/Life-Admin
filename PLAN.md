@@ -2,7 +2,7 @@
 
 ## Current Objective
 
-Complete Phase 11 QA and scope review for the static Family Life Admin MVP, including user-facing copy polish, route review, scope guardrail checks, and build verification. Do not add persistence, production authentication, database schema, audit backend, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, or finance features.
+Record the static MVP completion checkpoint and prepare for the next explicit product/architecture decision. Do not add persistence, production authentication, database schema, audit backend, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, or finance features until separately approved.
 
 ## Product Summary
 
@@ -10,7 +10,7 @@ Family Life Admin is a private household admin app for shared household coordina
 
 The MVP is a quick-rollout mobile-first web app. The schema should support future multi-household use, while the MVP UI may optimise for one primary household.
 
-Approved product, architecture, and scope decisions are recorded in `docs/PRODUCT_DECISIONS.md`.
+Approved product, architecture, and scope decisions are recorded in `docs/PRODUCT_DECISIONS.md`. The current static MVP checkpoint is recorded in `docs/STATIC_MVP_COMPLETION_REVIEW.md`.
 
 ## Scope Guardrails
 
@@ -27,7 +27,7 @@ In scope:
 - Comments and activity history
 - Basic settings
 
-Out of scope:
+Out of scope until separately approved:
 
 - Budgeting
 - Bank imports
@@ -43,6 +43,9 @@ Out of scope:
 - Voice capture
 - Native iOS implementation
 - Notification integrations
+- File uploads or source storage
+- Production authentication
+- Database schema and persistence
 
 ## Staged Build Plan
 
@@ -61,4 +64,13 @@ Out of scope:
 
 ## Immediate Next Step After Review
 
-After Phase 11 review, decide whether to approve the next major layer: production authentication, database persistence, file/source storage, notification integrations, or continued static UX refinement. Do not add authentication, database schema, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, or finance analytics until separately approved.
+Choose the next approved layer before implementation begins. Candidate paths are:
+
+- Continue static UX refinement
+- Production authentication and household membership enforcement
+- Database persistence with Prisma/PostgreSQL
+- Invite flow
+- Source storage/uploads
+- Notification integrations
+
+Do not add authentication, database schema, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, or finance analytics until separately approved.

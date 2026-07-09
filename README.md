@@ -58,10 +58,13 @@ The app foundation uses these choices. Database schema, auth, uploads, and integ
 - `docs/BILL_PAYMENT_SOURCE_OF_TRUTH_RULES.md` - strict bill/payment rules
 - `docs/IOS_FUTURE_ROADMAP.md` - later native iOS direction
 - `docs/PHASE_11_QA_REVIEW.md` - static MVP QA review result
+- `docs/STATIC_MVP_COMPLETION_REVIEW.md` - current static MVP checkpoint and next decision point
 
 ## Current Status
 
-The static web MVP now covers the approved household workspace modules through comments and activity history. Phase 11 QA/review is in progress. The app remains static/demo-data only, with no persistence, authentication, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS implementation, finance analytics, or payment identifier storage.
+The static web MVP now covers the approved household workspace modules through comments, activity history, source references, and basic settings. The app remains static/demo-data only, with no persistence, authentication, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS implementation, finance analytics, or payment identifier storage.
+
+The next major decision is whether to continue static UX refinement or approve a production layer such as authentication, database persistence, invite flow, source storage, or notifications.
 
 ## Local Development
 
