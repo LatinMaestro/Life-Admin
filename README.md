@@ -56,6 +56,7 @@ The app foundation uses these choices. The Prisma/PostgreSQL schema checkpoint e
 - `docs/AUTH_SESSION_DESIGN.md` - future auth/session boundary and current placeholder behavior
 - `docs/DATA_MODEL.md` - household-scoped data model and Prisma schema checkpoint
 - `docs/PERSISTENCE_MIGRATION_PLAN.md` - module-by-module static-to-live data migration plan
+- `docs/SEED_DATA_MIGRATION.md` - static demo data to future seed snapshot mapping rules
 - `docs/FUTURE_PHASES.md` - deferred capabilities and boundaries
 - `docs/EMAIL_FORWARDING_DESIGN.md` - future email forwarding design notes
 - `docs/BILL_PAYMENT_SOURCE_OF_TRUTH_RULES.md` - strict bill/payment rules
@@ -65,7 +66,7 @@ The app foundation uses these choices. The Prisma/PostgreSQL schema checkpoint e
 
 ## Current Status
 
-The static web MVP covers the approved household workspace modules through comments, activity history, source references, and basic settings. A Prisma/PostgreSQL schema checkpoint has started the production foundation path, access-control helpers define the future household membership enforcement pattern, persistence contracts define the future live-data boundary, and auth/session contracts define where a future provider will plug in.
+The static web MVP covers the approved household workspace modules through comments, activity history, source references, and basic settings. A Prisma/PostgreSQL schema checkpoint has started the production foundation path, access-control helpers define the future household membership enforcement pattern, persistence contracts define the future live-data boundary, auth/session contracts define where a future provider will plug in, and a pure demo seed snapshot maps static data toward future database seeding.
 
 The running app still uses static/demo data. It does not yet have live persistence, production authentication, migrations, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS implementation, finance analytics, or payment identifier storage.
 
@@ -74,9 +75,10 @@ The running app still uses static/demo data. It does not yet have live persisten
 1. Prisma/PostgreSQL schema checkpoint
 2. Prisma package, lockfile, and schema validation setup
 3. Auth/session contract boundary
-4. Authentication provider and session strategy
-5. Household membership enforcement
-6. Module-by-module persistence migration from static data
+4. Seed/demo migration bridge
+5. Authentication provider and session strategy
+6. Household membership enforcement
+7. Module-by-module persistence migration from static data
 
 ## Cloud Checks
 
