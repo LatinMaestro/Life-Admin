@@ -4,9 +4,11 @@ import {
   ArrowRight,
   CalendarClock,
   ClipboardList,
+  FileText,
   History,
   Inbox,
   ListChecks,
+  MessageSquareText,
   ShoppingCart,
   UserRoundCheck,
 } from "lucide-react";
@@ -21,6 +23,7 @@ import {
   getCurrentHouseholdDashboardItems,
   getCurrentHouseholdInboxItems,
   getCurrentHouseholdShoppingLists,
+  getCurrentHouseholdSourceReferences,
   getSourceReferenceLabel,
 } from "@/lib/demo-data";
 import { getCommentEntityLabel, getCurrentHouseholdComments, getCurrentHouseholdOpenComments } from "@/lib/collaboration-data";
@@ -33,6 +36,7 @@ export default function DashboardPage() {
   const inboxItems = getCurrentHouseholdInboxItems();
   const shoppingLists = getCurrentHouseholdShoppingLists();
   const billReminders = getCurrentHouseholdBillReminders();
+  const sourceReferences = getCurrentHouseholdSourceReferences();
   const comments = getCurrentHouseholdComments();
   const openComments = getCurrentHouseholdOpenComments();
   const activity = getCurrentHouseholdActivity();
@@ -46,13 +50,47 @@ export default function DashboardPage() {
     (total, list) => total + list.items.filter((item) => !item.checked).length,
     0,
   );
+  const reviewInboxItems = inboxItems.filter((item) => item.status !== "Linked");
+  const reviewBillReminders = billReminders.filter((bill) => bill.status === "Needs review");
+  const reviewSources = sourceReferences.filter((source) => source.reviewStatus === "Needs review");
+  const sourceLinkedBills = billReminders.filter((bill) => bill.sourceReferenceId).length;
+  const operatingFocus = [
+    {
+      title: "Review inbox",
+      detail: `${reviewInboxItems.length} manual items need routing or confirmation.`,
+      href: "/inbox",
+      icon: Inbox,
+      status: `${reviewInboxItems.length} open`,
+    },
+    {
+      title: "Check renewals",
+      detail: `${reviewBillReminders.length} reminders need household review before action.`,
+      href: "/bills",
+      icon: ClipboardList,
+      status: `${reviewBillReminders.length} review`,
+    },
+    {
+      title: "Verify sources",
+      detail: `${reviewSources.length} source references need a source-safe review.`,
+      href: "/sources",
+      icon: FileText,
+      status: `${reviewSources.length} review`,
+    },
+    {
+      title: "Read comments",
+      detail: `${openComments.length} household comments are still open.`,
+      href: "/activity",
+      icon: MessageSquareText,
+      status: `${openComments.length} open`,
+    },
+  ];
   const summary = [
     { label: "Overdue", value: String(dashboardItems.overdue.length), detail: "Needs attention", icon: AlertCircle, href: "/tasks" },
     { label: "Today", value: String(dashboardItems.today.length), detail: "Household items", icon: ListChecks, href: "/tasks" },
     { label: "Assigned", value: String(assignedToCurrentMember.length), detail: `For ${currentMember.displayName}`, icon: UserRoundCheck, href: "/tasks" },
     { label: "Inbox", value: String(inboxItems.length), detail: "Manual items", icon: Inbox, href: "/inbox" },
     { label: "Shopping", value: String(openShoppingItems), detail: "Open items", icon: ShoppingCart, href: "/lists" },
-    { label: "Bills", value: String(billReminders.length), detail: "Source-linked", icon: ClipboardList, href: "/bills" },
+    { label: "Sources", value: String(sourceReferences.length), detail: "Metadata only", icon: FileText, href: "/sources" },
   ];
 
   return (
@@ -68,7 +106,32 @@ export default function DashboardPage() {
         }
       />
 
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
+      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        {operatingFocus.map((item) => {
+          const Icon = item.icon;
+
+          return (
+            <Link key={item.title} href={item.href} className="block rounded-md transition-transform hover:-translate-y-0.5">
+              <Card className="h-full">
+                <CardContent className="flex min-h-32 flex-col justify-between gap-4 p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary text-primary-foreground">
+                      <Icon className="h-5 w-5" aria-hidden="true" />
+                    </div>
+                    <Badge variant="secondary">{item.status}</Badge>
+                  </div>
+                  <div>
+                    <p className="font-semibold">{item.title}</p>
+                    <p className="mt-1 text-sm text-muted-foreground">{item.detail}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+          );
+        })}
+      </section>
+
+      <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
         {summary.map((item) => {
           const Icon = item.icon;
 
@@ -141,8 +204,13 @@ export default function DashboardPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Bills and renewals</CardTitle>
-              <CardDescription>Admin reminders that point back to original sources.</CardDescription>
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <CardTitle>Bills and renewals</CardTitle>
+                  <CardDescription>Admin reminders that point back to original sources.</CardDescription>
+                </div>
+                <Badge>{sourceLinkedBills} source linked</Badge>
+              </div>
             </CardHeader>
             <CardContent>
               {billReminders.map((bill) => (
@@ -186,7 +254,7 @@ export default function DashboardPage() {
                 <ItemRow
                   key={item.id}
                   title={item.title}
-                  detail={`${item.description} Assigned to ${getMemberDisplayName(item.assignedMemberId)}.`}
+                  detail={`${item.routingReason} Assigned to ${getMemberDisplayName(item.assignedMemberId)}.`}
                   status={item.status}
                   href="/inbox"
                 />
