@@ -54,6 +54,7 @@ The app foundation uses these choices. The Prisma/PostgreSQL schema checkpoint e
 - `docs/SECURITY_AND_PRIVACY.md` - household privacy and document rules
 - `docs/ACCESS_CONTROL.md` - household membership and permission enforcement rules
 - `docs/DATA_MODEL.md` - household-scoped data model and Prisma schema checkpoint
+- `docs/PERSISTENCE_MIGRATION_PLAN.md` - module-by-module static-to-live data migration plan
 - `docs/FUTURE_PHASES.md` - deferred capabilities and boundaries
 - `docs/EMAIL_FORWARDING_DESIGN.md` - future email forwarding design notes
 - `docs/BILL_PAYMENT_SOURCE_OF_TRUTH_RULES.md` - strict bill/payment rules
@@ -63,7 +64,7 @@ The app foundation uses these choices. The Prisma/PostgreSQL schema checkpoint e
 
 ## Current Status
 
-The static web MVP covers the approved household workspace modules through comments, activity history, source references, and basic settings. A Prisma/PostgreSQL schema checkpoint has started the production foundation path, and access-control helpers now define the future household membership enforcement pattern.
+The static web MVP covers the approved household workspace modules through comments, activity history, source references, and basic settings. A Prisma/PostgreSQL schema checkpoint has started the production foundation path, access-control helpers define the future household membership enforcement pattern, and persistence contracts define the future live-data boundary.
 
 The running app still uses static/demo data. It does not yet have live persistence, production authentication, migrations, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS implementation, finance analytics, or payment identifier storage.
 
