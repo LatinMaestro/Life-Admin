@@ -7,9 +7,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "node ./node_modules/eslint/bin/eslint.js .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "db:generate": "prisma generate",
+    "db:validate": "prisma validate",
+    "db:format": "prisma format"
   },
   "dependencies": {
+    "@prisma/client": "7.8.0",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
     "lucide-react": "1.23.0",
@@ -26,6 +30,7 @@
     "@types/react-dom": "19.2.3",
     "eslint": "9.39.4",
     "eslint-config-next": "16.2.10",
+    "prisma": "7.8.0",
     "tailwindcss": "4.3.2",
     "typescript": "6.0.3"
   }
