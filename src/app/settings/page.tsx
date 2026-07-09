@@ -52,7 +52,8 @@ export default function SettingsPage() {
     { title: "Source uploads", detail: "The app uses source references only; uploads remain separately gated.", status: "Deferred", icon: Upload },
     { title: "Email intake", detail: "Forwarding and mailbox processing are not active in the MVP shell.", status: "Future", icon: Mail },
     { title: "AI and OCR", detail: "Extraction and classification are future phases with separate review gates.", status: "Future", icon: Sparkles },
-    { title: "Voice and native iOS", detail: "Voice capture and native iOS wait until the web MVP is validated.", status: "Future", icon: Smartphone },
+    { title: "Voice capture", detail: "Voice capture waits until the web MVP is validated.", status: "Future", icon: Mic },
+    { title: "Native iOS", detail: "Native iOS is deferred until the mobile-first web app is validated.", status: "Future", icon: Smartphone },
   ];
 
   return (
@@ -139,7 +140,7 @@ export default function SettingsPage() {
             </CardHeader>
             <CardContent>
               {readinessItems.map((item) => {
-                const Icon = item.icon === Smartphone ? Mic : item.icon;
+                const Icon = item.icon;
 
                 return (
                   <div key={item.title} className="flex gap-3 border-b py-3 last:border-b-0 last:pb-0 first:pt-0">
