@@ -1,0 +1,34 @@
+name: Lockfile Artifact
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  generate-lockfile:
+    name: Generate pnpm lockfile artifact
+    if: startsWith(github.head_ref, 'prisma-tooling-validation')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Generate lockfile
+        run: pnpm install --lockfile-only --no-frozen-lockfile
+
+      - name: Upload lockfile
+        uses: actions/upload-artifact@v4
+        with:
+          name: pnpm-lock
+          path: pnpm-lock.yaml
