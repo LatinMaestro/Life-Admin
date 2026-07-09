@@ -16,11 +16,13 @@ The app has:
 - provider-neutral auth/session contracts in `src/lib/auth/session.ts`
 - persistence contracts in `src/lib/persistence/contracts.ts`
 - a read-only Prisma adapter foundation in `src/lib/persistence/prisma-adapter.ts`
+- a pure static-demo seed snapshot mapper in `src/lib/persistence/demo-seed.ts`
 
 The app does not yet have:
 
 - migrations
 - live database connection
+- executable seed script
 - production authentication provider
 - real session resolution
 - wired live reads or writes in app routes
@@ -63,6 +65,14 @@ The intended flow is:
 
 This boundary is present now as a foundation only. It does not add a production auth provider, real session handling, middleware, live page queries, or database writes.
 
+## Seed Data Bridge
+
+`src/lib/persistence/demo-seed.ts` maps current static demo records into a schema-shaped `DemoSeedSnapshot` for future seed work.
+
+This bridge is pure TypeScript and does not call Prisma. It does not create records, run migrations, connect to a database, or wire app pages to live data.
+
+Display-only date labels are preserved separately from real database date fields so future seed work can choose verified dates deliberately.
+
 ## Suggested Implementation Order
 
 1. Add Prisma dependencies and regenerate the pnpm lockfile. Done.
@@ -71,14 +81,15 @@ This boundary is present now as a foundation only. It does not add a production 
 4. Add an adapter that implements `HouseholdPersistenceAdapter` using Prisma. Done for read-only foundation.
 5. Add a server-side household access resolver. Done.
 6. Add provider-neutral auth/session contracts. Done.
-7. Select and add production auth/session provider.
-8. Move dashboard read models to the adapter.
-9. Move shared inbox reads, then writes.
-10. Move tasks and reminders.
-11. Move shopping lists.
-12. Move bills and renewals with source-of-truth review.
-13. Move source references as metadata/pointers only.
-14. Move comments and activity history.
+7. Add static-demo seed snapshot mapping. Done.
+8. Select and add production auth/session provider.
+9. Move dashboard read models to the adapter.
+10. Move shared inbox reads, then writes.
+11. Move tasks and reminders.
+12. Move shopping lists.
+13. Move bills and renewals with source-of-truth review.
+14. Move source references as metadata/pointers only.
+15. Move comments and activity history.
 
 ## Bill And Source Safety
 
