@@ -2,7 +2,7 @@
 
 ## Current Objective
 
-Record the static MVP completion checkpoint and prepare for the next explicit product/architecture decision. Do not add persistence, production authentication, database schema, audit backend, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, or finance features until separately approved.
+Begin the approved production layer in scoped batches. The current batch is a Prisma/PostgreSQL schema checkpoint only: no live persistence, production authentication, migrations, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, or finance features.
 
 ## Product Summary
 
@@ -14,18 +14,14 @@ Approved product, architecture, and scope decisions are recorded in `docs/PRODUC
 
 ## Scope Guardrails
 
-In scope:
+In scope for the production foundation path:
 
-- Household workspace
-- Household members and simple roles
-- Dashboard
-- Shared inbox
-- Tasks and reminders
-- Shopping lists
-- Bills and renewals as admin reminders
-- Source document/link references
-- Comments and activity history
-- Basic settings
+- Household-first Prisma/PostgreSQL schema
+- Future authentication-ready user and membership model
+- Household admin and household member roles
+- Module-by-module persistence migration after schema validation
+- Source references as metadata/pointers only
+- Bills and renewals as admin reminders only
 
 Out of scope until separately approved:
 
@@ -44,10 +40,9 @@ Out of scope until separately approved:
 - Native iOS implementation
 - Notification integrations
 - File uploads or source storage
-- Production authentication
-- Database schema and persistence
+- Generated or transcribed payment identifiers
 
-## Staged Build Plan
+## Completed Static MVP Path
 
 1. Documentation/control pack
 2. App foundation
@@ -62,15 +57,22 @@ Out of scope until separately approved:
 11. Comments and activity history
 12. QA and review
 
-## Immediate Next Step After Review
+## Production Foundation Path
 
-Choose the next approved layer before implementation begins. Candidate paths are:
+1. Prisma/PostgreSQL schema checkpoint
+2. Prisma package, lockfile, and schema validation setup
+3. Authentication provider and session strategy
+4. Household membership enforcement
+5. Seed/demo migration path from static data
+6. Persist dashboard source queries
+7. Persist shared inbox
+8. Persist tasks and reminders
+9. Persist shopping lists
+10. Persist bills and renewals with source-of-truth guardrails
+11. Persist source references as metadata/pointers
+12. Persist comments and activity history
+13. Production QA and privacy review
 
-- Continue static UX refinement
-- Production authentication and household membership enforcement
-- Database persistence with Prisma/PostgreSQL
-- Invite flow
-- Source storage/uploads
-- Notification integrations
+## Immediate Next Step
 
-Do not add authentication, database schema, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, or finance analytics until separately approved.
+After the schema checkpoint is merged, add Prisma dependencies and validation scripts with a regenerated lockfile in a safe build environment. Do not wire app pages to the database until schema validation passes and access-control helpers are in place.

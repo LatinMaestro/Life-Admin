@@ -29,7 +29,7 @@ This project is separate from SpendGrove. It must not include budgeting, bank im
 
 ## Technology Assumptions
 
-The app foundation uses these choices. Database schema, auth, uploads, and integrations have not been created yet.
+The app foundation uses these choices. The Prisma/PostgreSQL schema checkpoint exists, but live persistence, production authentication, uploads, and integrations have not been wired into the running app yet.
 
 - Next.js App Router
 - TypeScript
@@ -52,7 +52,7 @@ The app foundation uses these choices. Database schema, auth, uploads, and integ
 - `docs/DEFINITION_OF_DONE.md` - completion criteria
 - `docs/DESIGN_SYSTEM.md` - mobile-first design direction
 - `docs/SECURITY_AND_PRIVACY.md` - household privacy and document rules
-- `docs/DATA_MODEL.md` - proposed household-scoped entities
+- `docs/DATA_MODEL.md` - household-scoped data model and Prisma schema checkpoint
 - `docs/FUTURE_PHASES.md` - deferred capabilities and boundaries
 - `docs/EMAIL_FORWARDING_DESIGN.md` - future email forwarding design notes
 - `docs/BILL_PAYMENT_SOURCE_OF_TRUTH_RULES.md` - strict bill/payment rules
@@ -62,9 +62,17 @@ The app foundation uses these choices. Database schema, auth, uploads, and integ
 
 ## Current Status
 
-The static web MVP now covers the approved household workspace modules through comments, activity history, source references, and basic settings. The app remains static/demo-data only, with no persistence, authentication, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS implementation, finance analytics, or payment identifier storage.
+The static web MVP covers the approved household workspace modules through comments, activity history, source references, and basic settings. A Prisma/PostgreSQL schema checkpoint has started the production foundation path.
 
-The next major decision is whether to continue static UX refinement or approve a production layer such as authentication, database persistence, invite flow, source storage, or notifications.
+The running app still uses static/demo data. It does not yet have live persistence, production authentication, migrations, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS implementation, finance analytics, or payment identifier storage.
+
+## Production Foundation Path
+
+1. Prisma/PostgreSQL schema checkpoint
+2. Prisma package, lockfile, and schema validation setup
+3. Authentication provider and session strategy
+4. Household membership enforcement
+5. Module-by-module persistence migration from static data
 
 ## Local Development
 

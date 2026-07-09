@@ -1,0 +1,512 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum HouseholdRole {
+  household_admin
+  household_member
+}
+
+enum HouseholdMemberStatus {
+  active
+  inactive
+}
+
+enum InvitationStatus {
+  pending
+  accepted
+  expired
+  revoked
+}
+
+enum InboxStatus {
+  new
+  needs_review
+  linked
+  archived
+}
+
+enum InboxCategory {
+  school
+  appointment
+  renewal
+  household_admin
+  shopping
+  other
+}
+
+enum InboxDestination {
+  task
+  reminder
+  bill_or_renewal
+  shopping_list
+  source_reference
+  none
+}
+
+enum Priority {
+  low
+  normal
+  high
+}
+
+enum TaskStatus {
+  open
+  done
+  archived
+}
+
+enum TaskStage {
+  capture
+  action
+  review
+  done
+}
+
+enum ReminderStatus {
+  scheduled
+  done
+  archived
+}
+
+enum ReminderCadence {
+  once
+  weekly
+  monthly
+  custom
+}
+
+enum ShoppingListStatus {
+  active
+  archived
+}
+
+enum BillOrRenewalType {
+  bill
+  renewal
+}
+
+enum BillOrRenewalStatus {
+  upcoming
+  needs_review
+  scheduled
+  done
+  archived
+}
+
+enum SourceReferenceKind {
+  source_link
+  source_document_reference
+  source_image_reference
+  source_email_reference
+  source_crop_reference
+}
+
+enum SourceReviewStatus {
+  needs_review
+  confirmed
+  linked
+  archived
+}
+
+enum SourceSensitivity {
+  standard
+  sensitive
+}
+
+enum CommentEntityType {
+  inbox_item
+  task
+  reminder
+  shopping_list
+  shopping_list_item
+  bill_or_renewal
+  source_reference
+}
+
+enum ActivityEntityType {
+  household
+  member
+  inbox_item
+  task
+  reminder
+  shopping_list
+  shopping_list_item
+  bill_or_renewal
+  source_reference
+  comment
+}
+
+enum ActivityEventType {
+  created
+  updated
+  assigned
+  completed
+  reopened
+  archived
+  commented
+  linked_source
+  changed_status
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String?
+  email     String   @unique
+  avatarUrl String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  memberships        HouseholdMember[]
+  createdInvitations Invitation[]      @relation("InvitationCreatedBy")
+  comments           Comment[]         @relation("CommentCreatedBy")
+  activityEvents     ActivityEvent[]   @relation("ActivityActor")
+
+  @@index([email])
+}
+
+model Household {
+  id        String   @id @default(cuid())
+  name      String
+  timezone  String   @default("Australia/Brisbane")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  members          HouseholdMember[]
+  invitations      Invitation[]
+  inboxItems       InboxItem[]
+  tasks            Task[]
+  reminders        Reminder[]
+  recurrenceRules  RecurrenceRule[]
+  shoppingLists    ShoppingList[]
+  shoppingItems    ShoppingListItem[]
+  billsAndRenewals BillOrRenewal[]
+  billReminders    BillReminder[]
+  sourceReferences SourceReference[]
+  comments         Comment[]
+  activityEvents   ActivityEvent[]
+  settings         HouseholdSettings?
+}
+
+model HouseholdMember {
+  id          String                @id @default(cuid())
+  householdId String
+  userId      String
+  role        HouseholdRole
+  status      HouseholdMemberStatus @default(active)
+  displayName String
+  initials    String?
+  joinedAt    DateTime              @default(now())
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+
+  household Household @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  assignedInboxItems       InboxItem[]        @relation("InboxAssignedMember")
+  createdInboxItems        InboxItem[]        @relation("InboxCreatedByMember")
+  assignedTasks            Task[]             @relation("TaskAssignedMember")
+  createdTasks             Task[]             @relation("TaskCreatedByMember")
+  assignedReminders        Reminder[]         @relation("ReminderAssignedMember")
+  createdReminders         Reminder[]         @relation("ReminderCreatedByMember")
+  createdShoppingLists     ShoppingList[]     @relation("ShoppingListCreatedByMember")
+  assignedShoppingItems    ShoppingListItem[] @relation("ShoppingItemAssignedMember")
+  createdShoppingItems     ShoppingListItem[] @relation("ShoppingItemCreatedByMember")
+  checkedShoppingItems     ShoppingListItem[] @relation("ShoppingItemCheckedByMember")
+  assignedBillsAndRenewals BillOrRenewal[]    @relation("BillAssignedMember")
+  createdBillsAndRenewals  BillOrRenewal[]    @relation("BillCreatedByMember")
+  createdSourceReferences  SourceReference[]  @relation("SourceCreatedByMember")
+  comments                 Comment[]          @relation("CommentCreatedByMember")
+  activityEvents           ActivityEvent[]    @relation("ActivityActorMember")
+
+  @@unique([householdId, userId])
+  @@index([householdId, role])
+  @@index([userId])
+}
+
+model Invitation {
+  id             String           @id @default(cuid())
+  householdId    String
+  invitedEmail   String
+  role           HouseholdRole
+  status         InvitationStatus @default(pending)
+  createdByUserId String?
+  expiresAt      DateTime?
+  acceptedAt     DateTime?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  household     Household @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  createdByUser User?     @relation("InvitationCreatedBy", fields: [createdByUserId], references: [id], onDelete: SetNull)
+
+  @@index([householdId, status])
+  @@index([invitedEmail])
+}
+
+model InboxItem {
+  id                   String           @id @default(cuid())
+  householdId          String
+  title                String
+  description          String?
+  status               InboxStatus      @default(new)
+  category             InboxCategory    @default(other)
+  priority             Priority         @default(normal)
+  suggestedDestination InboxDestination @default(none)
+  routingReason        String?
+  triageSteps          String[]         @default([])
+  assignedMemberId     String?
+  createdByMemberId    String
+  sourceReferenceId    String?
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
+
+  household       Household        @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  assignedMember  HouseholdMember? @relation("InboxAssignedMember", fields: [assignedMemberId], references: [id], onDelete: SetNull)
+  createdByMember HouseholdMember  @relation("InboxCreatedByMember", fields: [createdByMemberId], references: [id], onDelete: Restrict)
+  sourceReference SourceReference? @relation(fields: [sourceReferenceId], references: [id], onDelete: SetNull)
+
+  @@index([householdId, status])
+  @@index([householdId, priority])
+  @@index([assignedMemberId])
+}
+
+model Task {
+  id                String     @id @default(cuid())
+  householdId       String
+  title             String
+  notes             String?
+  status            TaskStatus @default(open)
+  stage             TaskStage  @default(capture)
+  priority          Priority   @default(normal)
+  dueAt             DateTime?
+  checklist         String[]   @default([])
+  assignedMemberId  String?
+  createdByMemberId String
+  sourceReferenceId String?
+  completedAt       DateTime?
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+
+  household       Household        @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  assignedMember  HouseholdMember? @relation("TaskAssignedMember", fields: [assignedMemberId], references: [id], onDelete: SetNull)
+  createdByMember HouseholdMember  @relation("TaskCreatedByMember", fields: [createdByMemberId], references: [id], onDelete: Restrict)
+  sourceReference SourceReference? @relation(fields: [sourceReferenceId], references: [id], onDelete: SetNull)
+
+  @@index([householdId, status])
+  @@index([householdId, dueAt])
+  @@index([assignedMemberId])
+}
+
+model Reminder {
+  id                String           @id @default(cuid())
+  householdId       String
+  title             String
+  notes             String?
+  remindAt          DateTime?
+  status            ReminderStatus   @default(scheduled)
+  cadence           ReminderCadence  @default(once)
+  linkedEntityType  ActivityEntityType?
+  linkedEntityId    String?
+  assignedMemberId  String?
+  createdByMemberId String
+  recurrenceRuleId  String?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  household       Household        @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  assignedMember  HouseholdMember? @relation("ReminderAssignedMember", fields: [assignedMemberId], references: [id], onDelete: SetNull)
+  createdByMember HouseholdMember  @relation("ReminderCreatedByMember", fields: [createdByMemberId], references: [id], onDelete: Restrict)
+  recurrenceRule  RecurrenceRule?  @relation(fields: [recurrenceRuleId], references: [id], onDelete: SetNull)
+
+  @@index([householdId, status])
+  @@index([householdId, remindAt])
+  @@index([assignedMemberId])
+}
+
+model RecurrenceRule {
+  id          String   @id @default(cuid())
+  householdId String
+  frequency   String
+  interval    Int      @default(1)
+  byDay       String[] @default([])
+  startsAt    DateTime?
+  endsAt      DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  household Household  @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  reminders Reminder[]
+
+  @@index([householdId])
+}
+
+model ShoppingList {
+  id                String             @id @default(cuid())
+  householdId       String
+  name              String
+  status            ShoppingListStatus @default(active)
+  createdByMemberId String
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  household       Household          @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  createdByMember HouseholdMember    @relation("ShoppingListCreatedByMember", fields: [createdByMemberId], references: [id], onDelete: Restrict)
+  items           ShoppingListItem[]
+
+  @@index([householdId, status])
+}
+
+model ShoppingListItem {
+  id                String    @id @default(cuid())
+  householdId       String
+  shoppingListId    String
+  label             String
+  notes             String?
+  quantity          String?
+  category          String?
+  checked           Boolean   @default(false)
+  assignedMemberId  String?
+  createdByMemberId String
+  checkedByMemberId String?
+  checkedAt         DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  household       Household        @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  shoppingList    ShoppingList     @relation(fields: [shoppingListId], references: [id], onDelete: Cascade)
+  assignedMember  HouseholdMember? @relation("ShoppingItemAssignedMember", fields: [assignedMemberId], references: [id], onDelete: SetNull)
+  createdByMember HouseholdMember  @relation("ShoppingItemCreatedByMember", fields: [createdByMemberId], references: [id], onDelete: Restrict)
+  checkedByMember HouseholdMember? @relation("ShoppingItemCheckedByMember", fields: [checkedByMemberId], references: [id], onDelete: SetNull)
+
+  @@index([householdId, checked])
+  @@index([shoppingListId])
+  @@index([assignedMemberId])
+}
+
+model BillOrRenewal {
+  id                String              @id @default(cuid())
+  householdId       String
+  title             String
+  provider          String?
+  type              BillOrRenewalType
+  status            BillOrRenewalStatus @default(upcoming)
+  dueAt             DateTime?
+  renewalAt         DateTime?
+  reminderWindow    String?
+  nextStep          String?
+  reviewChecklist   String[]            @default([])
+  notes             String?
+  assignedMemberId  String?
+  createdByMemberId String
+  sourceReferenceId String?
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+
+  household       Household        @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  assignedMember  HouseholdMember? @relation("BillAssignedMember", fields: [assignedMemberId], references: [id], onDelete: SetNull)
+  createdByMember HouseholdMember  @relation("BillCreatedByMember", fields: [createdByMemberId], references: [id], onDelete: Restrict)
+  sourceReference SourceReference? @relation(fields: [sourceReferenceId], references: [id], onDelete: SetNull)
+  reminders       BillReminder[]
+
+  @@index([householdId, status])
+  @@index([householdId, dueAt])
+  @@index([householdId, renewalAt])
+  @@index([assignedMemberId])
+}
+
+model BillReminder {
+  id              String         @id @default(cuid())
+  householdId     String
+  billOrRenewalId String
+  remindAt        DateTime
+  status          ReminderStatus @default(scheduled)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  household     Household     @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  billOrRenewal BillOrRenewal @relation(fields: [billOrRenewalId], references: [id], onDelete: Cascade)
+
+  @@index([householdId, status])
+  @@index([householdId, remindAt])
+  @@index([billOrRenewalId])
+}
+
+model SourceReference {
+  id                String                @id @default(cuid())
+  householdId       String
+  title             String
+  kind              SourceReferenceKind
+  label             String
+  url               String?
+  externalRef       String?
+  reviewStatus      SourceReviewStatus    @default(needs_review)
+  sensitivity       SourceSensitivity     @default(standard)
+  handlingNotes     String?
+  createdByMemberId String
+  createdAt         DateTime              @default(now())
+  updatedAt         DateTime              @updatedAt
+
+  household       Household        @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  createdByMember HouseholdMember  @relation("SourceCreatedByMember", fields: [createdByMemberId], references: [id], onDelete: Restrict)
+  inboxItems      InboxItem[]
+  tasks           Task[]
+  billsRenewals   BillOrRenewal[]
+
+  @@index([householdId, reviewStatus])
+  @@index([householdId, sensitivity])
+}
+
+model Comment {
+  id                String            @id @default(cuid())
+  householdId       String
+  entityType        CommentEntityType
+  entityId          String
+  body              String
+  createdByUserId   String?
+  createdByMemberId String
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  household       Household       @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  createdByUser   User?           @relation("CommentCreatedBy", fields: [createdByUserId], references: [id], onDelete: SetNull)
+  createdByMember HouseholdMember @relation("CommentCreatedByMember", fields: [createdByMemberId], references: [id], onDelete: Restrict)
+
+  @@index([householdId, entityType, entityId])
+  @@index([createdByMemberId])
+}
+
+model ActivityEvent {
+  id            String            @id @default(cuid())
+  householdId   String
+  actorUserId   String?
+  actorMemberId String?
+  entityType    ActivityEntityType
+  entityId      String?
+  eventType     ActivityEventType
+  summary       String
+  metadata      Json?
+  createdAt     DateTime          @default(now())
+
+  household   Household        @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  actorUser   User?            @relation("ActivityActor", fields: [actorUserId], references: [id], onDelete: SetNull)
+  actorMember HouseholdMember? @relation("ActivityActorMember", fields: [actorMemberId], references: [id], onDelete: SetNull)
+
+  @@index([householdId, createdAt])
+  @@index([householdId, entityType, entityId])
+}
+
+model HouseholdSettings {
+  id                   String   @id @default(cuid())
+  householdId          String   @unique
+  defaultTimezone      String   @default("Australia/Brisbane")
+  dashboardPreferences Json?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  household Household @relation(fields: [householdId], references: [id], onDelete: Cascade)
+}

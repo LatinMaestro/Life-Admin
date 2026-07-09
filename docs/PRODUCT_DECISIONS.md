@@ -26,10 +26,19 @@ This document records approved product, architecture, and scope decisions for Fa
 20. The app should use calm, mobile-first, household-friendly UI patterns and avoid finance-dashboard language.
 21. Phase 2 should validate static household workspace architecture before production authentication, database hosting, invite flow, or persistence details are selected.
 22. Phase 2 should not add dynamic `/households/[householdId]` routes; it should use typed current-household state first.
+23. After static MVP completion, the production layer begins with a Prisma/PostgreSQL schema checkpoint before live persistence, production authentication, migrations, invite flows, uploads, or integrations are wired into the app.
 
 ## Practical Effect
 
 These decisions mean app foundation work should stay focused on a private household admin web app. Future agents should not reintroduce SpendGrove scope, finance dashboards, automated payment detail extraction, or deferred capabilities without explicit approval.
+
+The current production path should proceed in scoped batches:
+
+1. Prisma/PostgreSQL schema checkpoint.
+2. Prisma package and validation setup.
+3. Production authentication provider and session strategy.
+4. Household membership enforcement.
+5. Module-by-module persistence migration from static data.
 
 ## Deferred Until Separate Approval
 
