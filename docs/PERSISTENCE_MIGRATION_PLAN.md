@@ -8,13 +8,14 @@ The app has:
 
 - static demo data for the working UI
 - a Prisma/PostgreSQL schema checkpoint
+- Prisma 7 tooling and schema validation scripts
+- a generated Prisma client in CI
+- a server-only Prisma client boundary in `src/lib/server/prisma.ts`
 - household access-control helpers
 - persistence contracts in `src/lib/persistence/contracts.ts`
 
 The app does not yet have:
 
-- Prisma dependencies installed
-- generated Prisma client
 - migrations
 - live database connection
 - production authentication
@@ -38,13 +39,15 @@ The initial contract is `HouseholdPersistenceAdapter`, which combines:
 - `HouseholdWorkspaceRepository`
 - `HouseholdDashboardRepository`
 
+Server-side repository implementations should import Prisma from `src/lib/server/prisma.ts`. Do not create additional Prisma clients in pages, components, route handlers, or server actions.
+
 This keeps household scoping and access context visible at the data boundary.
 
 ## Suggested Implementation Order
 
-1. Add Prisma dependencies and regenerate the pnpm lockfile.
-2. Add schema validation scripts.
-3. Add a Prisma client singleton for server-side use.
+1. Add Prisma dependencies and regenerate the pnpm lockfile. Done.
+2. Add schema validation scripts. Done.
+3. Add a Prisma client singleton for server-side use. In progress.
 4. Add an adapter that implements `HouseholdPersistenceAdapter` using Prisma.
 5. Add auth/session resolution.
 6. Resolve `HouseholdAccessContext` from session plus `HouseholdMember` row.
