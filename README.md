@@ -89,7 +89,9 @@ The default is `static`. The `prisma` mode should only be used after production 
 
 ## Cloud Checks
 
-GitHub Actions runs install, lint, typecheck, Prisma validation, Prisma client generation, and build checks on pull requests and pushes to `main`. This is the preferred verification path when local storage is constrained.
+GitHub Actions runs install, lint, payment source guardrails, Prisma validation, Prisma client generation, typecheck, and build checks on pull requests and pushes to `main`. This is the preferred verification path when local storage is constrained.
+
+The payment guardrail scans app source and Prisma schema files, while documentation remains free to name the forbidden payment concepts so the rules stay clear.
 
 ## Local Development
 
@@ -109,6 +111,7 @@ Quality checks:
 
 ```bash
 pnpm lint
+pnpm guardrails:payment-source
 pnpm typecheck
 pnpm build
 ```
