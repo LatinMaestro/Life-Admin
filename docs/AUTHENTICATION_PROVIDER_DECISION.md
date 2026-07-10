@@ -108,7 +108,7 @@ Production must not fall back to the demo access context. Static demo mode may r
 
 1. Approve Clerk and the initial email-code sign-in posture. Done.
 2. Provision the Clerk integration and environment variables for development, preview, and production.
-3. Add the external identity mapping to the Prisma schema. Done at schema checkpoint; the first reviewed migration remains pending.
+3. Add the external identity mapping and generate the first reviewed migration. Done; the migration remains unapplied.
 4. Add the Clerk SDK, provider/proxy boundary, protected workspace layout, and sign-in page. Done at inactive code checkpoint.
 5. Implement getCurrentAuthSession() using a trusted provider session and internal user lookup. Done at code checkpoint; activation remains pending.
 6. Enforce household membership through the existing server access resolver. Done for server read models at code checkpoint.
