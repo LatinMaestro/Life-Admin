@@ -54,6 +54,7 @@ The app foundation uses these choices. The Prisma/PostgreSQL schema checkpoint e
 - `docs/SECURITY_AND_PRIVACY.md` - household privacy and document rules
 - `docs/ACCESS_CONTROL.md` - household membership and permission enforcement rules
 - `docs/AUTH_SESSION_DESIGN.md` - future auth/session boundary and current placeholder behavior
+- `docs/AUTHENTICATION_PROVIDER_DECISION.md` - Clerk recommendation and controlled implementation sequence
 - `docs/DATA_MODEL.md` - household-scoped data model and Prisma schema checkpoint
 - `docs/PERSISTENCE_MIGRATION_PLAN.md` - module-by-module static-to-live data migration plan
 - `docs/SEED_DATA_MIGRATION.md` - static demo data to future seed snapshot mapping rules
@@ -89,7 +90,7 @@ The default is `static`. The `prisma` mode should only be used after production 
 
 ## Cloud Checks
 
-GitHub Actions runs install, lint, payment source guardrails, Prisma validation, Prisma client generation, typecheck, and build checks on pull requests and pushes to `main`. This is the preferred verification path when local storage is constrained.
+GitHub Actions runs install, lint, payment source guardrails, static data boundary checks, Prisma validation, Prisma client generation, typecheck, and build checks on pull requests and pushes to `main`. This is the preferred verification path when local storage is constrained.
 
 The payment guardrail scans app source and Prisma schema files, while documentation remains free to name the forbidden payment concepts so the rules stay clear.
 
@@ -112,6 +113,7 @@ Quality checks:
 ```bash
 pnpm lint
 pnpm guardrails:payment-source
+pnpm guardrails:static-data-boundary
 pnpm typecheck
 pnpm build
 ```
