@@ -2,7 +2,7 @@
 
 ## Current Objective
 
-Continue the approved production foundation in scoped batches. The current foundation includes a Prisma/PostgreSQL schema checkpoint with a reviewed but unapplied initial migration, access-control helpers, a server-only household access resolver, a demo access context, persistence contracts, static and Prisma read adapters, a server-only adapter selector, dashboard, module, and workspace read models with runtime household access resolution, a shared read-model summary component, the app shell and all current pages on household-scoped repository read models, static comments mapped through the adapter, auth/session contracts, an inactive Clerk sign-in and protected-workspace foundation with immutable internal-user session mapping, a pure static-demo seed snapshot mapper, and CI guardrails for payment-source safety and page-level static-data boundaries. The running app still uses static mode by default: no live persistence, production authentication, migrations, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, or finance features.
+Continue the approved production foundation in scoped batches. The current foundation includes a Prisma/PostgreSQL schema checkpoint with a reviewed initial migration applied to the production Neon database, access-control helpers, a server-only household access resolver, a demo access context, persistence contracts, static and Prisma read adapters, a server-only adapter selector, dashboard, module, and workspace read models with runtime household access resolution, a shared read-model summary component, the app shell and all current pages on household-scoped repository read models, static comments mapped through the adapter, auth/session contracts, an inactive Clerk sign-in and protected-workspace foundation with immutable internal-user session mapping, a pure static-demo seed snapshot mapper, and CI guardrails for payment-source safety and page-level static-data boundaries. The running app still uses static mode by default: the production schema exists, but live persistence and production authentication are not active. Uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, and finance features remain absent.
 
 ## Product Summary
 
@@ -71,7 +71,7 @@ Out of scope until separately approved:
 
 ## Production Foundation Path
 
-1. Prisma/PostgreSQL schema and initial migration checkpoint. Done; migration not applied.
+1. Prisma/PostgreSQL schema and initial production migration. Done; applied to Neon on 10 July 2026.
 2. Household access-control foundation. Done.
 3. Persistence repository contracts. Done.
 4. Prisma package, lockfile, and schema validation setup. Done.
@@ -104,4 +104,4 @@ Out of scope until separately approved:
 
 ## Immediate Next Step
 
-Provision the Clerk environment and production PostgreSQL database, apply the reviewed migration through a controlled deployment, and seed the initial internal user, household, and membership mapping before enabling Clerk mode.
+Provision Clerk and Vercel environment values, add the Neon runtime adapter and controlled seed workflow, then seed the initial internal user, household, and administrator membership before enabling Clerk and Prisma modes together.

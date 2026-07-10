@@ -2,7 +2,7 @@ import "server-only";
 
 import { HouseholdAccessError } from "@/lib/access-control";
 import type { HouseholdAccessContext } from "@/lib/access-control";
-import { prisma } from "@/lib/server/prisma";
+import { getPrismaClient } from "@/lib/server/prisma";
 
 interface ResolveHouseholdAccessOptions {
   userId: string;
@@ -13,7 +13,7 @@ export async function resolveHouseholdAccessContext({
   userId,
   householdId,
 }: ResolveHouseholdAccessOptions): Promise<HouseholdAccessContext | null> {
-  const membership = await prisma.householdMember.findFirst({
+  const membership = await getPrismaClient().householdMember.findFirst({
     where: {
       userId,
       status: "active",

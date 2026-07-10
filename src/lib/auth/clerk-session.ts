@@ -2,7 +2,7 @@ import "server-only";
 
 import { auth } from "@clerk/nextjs/server";
 import type { AuthSession } from "@/lib/auth/session";
-import { prisma } from "@/lib/server/prisma";
+import { getPrismaClient } from "@/lib/server/prisma";
 
 export async function getClerkAuthSession(): Promise<AuthSession | null> {
   const { userId: clerkSubject } = await auth();
@@ -11,7 +11,7 @@ export async function getClerkAuthSession(): Promise<AuthSession | null> {
     return null;
   }
 
-  const user = await prisma.user.findUnique({
+  const user = await getPrismaClient().user.findUnique({
     where: {
       authProvider_authSubject: {
         authProvider: "clerk",

@@ -29,7 +29,7 @@ This project is separate from SpendGrove. It must not include budgeting, bank im
 
 ## Technology Assumptions
 
-The app foundation uses these choices. The Prisma/PostgreSQL schema and initial migration checkpoints exist, but the migration has not been applied and live persistence, production authentication, uploads, and integrations have not been activated.
+The app foundation uses these choices. The production Neon database exists and the reviewed initial migration has been applied, while live persistence, production authentication, uploads, and integrations remain inactive.
 
 - Next.js App Router
 - TypeScript
@@ -58,6 +58,7 @@ The app foundation uses these choices. The Prisma/PostgreSQL schema and initial 
 - `docs/DATA_MODEL.md` - household-scoped data model and Prisma schema checkpoint
 - `docs/PERSISTENCE_MIGRATION_PLAN.md` - module-by-module static-to-live data migration plan
 - `docs/SEED_DATA_MIGRATION.md` - static demo data to future seed snapshot mapping rules
+- `docs/PRODUCTION_ACTIVATION_RUNBOOK.md` - controlled Clerk, Neon, seed, activation, verification, and rollback sequence
 - `docs/FUTURE_PHASES.md` - deferred capabilities and boundaries
 - `docs/EMAIL_FORWARDING_DESIGN.md` - future email forwarding design notes
 - `docs/BILL_PAYMENT_SOURCE_OF_TRUTH_RULES.md` - strict bill/payment rules
@@ -67,9 +68,9 @@ The app foundation uses these choices. The Prisma/PostgreSQL schema and initial 
 
 ## Current Status
 
-The static web MVP covers the approved household workspace modules through comments, activity history, source references, and basic settings. A Prisma/PostgreSQL schema and reviewed initial migration checkpoint have started the production foundation path, access-control helpers define the future household membership enforcement pattern, persistence contracts define the future live-data boundary, the approved Clerk foundation includes provider-neutral sessions, internal-user mapping, public sign-in states, and protected workspace boundaries, a pure demo seed snapshot maps static data toward future database seeding, and a server-only adapter selector defaults persistence to static mode.
+The static web MVP covers the approved household workspace modules through comments, activity history, source references, and basic settings. A Prisma/PostgreSQL schema and applied production Neon migration have started the production foundation path, access-control helpers define the future household membership enforcement pattern, persistence contracts define the future live-data boundary, the approved Clerk foundation includes provider-neutral sessions, internal-user mapping, public sign-in states, and protected workspace boundaries, a pure demo seed snapshot maps static data toward future database seeding, and a server-only adapter selector defaults persistence to static mode.
 
-The running app still defaults to static/demo mode. Clerk activation is waiting on environment provisioning, the first database migration, and mapped household membership. It does not yet have live persistence, active production authentication, migrations, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS implementation, finance analytics, or payment identifier storage.
+The running app still defaults to static/demo mode. Clerk activation is waiting on environment provisioning and mapped household membership. The migrated production database is not yet used by the app, and uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS implementation, finance analytics, and payment identifier storage remain absent.
 
 ## Production Foundation Path
 
@@ -90,7 +91,7 @@ The default is `static`. The `prisma` mode should only be used after production 
 
 ## Cloud Checks
 
-GitHub Actions runs install, lint, payment source guardrails, static data boundary checks, initial migration review, Prisma validation, Prisma client generation, typecheck, and build checks on pull requests and pushes to `main`. This is the preferred verification path when local storage is constrained.
+GitHub Actions runs install, lint, payment source guardrails, static data boundary checks, initial migration review, production activation configuration checks, Prisma validation, Prisma client generation, typecheck, and build checks on pull requests and pushes to `main`. This is the preferred verification path when local storage is constrained.
 
 The payment guardrail scans app source and Prisma schema files, while documentation remains free to name the forbidden payment concepts so the rules stay clear.
 
@@ -115,6 +116,7 @@ pnpm lint
 pnpm guardrails:payment-source
 pnpm guardrails:static-data-boundary
 pnpm guardrails:migration
+pnpm check:activation
 pnpm db:validate
 pnpm typecheck
 pnpm build

@@ -1,13 +1,30 @@
 import "server-only";
 
+import { PrismaNeon } from "@prisma/adapter-neon";
 import { PrismaClient } from "@prisma/client";
 
 const globalForPrisma = globalThis as unknown as {
   prisma?: PrismaClient;
 };
 
-export const prisma = globalForPrisma.prisma ?? new PrismaClient();
+function createPrismaClient() {
+  const connectionString = process.env.DATABASE_URL;
 
-if (process.env.NODE_ENV !== "production") {
-  globalForPrisma.prisma = prisma;
+  if (!connectionString) {
+    throw new Error("DATABASE_URL is required when live persistence is enabled.");
+  }
+
+  return new PrismaClient({
+    adapter: new PrismaNeon({ connectionString }),
+  });
+}
+
+export function getPrismaClient() {
+  const client = globalForPrisma.prisma ?? createPrismaClient();
+
+  if (process.env.NODE_ENV !== "production") {
+    globalForPrisma.prisma = client;
+  }
+
+  return client;
 }
