@@ -2,7 +2,7 @@
 
 ## Current Objective
 
-Continue the approved production foundation in scoped batches. The current foundation includes a Prisma/PostgreSQL schema checkpoint with a reviewed initial migration applied to the production Neon database, access-control helpers, a server-only household access resolver, a demo access context, persistence contracts, static and Prisma read adapters, a server-only adapter selector, dashboard, module, and workspace read models with runtime household access resolution, a shared read-model summary component, the app shell and all current pages on household-scoped repository read models, static comments mapped through the adapter, auth/session contracts, an inactive Clerk sign-in and protected-workspace foundation with immutable internal-user session mapping, a pure static-demo seed snapshot mapper, and CI guardrails for payment-source safety and page-level static-data boundaries. The running app still uses static mode by default: the production schema exists, but live persistence and production authentication are not active. Uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, and finance features remain absent.
+Complete the controlled staging activation and verify the private household workspace end to end. The production Neon schema is migrated, Clerk and Neon are connected to Vercel, Prisma 7 uses the Neon runtime adapter, and the first provider-mapped internal user has one active household administrator membership. Vercel runtime modes are staged as Clerk and Prisma together, pending a deployment from the latest main commit and signed-out, signed-in, household-isolation, mobile, and privacy QA. Clerk development keys are intentionally used for this staging checkpoint; production Clerk keys remain blocked on an approved custom domain and DNS configuration. Uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, and finance features remain absent.
 
 ## Product Summary
 
@@ -90,9 +90,9 @@ Out of scope until separately approved:
 17. Activity page read-model migration. Done.
 18. Inbox, tasks, lists, and bills page read-model migration. Done.
 19. Workspace read model and Dashboard, Family, Settings, and app shell migration. Done.
-20. Authentication provider and session strategy. Clerk approved; SDK, session mapping, sign-in, and protected workspace checkpoints done.
+20. Authentication provider and session strategy. Clerk provisioned and linked; SDK, session mapping, sign-in, and protected workspace checkpoints done.
 21. Household membership enforcement. Server read-model checkpoint done; live mutation enforcement pending.
-22. Clerk signed-out and unmapped-account access states. Done at inactive code checkpoint.
+22. Clerk signed-out and unmapped-account access states. Done; staging activation pending deployment QA.
 23. Audit remaining direct static dependencies and keep them behind approved demo boundaries. Done.
 24. Persist shared inbox writes.
 25. Persist tasks and reminders writes.
@@ -101,7 +101,9 @@ Out of scope until separately approved:
 28. Persist source references as metadata/pointers.
 29. Persist comments and activity history.
 30. Production QA and privacy review.
+31. Controlled Clerk/Prisma staging activation. Environment and seed gates done; latest-main deployment and QA pending.
+32. Custom production domain, Clerk production keys, and controlled identity remap. Pending separate domain approval.
 
 ## Immediate Next Step
 
-Provision Clerk and Vercel environment values, add the Neon runtime adapter and controlled seed workflow, then seed the initial internal user, household, and administrator membership before enabling Clerk and Prisma modes together.
+Merge this control checkpoint to deploy the latest main commit once, then verify signed-out redirect, Clerk sign-in, mapped household access, database-backed reads, mobile layout, and payment-source guardrails. Keep this as a staging activation until a custom production domain and Clerk production keys are approved.
