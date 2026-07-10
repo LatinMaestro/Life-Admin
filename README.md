@@ -67,9 +67,9 @@ The app foundation uses these choices. The Prisma/PostgreSQL schema checkpoint e
 
 ## Current Status
 
-The static web MVP covers the approved household workspace modules through comments, activity history, source references, and basic settings. A Prisma/PostgreSQL schema checkpoint has started the production foundation path, access-control helpers define the future household membership enforcement pattern, persistence contracts define the future live-data boundary, auth/session contracts define where a future provider will plug in, a pure demo seed snapshot maps static data toward future database seeding, and a server-only adapter selector defaults persistence to static mode.
+The static web MVP covers the approved household workspace modules through comments, activity history, source references, and basic settings. A Prisma/PostgreSQL schema checkpoint has started the production foundation path, access-control helpers define the future household membership enforcement pattern, persistence contracts define the future live-data boundary, the approved Clerk foundation includes provider-neutral sessions, internal-user mapping, public sign-in states, and protected workspace boundaries, a pure demo seed snapshot maps static data toward future database seeding, and a server-only adapter selector defaults persistence to static mode.
 
-The running app still uses static/demo data. It does not yet have live persistence, production authentication, migrations, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS implementation, finance analytics, or payment identifier storage.
+The running app still defaults to static/demo mode. Clerk activation is waiting on environment provisioning, the first database migration, and mapped household membership. It does not yet have live persistence, active production authentication, migrations, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS implementation, finance analytics, or payment identifier storage.
 
 ## Production Foundation Path
 
