@@ -2,17 +2,31 @@ import type { Metadata } from "next";
 import type { PropsWithChildren } from "react";
 import "./globals.css";
 import { AppShell } from "@/components/app-shell";
+import { getWorkspaceReadModel } from "@/lib/server/workspace-read-model";
 
 export const metadata: Metadata = {
   title: "Family Life Admin",
   description: "Private household admin for shared family tasks, reminders, lists, bills, and source references.",
 };
 
-export default function RootLayout({ children }: PropsWithChildren) {
+export default async function RootLayout({ children }: PropsWithChildren) {
+  const workspace = await getWorkspaceReadModel();
+
   return (
     <html lang="en">
       <body>
-        <AppShell>{children}</AppShell>
+        <AppShell
+          household={{
+            name: workspace.household.name,
+            timezone: workspace.household.timezone,
+          }}
+          currentMember={{
+            displayName: workspace.currentMember.displayName,
+            roleLabel: workspace.currentMember.roleLabel,
+          }}
+        >
+          {children}
+        </AppShell>
       </body>
     </html>
   );
