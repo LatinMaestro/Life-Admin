@@ -1,12 +1,12 @@
 # Auth Session Design
 
-This document defines the approved authentication/session boundary before a production auth provider is selected.
+This document defines the approved authentication/session boundary and its staged Clerk implementation.
 
 ## Current State
 
-The app has a typed auth/session contract in `src/lib/auth/session.ts`, but production authentication is not implemented.
+The app has a typed auth/session contract in `src/lib/auth/session.ts`. Clerk is the approved provider, and the SDK, conditional provider wrapper, and Next.js 16 proxy foundation are present behind `FAMILY_LIFE_ADMIN_AUTH_MODE`.
 
-The current contract intentionally returns no active session. It exists so future server routes, server actions, and repository code can depend on a stable shape without selecting or wiring an auth provider too early.
+The runtime still defaults to `demo`, and the current session contract returns no active production session. Clerk environment provisioning, internal user mapping, protected sign-in flow, database migrations, and live membership enforcement remain pending.
 
 The app still uses static demo data in the UI.
 
@@ -33,25 +33,24 @@ Future authenticated server code should use this flow:
 
 Client-supplied household ids must be treated as selections, not authority. A selected household id must always be checked against active membership before use.
 
-## Placeholder Behavior
+## Current Placeholder Behavior
 
-Until a provider is approved and implemented:
+Until the Clerk session and internal user mapping are implemented:
 
 - `getCurrentAuthSession()` returns `null`.
 - `requireCurrentAuthSession()` throws `AuthenticationRequiredError`.
 - `getCurrentHouseholdAccessContext()` returns `null` when there is no session.
 - `requireCurrentHouseholdAccessContext()` requires a future session and verified household membership.
 
-These helpers should not be wired into static UI pages until the production auth provider and persistence migration step are approved.
+These helpers must not replace the demo access context until Clerk identity maps to an internal user and active household membership is verified.
 
-## Out Of Scope
+## Not Yet Implemented
 
-This boundary does not add:
+The current foundation does not add:
 
 - production authentication
 - login or logout UI
 - session cookies
-- middleware
 - invite flows
 - database-backed page reads
 - database writes
