@@ -41,6 +41,9 @@ jobs:
       - name: Check static data boundaries
         run: pnpm guardrails:static-data-boundary
 
+      - name: Check initial migration
+        run: pnpm guardrails:migration
+
       - name: Validate Prisma schema
         run: pnpm db:validate
         env:
