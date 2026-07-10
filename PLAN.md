@@ -2,7 +2,7 @@
 
 ## Current Objective
 
-Continue the approved production foundation in scoped batches. The current foundation includes a Prisma/PostgreSQL schema checkpoint, access-control helpers, a server-only household access resolver, a demo access context, persistence contracts, static and Prisma read adapters, a server-only adapter selector, dashboard and module read-model foundations, a shared read-model summary component, the Sources page on a repository-backed read model, static comments mapped through the adapter, auth/session contracts, and a pure static-demo seed snapshot mapper. The running app still uses static mode by default: no live persistence, production authentication, migrations, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, or finance features.
+Continue the approved production foundation in scoped batches. The current foundation includes a Prisma/PostgreSQL schema checkpoint, access-control helpers, a server-only household access resolver, a demo access context, persistence contracts, static and Prisma read adapters, a server-only adapter selector, dashboard and module read-model foundations, a shared read-model summary component, the Sources and Activity pages on repository-backed read models, static comments mapped through the adapter, auth/session contracts, and a pure static-demo seed snapshot mapper. The running app still uses static mode by default: no live persistence, production authentication, migrations, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, or finance features.
 
 ## Product Summary
 
@@ -28,7 +28,7 @@ In scope for the production foundation path:
 - Server-only adapter selection that defaults to static mode
 - Dashboard and module read-model foundations behind the adapter boundary
 - Shared read-model summary UI component
-- Sources page migrated to the read-model path
+- Sources and Activity pages migrated to the read-model path
 - Static demo data to future seed snapshot mapping
 - Module-by-module persistence migration after schema validation
 - Source references as metadata/pointers only
@@ -85,18 +85,19 @@ Out of scope until separately approved:
 13. Module read-model foundations. Done.
 14. Shared read-model summary UI component. Done.
 15. Sources page read-model migration. Done.
-16. Static comments adapter support. In progress.
-17. Authentication provider and session strategy.
-18. Household membership enforcement in live routes/actions.
-19. Move remaining UI pages fully to the adapter boundary module by module.
-20. Persist shared inbox writes.
-21. Persist tasks and reminders writes.
-22. Persist shopping list writes.
-23. Persist bills and renewals writes with source-of-truth guardrails.
-24. Persist source references as metadata/pointers.
-25. Persist comments and activity history.
-26. Production QA and privacy review.
+16. Static comments adapter support. Done.
+17. Activity page read-model migration. Done.
+18. Authentication provider and session strategy.
+19. Household membership enforcement in live routes/actions.
+20. Move remaining UI pages fully to the adapter boundary module by module.
+21. Persist shared inbox writes.
+22. Persist tasks and reminders writes.
+23. Persist shopping list writes.
+24. Persist bills and renewals writes with source-of-truth guardrails.
+25. Persist source references as metadata/pointers.
+26. Persist comments and activity history.
+27. Production QA and privacy review.
 
 ## Immediate Next Step
 
-Finish static comments adapter support so the Activity page can move to the repository-backed read-model path without losing household comments.
+Move the remaining module pages to the repository-backed read-model path one at a time, starting with the lowest-risk static pages before live persistence or authentication is introduced.
