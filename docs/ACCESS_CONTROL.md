@@ -12,6 +12,8 @@ The app has a static MVP, a Prisma schema checkpoint, and server-side access-con
 
 `src/lib/auth/session.ts` defines the provider-neutral auth/session contract. It currently returns no session and does not implement login, cookies, middleware, invite flows, or provider-specific behavior.
 
+`src/lib/server/demo-access-context.ts` provides a server-only demo context for the current static household/member. It is only a bridge for static MVP data and must not be treated as production authentication.
+
 ## Core Rule
 
 Never read, mutate, or display a household record by record id alone.
@@ -44,6 +46,8 @@ When authentication is added, the intended server-side flow is:
 6. Apply role/capability checks at the data boundary and mutation boundary.
 
 For routes/actions that require access, use `requireCurrentHouseholdAccessContext(...)` or `requireHouseholdAccessContext(...)` so missing sessions, missing memberships, or inactive household memberships fail closed.
+
+For static MVP bridge work only, `getDemoHouseholdAccessContext()` may be used to move demo reads behind repository contracts before production auth is selected.
 
 ## Role Model
 
