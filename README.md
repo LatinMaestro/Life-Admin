@@ -66,7 +66,7 @@ The app foundation uses these choices. The Prisma/PostgreSQL schema checkpoint e
 
 ## Current Status
 
-The static web MVP covers the approved household workspace modules through comments, activity history, source references, and basic settings. A Prisma/PostgreSQL schema checkpoint has started the production foundation path, access-control helpers define the future household membership enforcement pattern, persistence contracts define the future live-data boundary, auth/session contracts define where a future provider will plug in, and a pure demo seed snapshot maps static data toward future database seeding.
+The static web MVP covers the approved household workspace modules through comments, activity history, source references, and basic settings. A Prisma/PostgreSQL schema checkpoint has started the production foundation path, access-control helpers define the future household membership enforcement pattern, persistence contracts define the future live-data boundary, auth/session contracts define where a future provider will plug in, a pure demo seed snapshot maps static data toward future database seeding, and a server-only adapter selector defaults persistence to static mode.
 
 The running app still uses static/demo data. It does not yet have live persistence, production authentication, migrations, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS implementation, finance analytics, or payment identifier storage.
 
@@ -76,9 +76,16 @@ The running app still uses static/demo data. It does not yet have live persisten
 2. Prisma package, lockfile, and schema validation setup
 3. Auth/session contract boundary
 4. Seed/demo migration bridge
-5. Authentication provider and session strategy
-6. Household membership enforcement
-7. Module-by-module persistence migration from static data
+5. Static and Prisma adapter boundary
+6. Authentication provider and session strategy
+7. Household membership enforcement
+8. Module-by-module persistence migration from static data
+
+## Persistence Mode
+
+Server-side persistence selection uses `FAMILY_LIFE_ADMIN_PERSISTENCE_MODE`.
+
+The default is `static`. The `prisma` mode should only be used after production authentication, database environment variables, and live-read rollout are approved.
 
 ## Cloud Checks
 
