@@ -51,6 +51,19 @@ jobs:
         env:
           DATABASE_URL: postgresql://user:password@localhost:5432/family_life_admin?schema=public
 
+      - name: Generate initial migration artifact
+        run: |
+          mkdir -p generated-migration
+          pnpm exec prisma migrate diff --from-empty --to-schema prisma/schema.prisma --script > generated-migration/migration.sql
+        env:
+          DATABASE_URL: postgresql://user:password@localhost:5432/family_life_admin?schema=public
+
+      - name: Upload initial migration artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: initial-prisma-migration
+          path: generated-migration/migration.sql
+
       - name: Typecheck
         run: pnpm typecheck
 
