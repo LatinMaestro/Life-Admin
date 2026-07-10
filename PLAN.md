@@ -2,7 +2,7 @@
 
 ## Current Objective
 
-Continue the approved production foundation in scoped batches. The current foundation includes a Prisma/PostgreSQL schema checkpoint, access-control helpers, a server-only household access resolver, a demo access context, persistence contracts, static and Prisma read adapters, a server-only adapter selector, dashboard and module read-model foundations, a shared read-model summary component, the Inbox, Tasks, Lists, Bills, Sources, and Activity pages on repository-backed read models, static comments mapped through the adapter, auth/session contracts, and a pure static-demo seed snapshot mapper. The running app still uses static mode by default: no live persistence, production authentication, migrations, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, or finance features.
+Continue the approved production foundation in scoped batches. The current foundation includes a Prisma/PostgreSQL schema checkpoint, access-control helpers, a server-only household access resolver, a demo access context, persistence contracts, static and Prisma read adapters, a server-only adapter selector, dashboard, module, and workspace read-model foundations, a shared read-model summary component, the app shell and all current pages on household-scoped repository read models, static comments mapped through the adapter, auth/session contracts, and a pure static-demo seed snapshot mapper. The running app still uses static mode by default: no live persistence, production authentication, migrations, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, or finance features.
 
 ## Product Summary
 
@@ -26,9 +26,9 @@ In scope for the production foundation path:
 - Static and Prisma persistence adapters behind a shared contract
 - Static comments through the adapter contract
 - Server-only adapter selection that defaults to static mode
-- Dashboard and module read-model foundations behind the adapter boundary
+- Dashboard, module, and workspace read-model foundations behind the adapter boundary
 - Shared read-model summary UI component
-- Inbox, Tasks, Lists, Bills, Sources, and Activity pages migrated to the read-model path
+- App shell and all current pages migrated to the read-model path
 - Static demo data to future seed snapshot mapping
 - Module-by-module persistence migration after schema validation
 - Source references as metadata/pointers only
@@ -88,17 +88,18 @@ Out of scope until separately approved:
 16. Static comments adapter support. Done.
 17. Activity page read-model migration. Done.
 18. Inbox, tasks, lists, and bills page read-model migration. Done.
-19. Authentication provider and session strategy.
-20. Household membership enforcement in live routes/actions.
-21. Review remaining UI pages and shared components for direct demo-data dependencies.
-22. Persist shared inbox writes.
-23. Persist tasks and reminders writes.
-24. Persist shopping list writes.
-25. Persist bills and renewals writes with source-of-truth guardrails.
-26. Persist source references as metadata/pointers.
-27. Persist comments and activity history.
-28. Production QA and privacy review.
+19. Workspace read model and Dashboard, Family, Settings, and app shell migration. Done.
+20. Authentication provider and session strategy.
+21. Household membership enforcement in live routes/actions.
+22. Audit remaining direct static dependencies and keep them behind approved demo boundaries.
+23. Persist shared inbox writes.
+24. Persist tasks and reminders writes.
+25. Persist shopping list writes.
+26. Persist bills and renewals writes with source-of-truth guardrails.
+27. Persist source references as metadata/pointers.
+28. Persist comments and activity history.
+29. Production QA and privacy review.
 
 ## Immediate Next Step
 
-Review the remaining static pages and shared components for direct demo-data dependencies, then decide whether to continue the read-model migration or select a production auth/session provider as a separately approved step.
+Audit remaining direct static dependencies to confirm they are confined to the static adapter and demo access context, then prepare the production auth/session provider decision as a separately approved step.
