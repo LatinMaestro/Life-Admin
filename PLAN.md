@@ -90,7 +90,7 @@ Out of scope until separately approved:
 17. Activity page read-model migration. Done.
 18. Inbox, tasks, lists, and bills page read-model migration. Done.
 19. Workspace read model and Dashboard, Family, Settings, and app shell migration. Done.
-20. Authentication provider and session strategy.
+20. Authentication provider and session strategy. Clerk recommendation prepared; approval pending.
 21. Household membership enforcement in live routes/actions.
 22. Audit remaining direct static dependencies and keep them behind approved demo boundaries. Done.
 23. Persist shared inbox writes.
@@ -103,4 +103,4 @@ Out of scope until separately approved:
 
 ## Immediate Next Step
 
-Prepare the production authentication and session-provider decision for review. Do not wire a provider, real login, or live membership enforcement until that decision is separately approved.
+Review and approve or reject the Clerk recommendation in `docs/AUTHENTICATION_PROVIDER_DECISION.md`. Do not wire a provider, real login, or live membership enforcement until the recommendation is explicitly approved.
