@@ -15,6 +15,7 @@ The app has:
 - a server-only demo access context in `src/lib/server/demo-access-context.ts`
 - server-only dashboard and module read-model foundations in `src/lib/server/dashboard-read-model.ts` and `src/lib/server/module-read-models.ts`
 - a shared read-model summary component in `src/components/read-model-summary.tsx`
+- the Inbox, Tasks, Lists, and Bills pages reading from their module read models
 - the Sources page reading from the source-reference read model
 - the Activity page reading from the comments/activity read model
 - static comments mapped through `src/lib/persistence/static-adapter.ts`
@@ -110,14 +111,15 @@ Display-only date labels are preserved separately from real database date fields
 14. Move Sources page to the source-reference read model. Done.
 15. Map static comments through the persistence adapter. Done.
 16. Move Activity page to the comments/activity read model. Done.
-17. Select and add production auth/session provider.
-18. Move remaining UI pages fully to the adapter boundary module by module.
-19. Move shared inbox writes.
-20. Move tasks and reminders writes.
-21. Move shopping list writes.
-22. Move bills and renewals writes with source-of-truth review.
-23. Move source references as metadata/pointers only.
-24. Move comments and activity history.
+17. Move Inbox, Tasks, Lists, and Bills pages to module read models. Done.
+18. Select and add production auth/session provider.
+19. Review remaining UI pages and shared components for direct demo-data dependencies.
+20. Move shared inbox writes.
+21. Move tasks and reminders writes.
+22. Move shopping list writes.
+23. Move bills and renewals writes with source-of-truth review.
+24. Move source references as metadata/pointers only.
+25. Move comments and activity history.
 
 ## Bill And Source Safety
 
