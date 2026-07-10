@@ -19,7 +19,7 @@ The first production data-model checkpoint is `prisma/schema.prisma`. It defines
 
 Current checkpoint includes:
 
-- `User`
+- `User` with immutable external identity mapping
 - `Household`
 - `HouseholdMember`
 - `Invitation`
@@ -85,8 +85,17 @@ Fields:
 - name
 - email
 - avatarUrl
+- authProvider
+- authSubject
 - createdAt
 - updatedAt
+
+Identity rules:
+
+- authProvider and authSubject form a unique pair
+- provider subjects map to internal users; they are not internal user or member ids
+- email alone must not link accounts
+- provider tokens and payloads are not stored
 
 Relationships:
 

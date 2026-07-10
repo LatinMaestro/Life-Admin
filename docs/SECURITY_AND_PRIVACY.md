@@ -46,17 +46,17 @@ Payment reminders should point users back to the original source email, PDF, lin
 
 ## Authentication And Authorisation
 
-The architecture should be auth-ready from the app foundation phase. Production authentication is not wired into the running app yet.
+Clerk is the approved authentication provider. The SDK and server session mapping exist behind a disabled-by-default runtime mode; production authentication is not active yet.
 
-Before implementation, approve or record:
+Authentication rules:
 
-- Auth provider
-- Session strategy
-- Invite flow
-- Role enforcement approach
-- Passwordless/social login requirements, if any
-
-Once authentication is implemented, server-side code should resolve the active user and verified household membership before constructing a `HouseholdAccessContext`.
+- Resolve the trusted Clerk subject on the server.
+- Map it to an internal User by the immutable provider/subject pair, never email alone.
+- Do not store provider tokens, session cookies, or full identity payloads.
+- Return no application session for signed-out or unmapped identities.
+- Resolve verified household membership before constructing a `HouseholdAccessContext`.
+- Keep application household roles in PostgreSQL rather than the identity provider.
+- Keep invite flow and additional sign-in methods separately gated.
 
 ## Storage And Uploads
 
