@@ -13,6 +13,7 @@ The app has:
 - a server-only Prisma client boundary in `src/lib/server/prisma.ts`
 - a server-only persistence adapter selector in `src/lib/server/persistence.ts`
 - a server-only demo access context in `src/lib/server/demo-access-context.ts`
+- a server-only dashboard read model foundation in `src/lib/server/dashboard-read-model.ts`
 - household access-control helpers
 - a server-only household access resolver in `src/lib/server/household-access.ts`
 - provider-neutral auth/session contracts in `src/lib/auth/session.ts`
@@ -28,7 +29,8 @@ The app does not yet have:
 - executable seed script
 - production authentication provider
 - real session resolution
-- wired live reads or writes in app routes
+- wired live writes in app routes
+- dashboard UI switched fully to repository read models
 
 ## Migration Principles
 
@@ -54,6 +56,8 @@ The static adapter and Prisma adapter both implement the same contract. The stat
 `src/lib/server/persistence.ts` selects the server-side adapter. `FAMILY_LIFE_ADMIN_PERSISTENCE_MODE` defaults to `static`; `prisma` should only be used after production auth, database environment variables, and live-read rollout are approved.
 
 `src/lib/server/demo-access-context.ts` can provide a static `HouseholdAccessContext` for repository-backed demo reads before production auth is selected. It is not a production auth substitute.
+
+`src/lib/server/dashboard-read-model.ts` begins the dashboard migration by building repository-backed summary data without replacing the richer static dashboard UI yet.
 
 All adapters must require `HouseholdAccessContext` and scope every query by `householdId`. They should not read records by id alone.
 
@@ -94,14 +98,15 @@ Display-only date labels are preserved separately from real database date fields
 8. Add a static demo-data adapter behind the persistence contract. Done.
 9. Add a server-only adapter selector that defaults to static mode. Done.
 10. Add a demo access context for static repository reads. Done.
-11. Select and add production auth/session provider.
-12. Move dashboard read models to the adapter boundary.
-13. Move shared inbox reads, then writes.
-14. Move tasks and reminders.
-15. Move shopping lists.
-16. Move bills and renewals with source-of-truth review.
-17. Move source references as metadata/pointers only.
-18. Move comments and activity history.
+11. Add dashboard read-model foundation behind the adapter boundary. Done.
+12. Select and add production auth/session provider.
+13. Move dashboard UI fully to the adapter boundary.
+14. Move shared inbox reads, then writes.
+15. Move tasks and reminders.
+16. Move shopping lists.
+17. Move bills and renewals with source-of-truth review.
+18. Move source references as metadata/pointers only.
+19. Move comments and activity history.
 
 ## Bill And Source Safety
 
