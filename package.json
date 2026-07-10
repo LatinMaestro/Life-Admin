@@ -11,7 +11,8 @@
     "guardrails:payment-source": "node scripts/check-payment-source-guardrails.mjs",
     "db:generate": "prisma generate",
     "db:validate": "prisma validate",
-    "db:format": "prisma format"
+    "db:format": "prisma format",
+    "guardrails:static-data-boundary": "node scripts/check-static-data-boundaries.mjs"
   },
   "dependencies": {
     "@prisma/client": "7.8.0",
