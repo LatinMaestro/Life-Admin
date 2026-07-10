@@ -1,6 +1,7 @@
 import "server-only";
 
 import type { HouseholdAccessContext } from "@/lib/access-control";
+import { getAuthenticationMode } from "@/lib/auth/config";
 import {
   requireHouseholdAccessContext,
   resolveHouseholdAccessContext,
@@ -25,7 +26,13 @@ export class AuthenticationRequiredError extends Error {
 }
 
 export async function getCurrentAuthSession(): Promise<AuthSession | null> {
-  return null;
+  if (getAuthenticationMode() === "demo") {
+    return null;
+  }
+
+  const { getClerkAuthSession } = await import("@/lib/auth/clerk-session");
+
+  return getClerkAuthSession();
 }
 
 export async function requireCurrentAuthSession(): Promise<AuthSession> {
