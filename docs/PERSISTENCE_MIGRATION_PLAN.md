@@ -12,7 +12,7 @@ The app has:
 - a generated Prisma client in CI
 - a server-only Prisma client boundary in `src/lib/server/prisma.ts`
 - a server-only persistence adapter selector in `src/lib/server/persistence.ts`
-- a server-only demo access context in `src/lib/server/demo-access-context.ts`
+- a server-only runtime access resolver that selects demo context only in demo mode and requires verified session membership in Clerk mode
 - server-only dashboard, module, and workspace read-model foundations in `src/lib/server/`
 - a shared read-model summary component in `src/components/read-model-summary.tsx`
 - the Inbox, Tasks, Lists, and Bills pages reading from their module read models
@@ -23,7 +23,7 @@ The app has:
 - static comments mapped through `src/lib/persistence/static-adapter.ts`
 - household access-control helpers
 - a server-only household access resolver in `src/lib/server/household-access.ts`
-- provider-neutral auth/session contracts in `src/lib/auth/session.ts`
+- provider-neutral auth/session contracts with Clerk-to-internal-user mapping in `src/lib/auth/session.ts`
 - persistence contracts in `src/lib/persistence/contracts.ts`
 - a static demo-data adapter in `src/lib/persistence/static-adapter.ts`
 - a read-only Prisma adapter foundation in `src/lib/persistence/prisma-adapter.ts`
@@ -34,8 +34,6 @@ The app does not yet have:
 - migrations
 - live database connection
 - executable seed script
-- production authentication provider
-- real session resolution
 - wired live writes in app routes
 
 ## Migration Principles
@@ -61,7 +59,7 @@ The static adapter and Prisma adapter both implement the same contract. The stat
 
 `src/lib/server/persistence.ts` selects the server-side adapter. `FAMILY_LIFE_ADMIN_PERSISTENCE_MODE` defaults to `static`; `prisma` should only be used after production auth, database environment variables, and live-read rollout are approved.
 
-`src/lib/server/demo-access-context.ts` can provide a static `HouseholdAccessContext` for repository-backed demo reads before production auth is selected. It is not a production auth substitute.
+`src/lib/server/runtime-access-context.ts` resolves read-model access. Demo mode uses the static demo context; Clerk mode requires a mapped internal user and active household membership. It never falls back from Clerk mode to demo access.
 
 `src/lib/server/dashboard-read-model.ts`, `src/lib/server/module-read-models.ts`, and `src/lib/server/workspace-read-model.ts` build household-scoped page and shell data behind the adapter boundary.
 
@@ -84,7 +82,7 @@ The intended flow is:
 5. Pass the returned `HouseholdAccessContext` to repository/adapters.
 6. Apply role/capability checks before reads or writes.
 
-This boundary is present now as a foundation only. It does not add a production auth provider, real session handling, middleware, live page queries, or database writes.
+This boundary is present at code checkpoint. Clerk activation still requires environment provisioning, the reviewed schema migration, mapped users and memberships, and production access-state QA. It does not add database writes.
 
 ## Seed Data Bridge
 
@@ -114,14 +112,15 @@ Display-only date labels are preserved separately from real database date fields
 16. Move Activity page to the comments/activity read model. Done.
 17. Move Inbox, Tasks, Lists, and Bills pages to module read models. Done.
 18. Move Dashboard, Family, Settings, and the app shell to household-scoped read models. Done.
-19. Audit remaining direct static dependencies and keep them behind demo boundaries.
-20. Select and add production auth/session provider.
-21. Move shared inbox writes.
-22. Move tasks and reminders writes.
-23. Move shopping list writes.
-24. Move bills and renewals writes with source-of-truth review.
-25. Move source references as metadata/pointers only.
-26. Move comments and activity history.
+19. Audit remaining direct static dependencies and keep them behind demo boundaries. Done.
+20. Select and add production auth/session provider. Done at inactive code checkpoint.
+21. Require runtime household access in all server read models. Done at code checkpoint.
+22. Move shared inbox writes.
+23. Move tasks and reminders writes.
+24. Move shopping list writes.
+25. Move bills and renewals writes with source-of-truth review.
+26. Move source references as metadata/pointers only.
+27. Move comments and activity history.
 
 ## Bill And Source Safety
 

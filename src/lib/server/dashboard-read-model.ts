@@ -2,7 +2,7 @@ import "server-only";
 
 import { HouseholdAccessError } from "@/lib/access-control";
 import type { HouseholdAccessContext, HouseholdRole } from "@/lib/access-control";
-import { getDemoHouseholdAccessContext } from "@/lib/server/demo-access-context";
+import { getRuntimeHouseholdAccessContext } from "@/lib/server/runtime-access-context";
 import { getHouseholdPersistenceAdapter } from "@/lib/server/persistence";
 
 type DashboardQueue = {
@@ -52,8 +52,9 @@ function isReviewStatus(status: string) {
 }
 
 export async function getDashboardReadModel(
-  context: HouseholdAccessContext = getDemoHouseholdAccessContext(),
+  context?: HouseholdAccessContext,
 ): Promise<DashboardReadModel> {
+  const accessContext = context ?? (await getRuntimeHouseholdAccessContext());
   const adapter = await getHouseholdPersistenceAdapter();
 
   const [
@@ -68,18 +69,18 @@ export async function getDashboardReadModel(
     comments,
     activity,
   ] = await Promise.all([
-    adapter.getHousehold(context),
-    adapter.listMembers(context),
-    adapter.listInboxItems(context),
-    adapter.listTasks(context),
-    adapter.listReminders(context),
-    adapter.listShoppingLists(context),
-    adapter.listBillsAndRenewals(context),
-    adapter.listSourceReferences(context),
-    adapter.listComments(context),
-    adapter.listActivity(context),
+    adapter.getHousehold(accessContext),
+    adapter.listMembers(accessContext),
+    adapter.listInboxItems(accessContext),
+    adapter.listTasks(accessContext),
+    adapter.listReminders(accessContext),
+    adapter.listShoppingLists(accessContext),
+    adapter.listBillsAndRenewals(accessContext),
+    adapter.listSourceReferences(accessContext),
+    adapter.listComments(accessContext),
+    adapter.listActivity(accessContext),
   ]);
-  const currentMember = members.find((member) => member.id === context.memberId);
+  const currentMember = members.find((member) => member.id === accessContext.memberId);
 
   if (!currentMember) {
     throw new HouseholdAccessError("The current household member is not available.");
