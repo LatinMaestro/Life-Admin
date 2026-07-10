@@ -7,7 +7,7 @@ import {
   HouseholdAccessError,
 } from "@/lib/access-control";
 import type { HouseholdAccessContext, HouseholdPermission, HouseholdRole } from "@/lib/access-control";
-import { getDemoHouseholdAccessContext } from "@/lib/server/demo-access-context";
+import { getRuntimeHouseholdAccessContext } from "@/lib/server/runtime-access-context";
 import { getHouseholdPersistenceAdapter } from "@/lib/server/persistence";
 
 type WorkspaceMember = {
@@ -62,14 +62,15 @@ function formatPermission(permission: HouseholdPermission) {
 }
 
 export async function getWorkspaceReadModel(
-  context: HouseholdAccessContext = getDemoHouseholdAccessContext(),
+  context?: HouseholdAccessContext,
 ): Promise<WorkspaceReadModel> {
+  const accessContext = context ?? (await getRuntimeHouseholdAccessContext());
   const adapter = await getHouseholdPersistenceAdapter();
   const [household, memberRecords, sourceReferences, billsAndRenewals] = await Promise.all([
-    adapter.getHousehold(context),
-    adapter.listMembers(context),
-    adapter.listSourceReferences(context),
-    adapter.listBillsAndRenewals(context),
+    adapter.getHousehold(accessContext),
+    adapter.listMembers(accessContext),
+    adapter.listSourceReferences(accessContext),
+    adapter.listBillsAndRenewals(accessContext),
   ]);
 
   const members = memberRecords.map((member) => ({
@@ -79,7 +80,7 @@ export async function getWorkspaceReadModel(
     role: member.role,
     roleLabel: formatRole(member.role),
     status: member.status,
-    isCurrent: member.id === context.memberId,
+    isCurrent: member.id === accessContext.memberId,
   }));
   const currentMember = members.find((member) => member.isCurrent);
 
@@ -95,13 +96,13 @@ export async function getWorkspaceReadModel(
     },
     currentMember,
     members,
-    roleCapabilities: getRolePermissions(context.role).map((permission) => ({
+    roleCapabilities: getRolePermissions(accessContext.role).map((permission) => ({
       key: permission,
       label: formatPermission(permission),
     })),
     access: {
-      canManageSettings: canManageHouseholdSettings(context),
-      canManageMembers: canManageHouseholdMembers(context),
+      canManageSettings: canManageHouseholdSettings(accessContext),
+      canManageMembers: canManageHouseholdMembers(accessContext),
     },
     sourcePosture: {
       total: sourceReferences.length,
