@@ -1,5 +1,6 @@
 export { getDemoSeedSnapshot } from "@/lib/persistence/demo-seed";
 export { prismaHouseholdPersistenceAdapter } from "@/lib/persistence/prisma-adapter";
+export { staticHouseholdPersistenceAdapter } from "@/lib/persistence/static-adapter";
 
 export type { DemoSeedSnapshot } from "@/lib/persistence/demo-seed";
 export type {
