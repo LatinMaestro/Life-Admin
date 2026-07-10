@@ -2,7 +2,7 @@
 
 ## Current Objective
 
-Continue the approved production foundation in scoped batches. The current foundation includes a Prisma/PostgreSQL schema checkpoint, access-control helpers, a server-only household access resolver, a demo access context, persistence contracts, static and Prisma read adapters, a server-only adapter selector, auth/session contracts, and a pure static-demo seed snapshot mapper. The running app still uses static demo data by default: no live persistence, production authentication, migrations, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, or finance features.
+Continue the approved production foundation in scoped batches. The current foundation includes a Prisma/PostgreSQL schema checkpoint, access-control helpers, a server-only household access resolver, a demo access context, persistence contracts, static and Prisma read adapters, a server-only adapter selector, a dashboard read-model foundation, auth/session contracts, and a pure static-demo seed snapshot mapper. The running app still uses static demo data by default: no live persistence, production authentication, migrations, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, or finance features.
 
 ## Product Summary
 
@@ -25,6 +25,7 @@ In scope for the production foundation path:
 - Auth/session contracts before provider wiring
 - Static and Prisma persistence adapters behind a shared contract
 - Server-only adapter selection that defaults to static mode
+- Dashboard read-model foundation behind the adapter boundary
 - Static demo data to future seed snapshot mapping
 - Module-by-module persistence migration after schema validation
 - Source references as metadata/pointers only
@@ -76,18 +77,19 @@ Out of scope until separately approved:
 8. Seed/demo migration bridge. Done.
 9. Static persistence adapter. Done.
 10. Server persistence adapter selector. Done.
-11. Demo access context for static repository reads. In progress.
-12. Authentication provider and session strategy.
-13. Household membership enforcement in live routes/actions.
-14. Persist dashboard source queries.
-15. Persist shared inbox.
-16. Persist tasks and reminders.
-17. Persist shopping lists.
-18. Persist bills and renewals with source-of-truth guardrails.
-19. Persist source references as metadata/pointers.
-20. Persist comments and activity history.
-21. Production QA and privacy review.
+11. Demo access context for static repository reads. Done.
+12. Dashboard read-model foundation. In progress.
+13. Authentication provider and session strategy.
+14. Household membership enforcement in live routes/actions.
+15. Move dashboard UI fully to the adapter boundary.
+16. Persist shared inbox.
+17. Persist tasks and reminders.
+18. Persist shopping lists.
+19. Persist bills and renewals with source-of-truth guardrails.
+20. Persist source references as metadata/pointers.
+21. Persist comments and activity history.
+22. Production QA and privacy review.
 
 ## Immediate Next Step
 
-Finish the demo-only access context for static repository reads. Do not treat it as production auth, and do not add production login, migrations, database writes, or executable seed scripts in this batch.
+Finish the dashboard read-model foundation behind the repository adapter boundary. Keep the visible dashboard on static UI data until the read-model output can fully cover the existing experience.
