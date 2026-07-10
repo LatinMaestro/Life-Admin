@@ -15,6 +15,7 @@ The app has:
 - a server-only demo access context in `src/lib/server/demo-access-context.ts`
 - server-only dashboard and module read-model foundations in `src/lib/server/dashboard-read-model.ts` and `src/lib/server/module-read-models.ts`
 - a shared read-model summary component in `src/components/read-model-summary.tsx`
+- the Sources page reading from the source-reference read model
 - household access-control helpers
 - a server-only household access resolver in `src/lib/server/household-access.ts`
 - provider-neutral auth/session contracts in `src/lib/auth/session.ts`
@@ -31,7 +32,7 @@ The app does not yet have:
 - production authentication provider
 - real session resolution
 - wired live writes in app routes
-- UI pages switched fully to repository read models
+- all UI pages switched fully to repository read models
 
 ## Migration Principles
 
@@ -58,9 +59,9 @@ The static adapter and Prisma adapter both implement the same contract. The stat
 
 `src/lib/server/demo-access-context.ts` can provide a static `HouseholdAccessContext` for repository-backed demo reads before production auth is selected. It is not a production auth substitute.
 
-`src/lib/server/dashboard-read-model.ts` and `src/lib/server/module-read-models.ts` begin the page migration by building repository-backed summary data without replacing the richer static UI pages yet.
+`src/lib/server/dashboard-read-model.ts` and `src/lib/server/module-read-models.ts` begin the page migration by building repository-backed summary data.
 
-`src/components/read-model-summary.tsx` provides a shared mobile-friendly display component for future repository-backed page migrations.
+`src/components/read-model-summary.tsx` provides a shared mobile-friendly display component for repository-backed page migrations.
 
 All adapters must require `HouseholdAccessContext` and scope every query by `householdId`. They should not read records by id alone.
 
@@ -104,14 +105,15 @@ Display-only date labels are preserved separately from real database date fields
 11. Add dashboard read-model foundation behind the adapter boundary. Done.
 12. Add module read-model foundations behind the adapter boundary. Done.
 13. Add shared read-model summary UI component. Done.
-14. Select and add production auth/session provider.
-15. Move UI pages fully to the adapter boundary module by module.
-16. Move shared inbox writes.
-17. Move tasks and reminders writes.
-18. Move shopping list writes.
-19. Move bills and renewals writes with source-of-truth review.
-20. Move source references as metadata/pointers only.
-21. Move comments and activity history.
+14. Move Sources page to the source-reference read model. Done.
+15. Select and add production auth/session provider.
+16. Move remaining UI pages fully to the adapter boundary module by module.
+17. Move shared inbox writes.
+18. Move tasks and reminders writes.
+19. Move shopping list writes.
+20. Move bills and renewals writes with source-of-truth review.
+21. Move source references as metadata/pointers only.
+22. Move comments and activity history.
 
 ## Bill And Source Safety
 
