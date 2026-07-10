@@ -8,6 +8,7 @@ The app has:
 
 - static demo data for the working UI
 - a Prisma/PostgreSQL schema checkpoint
+- a generated and reviewed initial PostgreSQL migration that has not been applied
 - Prisma 7 tooling and schema validation scripts
 - a generated Prisma client in CI
 - a server-only Prisma client boundary in `src/lib/server/prisma.ts`
@@ -31,8 +32,7 @@ The app has:
 
 The app does not yet have:
 
-- migrations
-- live database connection
+- live database connection or applied migration
 - executable seed script
 - wired live writes in app routes
 
@@ -115,12 +115,14 @@ Display-only date labels are preserved separately from real database date fields
 19. Audit remaining direct static dependencies and keep them behind demo boundaries. Done.
 20. Select and add production auth/session provider. Done at inactive code checkpoint.
 21. Require runtime household access in all server read models. Done at code checkpoint.
-22. Move shared inbox writes.
-23. Move tasks and reminders writes.
-24. Move shopping list writes.
-25. Move bills and renewals writes with source-of-truth review.
-26. Move source references as metadata/pointers only.
-27. Move comments and activity history.
+22. Generate and review the initial PostgreSQL migration. Done; not applied.
+23. Provision the production PostgreSQL database and apply migrations through a controlled deployment.
+24. Move shared inbox writes.
+25. Move tasks and reminders writes.
+26. Move shopping list writes.
+27. Move bills and renewals writes with source-of-truth review.
+28. Move source references as metadata/pointers only.
+29. Move comments and activity history.
 
 ## Bill And Source Safety
 
@@ -129,6 +131,8 @@ Bills and renewals remain admin reminders only. Persistence migration must not a
 Source references remain metadata/pointers. Uploads and document previews are separate future phases.
 
 ## Review Gates
+
+`pnpm db:migrate:status` may inspect a configured database and `pnpm db:migrate:deploy` may apply committed migrations. Neither command should target production until the database and deployment gate are approved.
 
 Every persistence PR should confirm:
 
