@@ -15,7 +15,7 @@ This document defines the household-first data model direction for Family Life A
 
 ## Production Prisma Schema Checkpoint
 
-The production data-model checkpoint is `prisma/schema.prisma`. The generated initial PostgreSQL migration is stored in `prisma/migrations/20260710103700_init/migration.sql`, but it has not been applied to a database.
+The production data-model checkpoint is `prisma/schema.prisma`. The generated initial PostgreSQL migration is stored in `prisma/migrations/20260710103700_init/migration.sql` and was applied to the production Neon database on 10 July 2026.
 
 Current checkpoint includes:
 
@@ -38,8 +38,8 @@ Current checkpoint includes:
 
 Important boundaries:
 
-- The initial migration has been generated and reviewed, but not applied.
-- No production database connection has been configured and no migration command has been run against a live database.
+- The initial migration has been generated, reviewed, rehearsed on isolated Neon branches, and applied to production.
+- The production schema is available, but application runtime access remains disabled until Clerk, secure environment values, and the initial household membership are ready.
 - The app still renders from typed static demo data until persistence is wired in a later approved batch.
 - The schema includes invitation-ready entities but does not implement invite flows.
 - Source references are metadata/pointers only and do not implement uploads or document previews.

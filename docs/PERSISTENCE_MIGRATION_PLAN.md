@@ -8,7 +8,7 @@ The app has:
 
 - static demo data for the working UI
 - a Prisma/PostgreSQL schema checkpoint
-- a generated and reviewed initial PostgreSQL migration that has not been applied
+- a generated and reviewed initial PostgreSQL migration applied to the production Neon database on 10 July 2026
 - Prisma 7 tooling and schema validation scripts
 - a generated Prisma client in CI
 - a server-only Prisma client boundary in `src/lib/server/prisma.ts`
@@ -32,8 +32,8 @@ The app has:
 
 The app does not yet have:
 
-- live database connection or applied migration
-- executable seed script
+- live application database connection
+- completed initial production household seed
 - wired live writes in app routes
 
 ## Migration Principles
@@ -82,7 +82,7 @@ The intended flow is:
 5. Pass the returned `HouseholdAccessContext` to repository/adapters.
 6. Apply role/capability checks before reads or writes.
 
-This boundary is present at code checkpoint. Clerk activation still requires environment provisioning, the reviewed schema migration, mapped users and memberships, and production access-state QA. It does not add database writes.
+This boundary is present at code checkpoint. Clerk activation still requires environment provisioning, mapped users and memberships, and production access-state QA. The reviewed schema migration is applied. It does not add database writes.
 
 ## Seed Data Bridge
 
@@ -115,8 +115,8 @@ Display-only date labels are preserved separately from real database date fields
 19. Audit remaining direct static dependencies and keep them behind demo boundaries. Done.
 20. Select and add production auth/session provider. Done at inactive code checkpoint.
 21. Require runtime household access in all server read models. Done at code checkpoint.
-22. Generate and review the initial PostgreSQL migration. Done; not applied.
-23. Provision the production PostgreSQL database and apply migrations through a controlled deployment.
+22. Generate, review, and apply the initial PostgreSQL migration. Done.
+23. Provision the production PostgreSQL database and apply migrations through a controlled deployment. Done.
 24. Move shared inbox writes.
 25. Move tasks and reminders writes.
 26. Move shopping list writes.
@@ -132,7 +132,7 @@ Source references remain metadata/pointers. Uploads and document previews are se
 
 ## Review Gates
 
-`pnpm db:migrate:status` may inspect a configured database and `pnpm db:migrate:deploy` may apply committed migrations. Neither command should target production until the database and deployment gate are approved.
+`pnpm db:migrate:status` may inspect a configured database and `pnpm db:migrate:deploy` may apply committed migrations. The initial production deployment was explicitly approved and completed; future production migrations require the same controlled gate.
 
 Every persistence PR should confirm:
 
@@ -142,3 +142,9 @@ Every persistence PR should confirm:
 - source references remain private metadata/pointers
 - bill/payment source-of-truth rules still pass
 - static fallback remains available until live behavior is verified
+
+## Production Activation Checkpoint
+
+Prisma 7 live access uses the Neon serverless driver adapter. Client creation remains lazy so static/demo builds do not require a database connection.
+
+The one-time initial household seed is deliberately separate from the demo snapshot bridge. It creates only the first provider-mapped internal user, household, settings, and active administrator membership. See `docs/PRODUCTION_ACTIVATION_RUNBOOK.md`.

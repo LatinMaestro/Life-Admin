@@ -98,3 +98,17 @@ Checklist:
 - Payment-source guardrails scan migration SQL.
 - `pnpm guardrails:migration` passes.
 - Production migration deployment is separately approved and uses committed migration files.
+- The initial migration was approved, rehearsed, applied, and verified on 10 July 2026.
+- `pnpm check:activation` rejects partial Clerk/Prisma activation and missing live credentials.
+
+## Gate 9: Production Activation
+
+Confirm the controlled activation sequence before enabling live modes.
+
+- Clerk and Prisma modes change together.
+- The Neon driver adapter is configured and the live activation check passes.
+- The initial user is mapped by exact Clerk provider subject, never email alone.
+- The initial household administrator membership is active and verified.
+- Static demo data cannot appear as a fallback in live mode.
+- Signed-out and unmapped-account states fail closed.
+- Rollback returns both runtime modes to demo/static without deleting production data.

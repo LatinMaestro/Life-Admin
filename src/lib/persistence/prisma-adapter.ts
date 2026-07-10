@@ -15,7 +15,7 @@ import type {
   SourceReferenceSummary,
   TaskSummary,
 } from "@/lib/persistence/contracts";
-import { prisma } from "@/lib/server/prisma";
+import { getPrismaClient } from "@/lib/server/prisma";
 
 function requireReadableHousehold(context: HouseholdAccessContext) {
   requireHouseholdPermission(context, "view_household");
@@ -27,7 +27,7 @@ export const prismaHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
   async getHousehold(context): Promise<HouseholdSummary> {
     requireHouseholdPermission(context, "view_household");
 
-    const household = await prisma.household.findFirstOrThrow({
+    const household = await getPrismaClient().household.findFirstOrThrow({
       where: {
         id: context.householdId,
         members: {
@@ -54,7 +54,7 @@ export const prismaHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
   async listMembers(context): Promise<HouseholdMemberSummary[]> {
     const where = requireReadableHousehold(context);
 
-    const members = await prisma.householdMember.findMany({
+    const members = await getPrismaClient().householdMember.findMany({
       where,
       orderBy: [{ role: "asc" }, { displayName: "asc" }],
       select: {
@@ -73,7 +73,7 @@ export const prismaHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
   async listInboxItems(context): Promise<InboxItemSummary[]> {
     const where = requireReadableHousehold(context);
 
-    return prisma.inboxItem.findMany({
+    return getPrismaClient().inboxItem.findMany({
       where,
       orderBy: { updatedAt: "desc" },
       select: {
@@ -94,7 +94,7 @@ export const prismaHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
   async listTasks(context): Promise<TaskSummary[]> {
     const where = requireReadableHousehold(context);
 
-    return prisma.task.findMany({
+    return getPrismaClient().task.findMany({
       where,
       orderBy: [{ dueAt: "asc" }, { updatedAt: "desc" }],
       select: {
@@ -116,7 +116,7 @@ export const prismaHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
   async listReminders(context): Promise<ReminderSummary[]> {
     const where = requireReadableHousehold(context);
 
-    return prisma.reminder.findMany({
+    return getPrismaClient().reminder.findMany({
       where,
       orderBy: [{ remindAt: "asc" }, { updatedAt: "desc" }],
       select: {
@@ -136,7 +136,7 @@ export const prismaHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
   async listShoppingLists(context): Promise<ShoppingListSummary[]> {
     const where = requireReadableHousehold(context);
 
-    const lists = await prisma.shoppingList.findMany({
+    const lists = await getPrismaClient().shoppingList.findMany({
       where,
       orderBy: { updatedAt: "desc" },
       select: {
@@ -167,7 +167,7 @@ export const prismaHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
   async listBillsAndRenewals(context): Promise<BillOrRenewalSummary[]> {
     const where = requireReadableHousehold(context);
 
-    return prisma.billOrRenewal.findMany({
+    return getPrismaClient().billOrRenewal.findMany({
       where,
       orderBy: [{ dueAt: "asc" }, { renewalAt: "asc" }, { updatedAt: "desc" }],
       select: {
@@ -190,7 +190,7 @@ export const prismaHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
     const where = requireReadableHousehold(context);
     requireHouseholdPermission(context, "view_source_references");
 
-    return prisma.sourceReference.findMany({
+    return getPrismaClient().sourceReference.findMany({
       where,
       orderBy: [{ reviewStatus: "asc" }, { updatedAt: "desc" }],
       select: {
@@ -209,7 +209,7 @@ export const prismaHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
   async listComments(context): Promise<CommentSummary[]> {
     const where = requireReadableHousehold(context);
 
-    return prisma.comment.findMany({
+    return getPrismaClient().comment.findMany({
       where,
       orderBy: { createdAt: "desc" },
       select: {
@@ -227,7 +227,7 @@ export const prismaHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
   async listActivity(context): Promise<ActivityEventSummary[]> {
     const where = requireReadableHousehold(context);
 
-    return prisma.activityEvent.findMany({
+    return getPrismaClient().activityEvent.findMany({
       where,
       orderBy: { createdAt: "desc" },
       select: {

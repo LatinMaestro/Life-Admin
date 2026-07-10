@@ -6,7 +6,7 @@ This document defines the approved authentication/session boundary and its stage
 
 The app has a typed auth/session contract in `src/lib/auth/session.ts`. Clerk is the approved provider, and the SDK, conditional provider wrapper, and Next.js 16 proxy foundation are present behind `FAMILY_LIFE_ADMIN_AUTH_MODE`.
 
-The runtime still defaults to `demo`. In `clerk` mode, the server session adapter resolves Clerk's trusted subject and maps it to an internal User using the unique provider/subject pair. Signed-out or unmapped identities return no application session. Clerk environment provisioning and the database migration remain pending. The sign-in, unmapped-account, protected workspace, and read-model membership paths are present but inactive.
+The runtime still defaults to `demo`. In `clerk` mode, the server session adapter resolves Clerk's trusted subject and maps it to an internal User using the unique provider/subject pair. Signed-out or unmapped identities return no application session. The database migration is applied; Clerk environment provisioning and the initial provider-mapped household membership remain pending. The sign-in, unmapped-account, protected workspace, and read-model membership paths are present but inactive.
 
 The app still uses static demo data in the UI.
 
