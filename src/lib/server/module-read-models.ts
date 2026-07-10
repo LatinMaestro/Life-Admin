@@ -45,7 +45,7 @@ function getMemberName(members: MemberLookup, memberId: string | null | undefine
 }
 
 async function getBaseReadModel(context: HouseholdAccessContext) {
-  const adapter = getHouseholdPersistenceAdapter();
+  const adapter = await getHouseholdPersistenceAdapter();
   const [household, members] = await Promise.all([adapter.getHousehold(context), adapter.listMembers(context)]);
 
   return {
