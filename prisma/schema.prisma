@@ -6,6 +6,10 @@ datasource db {
   provider = "postgresql"
 }
 
+enum AuthProvider {
+  clerk
+}
+
 enum HouseholdRole {
   household_admin
   household_member
@@ -157,8 +161,10 @@ model User {
   id        String   @id @default(cuid())
   name      String?
   email     String   @unique
-  avatarUrl String?
-  createdAt DateTime @default(now())
+  avatarUrl    String?
+  authProvider AuthProvider?
+  authSubject  String?
+  createdAt    DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   memberships        HouseholdMember[]
@@ -166,6 +172,7 @@ model User {
   comments           Comment[]         @relation("CommentCreatedBy")
   activityEvents     ActivityEvent[]   @relation("ActivityActor")
 
+  @@unique([authProvider, authSubject])
   @@index([email])
 }
 
