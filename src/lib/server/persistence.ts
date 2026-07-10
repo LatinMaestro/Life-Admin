@@ -1,10 +1,7 @@
 import "server-only";
 
-import {
-  prismaHouseholdPersistenceAdapter,
-  staticHouseholdPersistenceAdapter,
-} from "@/lib/persistence";
-import type { HouseholdPersistenceAdapter } from "@/lib/persistence";
+import { staticHouseholdPersistenceAdapter } from "@/lib/persistence/static-adapter";
+import type { HouseholdPersistenceAdapter } from "@/lib/persistence/contracts";
 
 export type PersistenceMode = "static" | "prisma";
 
@@ -24,10 +21,12 @@ export function getConfiguredPersistenceMode(): PersistenceMode {
   return configuredMode as PersistenceMode;
 }
 
-export function getHouseholdPersistenceAdapter(): HouseholdPersistenceAdapter {
+export async function getHouseholdPersistenceAdapter(): Promise<HouseholdPersistenceAdapter> {
   const mode = getConfiguredPersistenceMode();
 
   if (mode === "prisma") {
+    const { prismaHouseholdPersistenceAdapter } = await import("@/lib/persistence/prisma-adapter");
+
     return prismaHouseholdPersistenceAdapter;
   }
 
