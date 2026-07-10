@@ -84,3 +84,17 @@ Checklist:
 - Security/privacy decisions are recorded.
 - Data model changes are recorded.
 - Future-phase boundaries are preserved.
+
+## Gate 8: Database Migration
+
+Confirm committed migrations preserve the household and identity boundaries.
+
+Checklist:
+
+- Generated SQL matches the reviewed Prisma schema checkpoint.
+- Household-owned tables and indexes are present.
+- Clerk provider subjects map to internal users through the unique provider/subject pair.
+- No destructive statements are introduced without an explicit data-migration plan.
+- Payment-source guardrails scan migration SQL.
+- `pnpm guardrails:migration` passes.
+- Production migration deployment is separately approved and uses committed migration files.
