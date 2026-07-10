@@ -2,7 +2,7 @@
 
 ## Current Objective
 
-Continue the approved production foundation in scoped batches. The current foundation includes a Prisma/PostgreSQL schema checkpoint, access-control helpers, a server-only household access resolver, a demo access context, persistence contracts, static and Prisma read adapters, a server-only adapter selector, dashboard, module, and workspace read models with runtime household access resolution, a shared read-model summary component, the app shell and all current pages on household-scoped repository read models, static comments mapped through the adapter, auth/session contracts, a dormant Clerk SDK/provider/proxy foundation with immutable internal-user session mapping, a pure static-demo seed snapshot mapper, and CI guardrails for payment-source safety and page-level static-data boundaries. The running app still uses static mode by default: no live persistence, production authentication, migrations, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, or finance features.
+Continue the approved production foundation in scoped batches. The current foundation includes a Prisma/PostgreSQL schema checkpoint, access-control helpers, a server-only household access resolver, a demo access context, persistence contracts, static and Prisma read adapters, a server-only adapter selector, dashboard, module, and workspace read models with runtime household access resolution, a shared read-model summary component, the app shell and all current pages on household-scoped repository read models, static comments mapped through the adapter, auth/session contracts, an inactive Clerk sign-in and protected-workspace foundation with immutable internal-user session mapping, a pure static-demo seed snapshot mapper, and CI guardrails for payment-source safety and page-level static-data boundaries. The running app still uses static mode by default: no live persistence, production authentication, migrations, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, or finance features.
 
 ## Product Summary
 
@@ -90,17 +90,18 @@ Out of scope until separately approved:
 17. Activity page read-model migration. Done.
 18. Inbox, tasks, lists, and bills page read-model migration. Done.
 19. Workspace read model and Dashboard, Family, Settings, and app shell migration. Done.
-20. Authentication provider and session strategy. Clerk approved; dormant SDK/provider/proxy and internal-user session mapping checkpoints done.
+20. Authentication provider and session strategy. Clerk approved; SDK, session mapping, sign-in, and protected workspace checkpoints done.
 21. Household membership enforcement. Server read-model checkpoint done; live mutation enforcement pending.
-22. Audit remaining direct static dependencies and keep them behind approved demo boundaries. Done.
-23. Persist shared inbox writes.
-24. Persist tasks and reminders writes.
-25. Persist shopping list writes.
-26. Persist bills and renewals writes with source-of-truth guardrails.
-27. Persist source references as metadata/pointers.
-28. Persist comments and activity history.
-29. Production QA and privacy review.
+22. Clerk signed-out and unmapped-account access states. Done at inactive code checkpoint.
+23. Audit remaining direct static dependencies and keep them behind approved demo boundaries. Done.
+24. Persist shared inbox writes.
+25. Persist tasks and reminders writes.
+26. Persist shopping list writes.
+27. Persist bills and renewals writes with source-of-truth guardrails.
+28. Persist source references as metadata/pointers.
+29. Persist comments and activity history.
+30. Production QA and privacy review.
 
 ## Immediate Next Step
 
-Add the sign-in and explicit no-access states, then protect workspace requests with Clerk while retaining resource-level membership checks. Keep Clerk mode disabled until environment provisioning, a reviewed migration, and mapped household members are ready.
+Provision the Clerk environment and production PostgreSQL database, create and review the first migration, and seed the initial internal user, household, and membership mapping before enabling Clerk mode.
