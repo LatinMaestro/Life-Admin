@@ -66,6 +66,12 @@ Not allowed:
 - Do not label stored app data as payment instructions.
 - Do not add finance dashboards, cashflow views, or spend analysis.
 
+## Source Guardrail Automation
+
+`pnpm guardrails:payment-source` scans app source and Prisma schema files for forbidden payment identifier language. Documentation files are intentionally excluded so they can continue to explain the rules clearly.
+
+The automation is a backstop, not a replacement for review. Reviewers should still check bill, renewal, source reference, AI, OCR, email forwarding, and upload changes manually.
+
 ## AI/OCR Rules
 
 AI and OCR are future phases. If approved later, they must not extract and store payment identifiers. Any payment-related detection must remain a pointer to a source document/crop/reference.

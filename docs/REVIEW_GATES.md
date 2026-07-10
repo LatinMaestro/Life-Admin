@@ -58,6 +58,7 @@ Checklist:
 - No generated/transcribed customer reference numbers.
 - No generated/transcribed payment reference values.
 - Payment-related reminders point back to original source documents, links, emails, images, or user-confirmed crops/references.
+- `pnpm guardrails:payment-source` passes for app source and Prisma schema files.
 
 ## Gate 6: Mobile Usability
 

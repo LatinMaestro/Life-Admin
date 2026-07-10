@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   quality:
-    name: Lint, Prisma validate, generate, typecheck, and build
+    name: Lint, guardrails, Prisma validate, generate, typecheck, and build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -34,6 +34,9 @@ jobs:
 
       - name: Lint
         run: pnpm lint
+
+      - name: Check payment source guardrails
+        run: pnpm guardrails:payment-source
 
       - name: Validate Prisma schema
         run: pnpm db:validate
