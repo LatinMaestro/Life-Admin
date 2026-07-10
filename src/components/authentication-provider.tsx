@@ -15,5 +15,5 @@ export function AuthenticationProvider({
     return children;
   }
 
-  return <ClerkProvider>{children}</ClerkProvider>;
+  return <ClerkProvider dynamic>{children}</ClerkProvider>;
 }
