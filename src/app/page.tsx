@@ -1,8 +1,7 @@
 import Link from "next/link";
 import {
-  AlertCircle,
   ArrowRight,
-  CalendarClock,
+  Bell,
   ClipboardList,
   FileText,
   History,
@@ -10,94 +9,39 @@ import {
   ListChecks,
   MessageSquareText,
   ShoppingCart,
-  UserRoundCheck,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ItemRow } from "@/components/item-row";
 import { PageHeader } from "@/components/page-header";
-import {
-  getCurrentHouseholdActivity,
-  getCurrentHouseholdBillReminders,
-  getCurrentHouseholdDashboardItems,
-  getCurrentHouseholdInboxItems,
-  getCurrentHouseholdShoppingLists,
-  getCurrentHouseholdSourceReferences,
-  getSourceReferenceLabel,
-} from "@/lib/demo-data";
-import { getCommentEntityLabel, getCurrentHouseholdComments, getCurrentHouseholdOpenComments } from "@/lib/collaboration-data";
-import { getCurrentHousehold, getCurrentMember, getMemberDisplayName } from "@/lib/household";
+import { getDashboardReadModel } from "@/lib/server/dashboard-read-model";
 
-export default function DashboardPage() {
-  const household = getCurrentHousehold();
-  const currentMember = getCurrentMember();
-  const dashboardItems = getCurrentHouseholdDashboardItems();
-  const inboxItems = getCurrentHouseholdInboxItems();
-  const shoppingLists = getCurrentHouseholdShoppingLists();
-  const billReminders = getCurrentHouseholdBillReminders();
-  const sourceReferences = getCurrentHouseholdSourceReferences();
-  const comments = getCurrentHouseholdComments();
-  const openComments = getCurrentHouseholdOpenComments();
-  const activity = getCurrentHouseholdActivity();
-  const todayAndOverdue = [...dashboardItems.overdue, ...dashboardItems.today];
-  const assignedToCurrentMember = [
-    ...dashboardItems.overdue,
-    ...dashboardItems.today,
-    ...dashboardItems.upcoming,
-  ].filter((item) => item.assignedMemberId === currentMember.id);
-  const openShoppingItems = shoppingLists.reduce(
-    (total, list) => total + list.items.filter((item) => !item.checked).length,
-    0,
-  );
-  const reviewInboxItems = inboxItems.filter((item) => item.status !== "Linked");
-  const reviewBillReminders = billReminders.filter((bill) => bill.status === "Needs review");
-  const reviewSources = sourceReferences.filter((source) => source.reviewStatus === "Needs review");
-  const sourceLinkedBills = billReminders.filter((bill) => bill.sourceReferenceId).length;
-  const operatingFocus = [
-    {
-      title: "Review inbox",
-      detail: `${reviewInboxItems.length} manual items need routing or confirmation.`,
-      href: "/inbox",
-      icon: Inbox,
-      status: `${reviewInboxItems.length} open`,
-    },
-    {
-      title: "Check renewals",
-      detail: `${reviewBillReminders.length} reminders need household review before action.`,
-      href: "/bills",
-      icon: ClipboardList,
-      status: `${reviewBillReminders.length} review`,
-    },
-    {
-      title: "Verify sources",
-      detail: `${reviewSources.length} source references need a source-safe review.`,
-      href: "/sources",
-      icon: FileText,
-      status: `${reviewSources.length} review`,
-    },
-    {
-      title: "Read comments",
-      detail: `${openComments.length} household comments are still open.`,
-      href: "/activity",
-      icon: MessageSquareText,
-      status: `${openComments.length} open`,
-    },
-  ];
+function formatStatus(status: string) {
+  return status
+    .split("_")
+    .map((word) => `${word.charAt(0).toUpperCase()}${word.slice(1)}`)
+    .join(" ");
+}
+
+export default async function DashboardPage() {
+  const dashboard = await getDashboardReadModel();
   const summary = [
-    { label: "Overdue", value: String(dashboardItems.overdue.length), detail: "Needs attention", icon: AlertCircle, href: "/tasks" },
-    { label: "Today", value: String(dashboardItems.today.length), detail: "Household items", icon: ListChecks, href: "/tasks" },
-    { label: "Assigned", value: String(assignedToCurrentMember.length), detail: `For ${currentMember.displayName}`, icon: UserRoundCheck, href: "/tasks" },
-    { label: "Inbox", value: String(inboxItems.length), detail: "Manual items", icon: Inbox, href: "/inbox" },
-    { label: "Shopping", value: String(openShoppingItems), detail: "Open items", icon: ShoppingCart, href: "/lists" },
-    { label: "Sources", value: String(sourceReferences.length), detail: "Metadata only", icon: FileText, href: "/sources" },
+    { label: "Open tasks", value: dashboard.counts.openTasks, icon: ListChecks, href: "/tasks" },
+    { label: "Reminders", value: dashboard.counts.scheduledReminders, icon: Bell, href: "/tasks" },
+    { label: "Inbox", value: dashboard.counts.inboxItems, icon: Inbox, href: "/inbox" },
+    { label: "Shopping", value: dashboard.counts.openShoppingItems, icon: ShoppingCart, href: "/lists" },
+    { label: "Bills and renewals", value: dashboard.counts.billsAndRenewals, icon: ClipboardList, href: "/bills" },
+    { label: "Sources", value: dashboard.counts.sourceReferences, icon: FileText, href: "/sources" },
+    { label: "Comments", value: dashboard.counts.comments, icon: MessageSquareText, href: "/activity" },
+    { label: "Activity", value: dashboard.counts.activityEvents, icon: History, href: "/activity" },
   ];
 
   return (
     <>
       <PageHeader
         title="Dashboard"
-        description={`A calm household command center for ${household.name}: what is due, who owns it, and where to go next.`}
+        description={`A calm view of what needs attention across ${dashboard.household.name}.`}
         action={
           <Link href="/inbox" className={buttonVariants({ variant: "default" })}>
             Add inbox item
@@ -106,23 +50,20 @@ export default function DashboardPage() {
         }
       />
 
-      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        {operatingFocus.map((item) => {
+      <section aria-label="Household overview" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        {summary.map((item) => {
           const Icon = item.icon;
 
           return (
-            <Link key={item.title} href={item.href} className="block rounded-md transition-transform hover:-translate-y-0.5">
+            <Link key={item.label} href={item.href} className="block rounded-md transition-transform hover:-translate-y-0.5">
               <Card className="h-full">
-                <CardContent className="flex min-h-32 flex-col justify-between gap-4 p-4">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary text-primary-foreground">
-                      <Icon className="h-5 w-5" aria-hidden="true" />
-                    </div>
-                    <Badge variant="secondary">{item.status}</Badge>
+                <CardContent className="flex min-h-24 items-center gap-3 p-4">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-accent text-accent-foreground">
+                    <Icon className="h-5 w-5" aria-hidden="true" />
                   </div>
-                  <div>
-                    <p className="font-semibold">{item.title}</p>
-                    <p className="mt-1 text-sm text-muted-foreground">{item.detail}</p>
+                  <div className="min-w-0">
+                    <p className="text-2xl font-semibold leading-none">{item.value}</p>
+                    <p className="mt-1 text-sm font-medium">{item.label}</p>
                   </div>
                 </CardContent>
               </Card>
@@ -131,206 +72,84 @@ export default function DashboardPage() {
         })}
       </section>
 
-      <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
-        {summary.map((item) => {
-          const Icon = item.icon;
+      <div className="mt-6 grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
+        <Card>
+          <CardHeader>
+            <CardTitle>Needs review</CardTitle>
+            <CardDescription>Queues that benefit from a quick household decision.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {dashboard.reviewQueues.map((queue) => (
+              <Link
+                key={queue.href}
+                href={queue.href}
+                className="flex min-h-14 items-center justify-between gap-3 rounded-md border bg-background px-4 py-3 transition-colors hover:bg-accent"
+              >
+                <div>
+                  <p className="text-sm font-medium">{queue.label}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {queue.count === 0 ? "Nothing waiting" : `${queue.count} items waiting`}
+                  </p>
+                </div>
+                <Badge variant={queue.count > 0 ? "default" : "secondary"}>{queue.count}</Badge>
+              </Link>
+            ))}
+          </CardContent>
+        </Card>
 
-          return (
-            <Link key={item.label} href={item.href} className="block rounded-md transition-transform hover:-translate-y-0.5">
-              <Card>
-                <CardContent className="flex items-center gap-3 p-4 xl:flex-col xl:items-start">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-md bg-accent text-accent-foreground">
-                    <Icon className="h-5 w-5" aria-hidden="true" />
-                  </div>
-                  <div>
-                    <p className="text-2xl font-semibold leading-none">{item.value}</p>
-                    <p className="mt-1 text-sm font-medium">{item.label}</p>
-                    <p className="text-xs text-muted-foreground">{item.detail}</p>
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
-          );
-        })}
+        <Card>
+          <CardHeader>
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <CardTitle>Assigned to {dashboard.currentMember.displayName}</CardTitle>
+                <CardDescription>Open household work owned by the current member.</CardDescription>
+              </div>
+              <Badge>{dashboard.assignedToCurrentMember.length}</Badge>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {dashboard.assignedToCurrentMember.length > 0 ? (
+              dashboard.assignedToCurrentMember.map((item) => (
+                <ItemRow
+                  key={item.id}
+                  title={item.title}
+                  detail="Assigned in this household workspace."
+                  status={formatStatus(item.status)}
+                  href={item.href}
+                />
+              ))
+            ) : (
+              <p className="rounded-md border bg-background p-4 text-sm text-muted-foreground">
+                No open items are assigned to this member.
+              </p>
+            )}
+          </CardContent>
+        </Card>
       </div>
 
-      <div className="mt-6 grid gap-4 xl:grid-cols-[1.15fr_0.85fr]">
-        <div className="space-y-4">
-          <Card>
-            <CardHeader>
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <CardTitle>Priority today</CardTitle>
-                  <CardDescription>Overdue and due-today household items, grouped for quick scanning.</CardDescription>
-                </div>
-                <Badge>{todayAndOverdue.length} items</Badge>
-              </div>
-            </CardHeader>
-            <CardContent>
-              {todayAndOverdue.map((item) => (
-                <ItemRow
-                  key={item.id}
-                  title={item.title}
-                  detail={`${item.detail} - ${getMemberDisplayName(item.assignedMemberId)}`}
-                  status={item.status}
-                  href="/tasks"
-                />
-              ))}
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <CardTitle>Upcoming</CardTitle>
-                  <CardDescription>Near-term reminders and household admin items.</CardDescription>
-                </div>
-                <CalendarClock className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
-              </div>
-            </CardHeader>
-            <CardContent>
-              {dashboardItems.upcoming.map((item) => (
-                <ItemRow
-                  key={item.id}
-                  title={item.title}
-                  detail={`${item.detail} - ${getMemberDisplayName(item.assignedMemberId)}`}
-                  status={item.status}
-                  href="/tasks"
-                />
-              ))}
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <CardTitle>Bills and renewals</CardTitle>
-                  <CardDescription>Admin reminders that point back to original sources.</CardDescription>
-                </div>
-                <Badge>{sourceLinkedBills} source linked</Badge>
-              </div>
-            </CardHeader>
-            <CardContent>
-              {billReminders.map((bill) => (
-                <ItemRow
-                  key={bill.id}
-                  title={bill.title}
-                  detail={`${bill.provider} - ${getMemberDisplayName(bill.assignedMemberId)} - Source: ${getSourceReferenceLabel(bill.sourceReferenceId)}`}
-                  status={bill.due}
-                  href="/bills"
-                />
-              ))}
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="space-y-4">
-          <Card>
-            <CardHeader>
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <CardTitle>Assigned to {currentMember.displayName}</CardTitle>
-                  <CardDescription>Personal household worklist for this member.</CardDescription>
-                </div>
-                <Badge>{assignedToCurrentMember.length} items</Badge>
-              </div>
-            </CardHeader>
-            <CardContent>
-              {assignedToCurrentMember.map((item) => (
-                <ItemRow key={item.id} title={item.title} detail={item.detail} status={item.status} href="/tasks" />
-              ))}
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Shared inbox</CardTitle>
-              <CardDescription>Manual capture items waiting to become household work.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {inboxItems.map((item) => (
-                <ItemRow
-                  key={item.id}
-                  title={item.title}
-                  detail={`${item.routingReason} Assigned to ${getMemberDisplayName(item.assignedMemberId)}.`}
-                  status={item.status}
-                  href="/inbox"
-                />
-              ))}
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Shopping</CardTitle>
-              <CardDescription>Open list items across active household lists.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {shoppingLists.map((list) => {
-                const openItems = list.items.filter((item) => !item.checked).length;
-
-                return (
-                  <ItemRow
-                    key={list.id}
-                    title={list.name}
-                    detail={`${list.detail} - ${openItems} open of ${list.items.length}`}
-                    status={list.status}
-                    href="/lists"
-                  />
-                );
-              })}
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <CardTitle>Recent comments</CardTitle>
-                  <CardDescription>Household notes on shared items.</CardDescription>
-                </div>
-                <Badge>{openComments.length} open</Badge>
-              </div>
-            </CardHeader>
-            <CardContent>
-              {comments.map((comment) => (
-                <ItemRow
-                  key={comment.id}
-                  title={comment.entityTitle}
-                  detail={`${comment.body} - ${getMemberDisplayName(comment.createdByMemberId)}`}
-                  status={`${getCommentEntityLabel(comment.entityType)} - ${comment.createdAtLabel}`}
-                  href="/activity"
-                />
-              ))}
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <CardTitle>Recent activity</CardTitle>
-                  <CardDescription>Household actions without exposing source document contents.</CardDescription>
-                </div>
-                <History className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
-              </div>
-            </CardHeader>
-            <CardContent>
-              {activity.map((event) => (
-                <ItemRow
-                  key={event.id}
-                  title={event.summary}
-                  detail={`Recorded by ${getMemberDisplayName(event.actorMemberId)}`}
-                  status="Activity"
-                  href="/activity"
-                />
-              ))}
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+      <Card className="mt-4">
+        <CardHeader>
+          <CardTitle>Household rhythm</CardTitle>
+          <CardDescription>Simple paths for the most common family admin work.</CardDescription>
+        </CardHeader>
+        <CardContent className="grid gap-3 sm:grid-cols-3">
+          <Link href="/inbox" className="rounded-md border p-4 transition-colors hover:bg-accent">
+            <Inbox className="h-5 w-5 text-primary" aria-hidden="true" />
+            <p className="mt-3 text-sm font-semibold">Capture</p>
+            <p className="mt-1 text-sm text-muted-foreground">Put a new household item in the shared inbox.</p>
+          </Link>
+          <Link href="/tasks" className="rounded-md border p-4 transition-colors hover:bg-accent">
+            <ListChecks className="h-5 w-5 text-primary" aria-hidden="true" />
+            <p className="mt-3 text-sm font-semibold">Coordinate</p>
+            <p className="mt-1 text-sm text-muted-foreground">Review tasks, ownership, and reminders.</p>
+          </Link>
+          <Link href="/sources" className="rounded-md border p-4 transition-colors hover:bg-accent">
+            <FileText className="h-5 w-5 text-primary" aria-hidden="true" />
+            <p className="mt-3 text-sm font-semibold">Confirm</p>
+            <p className="mt-1 text-sm text-muted-foreground">Return to the original source before taking action.</p>
+          </Link>
+        </CardContent>
+      </Card>
     </>
   );
 }
