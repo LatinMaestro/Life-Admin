@@ -2,7 +2,7 @@
 
 ## Current Objective
 
-Continue the approved production foundation in scoped batches. The current foundation includes a Prisma/PostgreSQL schema checkpoint, access-control helpers, a server-only household access resolver, a demo access context, persistence contracts, static and Prisma read adapters, a server-only adapter selector, dashboard, module, and workspace read-model foundations, a shared read-model summary component, the app shell and all current pages on household-scoped repository read models, static comments mapped through the adapter, auth/session contracts, and a pure static-demo seed snapshot mapper. The running app still uses static mode by default: no live persistence, production authentication, migrations, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, or finance features.
+Continue the approved production foundation in scoped batches. The current foundation includes a Prisma/PostgreSQL schema checkpoint, access-control helpers, a server-only household access resolver, a demo access context, persistence contracts, static and Prisma read adapters, a server-only adapter selector, dashboard, module, and workspace read-model foundations, a shared read-model summary component, the app shell and all current pages on household-scoped repository read models, static comments mapped through the adapter, auth/session contracts, a pure static-demo seed snapshot mapper, and CI guardrails for payment-source safety and page-level static-data boundaries. The running app still uses static mode by default: no live persistence, production authentication, migrations, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, or finance features.
 
 ## Product Summary
 
@@ -29,6 +29,7 @@ In scope for the production foundation path:
 - Dashboard, module, and workspace read-model foundations behind the adapter boundary
 - Shared read-model summary UI component
 - App shell and all current pages migrated to the read-model path
+- CI enforcement preventing direct raw demo-data imports in app pages and shared components
 - Static demo data to future seed snapshot mapping
 - Module-by-module persistence migration after schema validation
 - Source references as metadata/pointers only
@@ -91,7 +92,7 @@ Out of scope until separately approved:
 19. Workspace read model and Dashboard, Family, Settings, and app shell migration. Done.
 20. Authentication provider and session strategy.
 21. Household membership enforcement in live routes/actions.
-22. Audit remaining direct static dependencies and keep them behind approved demo boundaries.
+22. Audit remaining direct static dependencies and keep them behind approved demo boundaries. Done.
 23. Persist shared inbox writes.
 24. Persist tasks and reminders writes.
 25. Persist shopping list writes.
@@ -102,4 +103,4 @@ Out of scope until separately approved:
 
 ## Immediate Next Step
 
-Audit remaining direct static dependencies to confirm they are confined to the static adapter and demo access context, then prepare the production auth/session provider decision as a separately approved step.
+Prepare the production authentication and session-provider decision for review. Do not wire a provider, real login, or live membership enforcement until that decision is separately approved.

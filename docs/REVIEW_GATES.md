@@ -23,6 +23,8 @@ Checklist:
 - Access depends on household membership.
 - MVP can use one primary household without blocking future multi-household support.
 - Cross-household leakage is not possible by route, API, query, or UI state.
+- App pages and shared components use server read models rather than raw demo-data imports.
+- `pnpm guardrails:static-data-boundary` passes.
 
 ## Gate 3: Roles And Permissions
 
