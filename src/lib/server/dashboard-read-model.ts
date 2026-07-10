@@ -1,8 +1,7 @@
 import "server-only";
 
-import { getCurrentMember } from "@/lib/household";
-import type { HouseholdRole } from "@/lib/household";
-import type { HouseholdAccessContext } from "@/lib/access-control";
+import { HouseholdAccessError } from "@/lib/access-control";
+import type { HouseholdAccessContext, HouseholdRole } from "@/lib/access-control";
 import { getDemoHouseholdAccessContext } from "@/lib/server/demo-access-context";
 import { getHouseholdPersistenceAdapter } from "@/lib/server/persistence";
 
@@ -56,20 +55,35 @@ export async function getDashboardReadModel(
   context: HouseholdAccessContext = getDemoHouseholdAccessContext(),
 ): Promise<DashboardReadModel> {
   const adapter = await getHouseholdPersistenceAdapter();
-  const currentMember = getCurrentMember();
 
-  const [household, inboxItems, tasks, reminders, shoppingLists, billsAndRenewals, sourceReferences, comments, activity] =
-    await Promise.all([
-      adapter.getHousehold(context),
-      adapter.listInboxItems(context),
-      adapter.listTasks(context),
-      adapter.listReminders(context),
-      adapter.listShoppingLists(context),
-      adapter.listBillsAndRenewals(context),
-      adapter.listSourceReferences(context),
-      adapter.listComments(context),
-      adapter.listActivity(context),
-    ]);
+  const [
+    household,
+    members,
+    inboxItems,
+    tasks,
+    reminders,
+    shoppingLists,
+    billsAndRenewals,
+    sourceReferences,
+    comments,
+    activity,
+  ] = await Promise.all([
+    adapter.getHousehold(context),
+    adapter.listMembers(context),
+    adapter.listInboxItems(context),
+    adapter.listTasks(context),
+    adapter.listReminders(context),
+    adapter.listShoppingLists(context),
+    adapter.listBillsAndRenewals(context),
+    adapter.listSourceReferences(context),
+    adapter.listComments(context),
+    adapter.listActivity(context),
+  ]);
+  const currentMember = members.find((member) => member.id === context.memberId);
+
+  if (!currentMember) {
+    throw new HouseholdAccessError("The current household member is not available.");
+  }
 
   const openInboxItems = inboxItems.filter((item) => isOpenStatus(item.status));
   const openTasks = tasks.filter((task) => isOpenStatus(task.status));
