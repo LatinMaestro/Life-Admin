@@ -12,7 +12,9 @@
     "db:generate": "prisma generate",
     "db:validate": "prisma validate",
     "db:format": "prisma format",
-    "guardrails:static-data-boundary": "node scripts/check-static-data-boundaries.mjs"
+    "guardrails:static-data-boundary": "node scripts/check-static-data-boundaries.mjs",
+    "db:migrate:status": "prisma migrate status",
+    "db:migrate:deploy": "prisma migrate deploy"
   },
   "dependencies": {
     "@clerk/nextjs": "7.5.16",
