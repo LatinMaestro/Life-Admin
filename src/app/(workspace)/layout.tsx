@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
 import { AppShell } from "@/components/app-shell";
 import { isClerkAuthenticationEnabled } from "@/lib/auth/config";
-import { getCurrentHouseholdAccessContext } from "@/lib/auth/session";
 import { getWorkspaceReadModel } from "@/lib/server/workspace-read-model";
 
 export default async function WorkspaceLayout({ children }: PropsWithChildren) {
@@ -32,6 +31,7 @@ export default async function WorkspaceLayout({ children }: PropsWithChildren) {
 async function getVerifiedClerkHouseholdAccess() {
   await auth.protect();
 
+  const { getCurrentHouseholdAccessContext } = await import("@/lib/auth/session");
   const accessContext = await getCurrentHouseholdAccessContext();
 
   if (!accessContext) {
