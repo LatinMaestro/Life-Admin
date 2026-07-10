@@ -6,7 +6,7 @@ This document defines the approved authentication/session boundary and its stage
 
 The app has a typed auth/session contract in `src/lib/auth/session.ts`. Clerk is the approved provider, and the SDK, conditional provider wrapper, and Next.js 16 proxy foundation are present behind `FAMILY_LIFE_ADMIN_AUTH_MODE`.
 
-The runtime still defaults to `demo`, and the current session contract returns no active production session. Clerk environment provisioning, internal user mapping, protected sign-in flow, database migrations, and live membership enforcement remain pending.
+The runtime still defaults to `demo`. In `clerk` mode, the server session adapter resolves Clerk's trusted subject and maps it to an internal User using the unique provider/subject pair. Signed-out or unmapped identities return no application session. Clerk environment provisioning, the database migration, protected sign-in flow, and live membership enforcement remain pending.
 
 The app still uses static demo data in the UI.
 
@@ -35,14 +35,14 @@ Client-supplied household ids must be treated as selections, not authority. A se
 
 ## Current Placeholder Behavior
 
-Until the Clerk session and internal user mapping are implemented:
+Until Clerk mode is activated with a migrated and seeded database:
 
-- `getCurrentAuthSession()` returns `null`.
+- `getCurrentAuthSession()` returns `null` in demo mode and for signed-out or unmapped Clerk identities.
 - `requireCurrentAuthSession()` throws `AuthenticationRequiredError`.
 - `getCurrentHouseholdAccessContext()` returns `null` when there is no session.
 - `requireCurrentHouseholdAccessContext()` requires a future session and verified household membership.
 
-These helpers must not replace the demo access context until Clerk identity maps to an internal user and active household membership is verified.
+The session adapter never treats a Clerk subject as an application user id and never links by email alone. These helpers must not replace the demo access context until the schema migration exists, the Clerk identity is mapped to an internal user, and active household membership is verified.
 
 ## Not Yet Implemented
 
