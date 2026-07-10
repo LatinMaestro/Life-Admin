@@ -55,12 +55,12 @@ Rules:
 
 ## User Mapping
 
-The production schema should later add an immutable external identity mapping to User, for example:
+The Prisma schema checkpoint includes an immutable external identity mapping on User:
 
 - authProvider
 - authSubject
 
-The pair should be unique. Account linking must use the provider subject, not email alone. Email can remain profile and contact data but must not silently merge accounts.
+The pair is unique. Account linking must use the provider subject, not email alone. Email can remain profile and contact data but must not silently merge accounts.
 
 Do not store provider access tokens, refresh tokens, session cookies, or identity-provider payloads in application tables or logs.
 
@@ -108,9 +108,9 @@ Production must not fall back to the demo access context. Static demo mode may r
 
 1. Approve Clerk and the initial email-code sign-in posture. Done.
 2. Provision the Clerk integration and environment variables for development, preview, and production.
-3. Add the external identity mapping to the Prisma schema and create the first reviewed migration.
+3. Add the external identity mapping to the Prisma schema. Done at schema checkpoint; the first reviewed migration remains pending.
 4. Add the Clerk SDK and dormant provider/proxy boundary. Done. Protected route handling and sign-in remain pending.
-5. Implement getCurrentAuthSession() using a trusted provider session and internal user lookup.
+5. Implement getCurrentAuthSession() using a trusted provider session and internal user lookup. Done at code checkpoint; activation remains pending.
 6. Enforce household membership through the existing server access resolver.
 7. Add explicit onboarding states without implementing invitations.
 8. Validate signed-out, signed-in, wrong-household, inactive-member, and missing-membership behavior.
