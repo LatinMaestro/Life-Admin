@@ -55,7 +55,7 @@ function isReviewStatus(status: string) {
 export async function getDashboardReadModel(
   context: HouseholdAccessContext = getDemoHouseholdAccessContext(),
 ): Promise<DashboardReadModel> {
-  const adapter = getHouseholdPersistenceAdapter();
+  const adapter = await getHouseholdPersistenceAdapter();
   const currentMember = getCurrentMember();
 
   const [household, inboxItems, tasks, reminders, shoppingLists, billsAndRenewals, sourceReferences, comments, activity] =
