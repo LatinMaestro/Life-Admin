@@ -1,7 +1,7 @@
 import "server-only";
 
 import type { HouseholdAccessContext } from "@/lib/access-control";
-import { getDemoHouseholdAccessContext } from "@/lib/server/demo-access-context";
+import { getRuntimeHouseholdAccessContext } from "@/lib/server/runtime-access-context";
 import { getHouseholdPersistenceAdapter } from "@/lib/server/persistence";
 
 type MemberLookup = Map<string, string>;
@@ -60,10 +60,11 @@ async function getBaseReadModel(context: HouseholdAccessContext) {
 }
 
 export async function getInboxReadModel(
-  context: HouseholdAccessContext = getDemoHouseholdAccessContext(),
+  context?: HouseholdAccessContext,
 ): Promise<ModuleReadModel> {
-  const { adapter, household, members } = await getBaseReadModel(context);
-  const inboxItems = await adapter.listInboxItems(context);
+  const accessContext = context ?? (await getRuntimeHouseholdAccessContext());
+  const { adapter, household, members } = await getBaseReadModel(accessContext);
+  const inboxItems = await adapter.listInboxItems(accessContext);
 
   return {
     household,
@@ -83,10 +84,11 @@ export async function getInboxReadModel(
 }
 
 export async function getTasksReadModel(
-  context: HouseholdAccessContext = getDemoHouseholdAccessContext(),
+  context?: HouseholdAccessContext,
 ): Promise<ModuleReadModel> {
-  const { adapter, household, members } = await getBaseReadModel(context);
-  const [tasks, reminders] = await Promise.all([adapter.listTasks(context), adapter.listReminders(context)]);
+  const accessContext = context ?? (await getRuntimeHouseholdAccessContext());
+  const { adapter, household, members } = await getBaseReadModel(accessContext);
+  const [tasks, reminders] = await Promise.all([adapter.listTasks(accessContext), adapter.listReminders(accessContext)]);
 
   return {
     household,
@@ -115,10 +117,11 @@ export async function getTasksReadModel(
 }
 
 export async function getShoppingListsReadModel(
-  context: HouseholdAccessContext = getDemoHouseholdAccessContext(),
+  context?: HouseholdAccessContext,
 ): Promise<ModuleReadModel> {
-  const { adapter, household, members } = await getBaseReadModel(context);
-  const shoppingLists = await adapter.listShoppingLists(context);
+  const accessContext = context ?? (await getRuntimeHouseholdAccessContext());
+  const { adapter, household, members } = await getBaseReadModel(accessContext);
+  const shoppingLists = await adapter.listShoppingLists(accessContext);
 
   return {
     household,
@@ -138,10 +141,11 @@ export async function getShoppingListsReadModel(
 }
 
 export async function getBillsAndRenewalsReadModel(
-  context: HouseholdAccessContext = getDemoHouseholdAccessContext(),
+  context?: HouseholdAccessContext,
 ): Promise<ModuleReadModel> {
-  const { adapter, household, members } = await getBaseReadModel(context);
-  const billsAndRenewals = await adapter.listBillsAndRenewals(context);
+  const accessContext = context ?? (await getRuntimeHouseholdAccessContext());
+  const { adapter, household, members } = await getBaseReadModel(accessContext);
+  const billsAndRenewals = await adapter.listBillsAndRenewals(accessContext);
 
   return {
     household,
@@ -161,10 +165,11 @@ export async function getBillsAndRenewalsReadModel(
 }
 
 export async function getSourceReferencesReadModel(
-  context: HouseholdAccessContext = getDemoHouseholdAccessContext(),
+  context?: HouseholdAccessContext,
 ): Promise<ModuleReadModel> {
-  const { adapter, household, members } = await getBaseReadModel(context);
-  const sourceReferences = await adapter.listSourceReferences(context);
+  const accessContext = context ?? (await getRuntimeHouseholdAccessContext());
+  const { adapter, household, members } = await getBaseReadModel(accessContext);
+  const sourceReferences = await adapter.listSourceReferences(accessContext);
 
   return {
     household,
@@ -184,10 +189,11 @@ export async function getSourceReferencesReadModel(
 }
 
 export async function getActivityReadModel(
-  context: HouseholdAccessContext = getDemoHouseholdAccessContext(),
+  context?: HouseholdAccessContext,
 ): Promise<ModuleReadModel> {
-  const { adapter, household, members } = await getBaseReadModel(context);
-  const [comments, activity] = await Promise.all([adapter.listComments(context), adapter.listActivity(context)]);
+  const accessContext = context ?? (await getRuntimeHouseholdAccessContext());
+  const { adapter, household, members } = await getBaseReadModel(accessContext);
+  const [comments, activity] = await Promise.all([adapter.listComments(accessContext), adapter.listActivity(accessContext)]);
 
   return {
     household,
