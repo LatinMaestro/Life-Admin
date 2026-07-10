@@ -2,7 +2,7 @@
 
 ## Current Objective
 
-Continue the approved production foundation in scoped batches. The current foundation includes a Prisma/PostgreSQL schema checkpoint, access-control helpers, a server-only household access resolver, a demo access context, persistence contracts, static and Prisma read adapters, a server-only adapter selector, dashboard, module, and workspace read-model foundations, a shared read-model summary component, the app shell and all current pages on household-scoped repository read models, static comments mapped through the adapter, auth/session contracts, a dormant Clerk SDK/provider/proxy foundation, a pure static-demo seed snapshot mapper, and CI guardrails for payment-source safety and page-level static-data boundaries. The running app still uses static mode by default: no live persistence, production authentication, migrations, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, or finance features.
+Continue the approved production foundation in scoped batches. The current foundation includes a Prisma/PostgreSQL schema checkpoint, access-control helpers, a server-only household access resolver, a demo access context, persistence contracts, static and Prisma read adapters, a server-only adapter selector, dashboard, module, and workspace read-model foundations, a shared read-model summary component, the app shell and all current pages on household-scoped repository read models, static comments mapped through the adapter, auth/session contracts, a dormant Clerk SDK/provider/proxy foundation with immutable internal-user session mapping, a pure static-demo seed snapshot mapper, and CI guardrails for payment-source safety and page-level static-data boundaries. The running app still uses static mode by default: no live persistence, production authentication, migrations, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, or finance features.
 
 ## Product Summary
 
@@ -90,7 +90,7 @@ Out of scope until separately approved:
 17. Activity page read-model migration. Done.
 18. Inbox, tasks, lists, and bills page read-model migration. Done.
 19. Workspace read model and Dashboard, Family, Settings, and app shell migration. Done.
-20. Authentication provider and session strategy. Clerk approved; dormant SDK/provider/proxy foundation done.
+20. Authentication provider and session strategy. Clerk approved; dormant SDK/provider/proxy and internal-user session mapping checkpoints done.
 21. Household membership enforcement in live routes/actions.
 22. Audit remaining direct static dependencies and keep them behind approved demo boundaries. Done.
 23. Persist shared inbox writes.
@@ -103,4 +103,4 @@ Out of scope until separately approved:
 
 ## Immediate Next Step
 
-Add immutable Clerk identity mapping to the User schema checkpoint and implement the server session adapter, while keeping Clerk mode disabled until environment provisioning, a reviewed migration, and household membership data are ready.
+Make read models resolve household access from the verified Clerk session when Clerk mode is enabled, while preserving demo mode and failing closed for signed-out, unmapped, or inactive members. Keep Clerk mode disabled until environment provisioning and a reviewed migration are ready.
