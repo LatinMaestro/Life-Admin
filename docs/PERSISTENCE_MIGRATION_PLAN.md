@@ -12,6 +12,7 @@ The app has:
 - a generated Prisma client in CI
 - a server-only Prisma client boundary in `src/lib/server/prisma.ts`
 - a server-only persistence adapter selector in `src/lib/server/persistence.ts`
+- a server-only demo access context in `src/lib/server/demo-access-context.ts`
 - household access-control helpers
 - a server-only household access resolver in `src/lib/server/household-access.ts`
 - provider-neutral auth/session contracts in `src/lib/auth/session.ts`
@@ -52,6 +53,8 @@ The static adapter and Prisma adapter both implement the same contract. The stat
 
 `src/lib/server/persistence.ts` selects the server-side adapter. `FAMILY_LIFE_ADMIN_PERSISTENCE_MODE` defaults to `static`; `prisma` should only be used after production auth, database environment variables, and live-read rollout are approved.
 
+`src/lib/server/demo-access-context.ts` can provide a static `HouseholdAccessContext` for repository-backed demo reads before production auth is selected. It is not a production auth substitute.
+
 All adapters must require `HouseholdAccessContext` and scope every query by `householdId`. They should not read records by id alone.
 
 This keeps household scoping and access context visible at the data boundary.
@@ -90,14 +93,15 @@ Display-only date labels are preserved separately from real database date fields
 7. Add static-demo seed snapshot mapping. Done.
 8. Add a static demo-data adapter behind the persistence contract. Done.
 9. Add a server-only adapter selector that defaults to static mode. Done.
-10. Select and add production auth/session provider.
-11. Move dashboard read models to the adapter boundary.
-12. Move shared inbox reads, then writes.
-13. Move tasks and reminders.
-14. Move shopping lists.
-15. Move bills and renewals with source-of-truth review.
-16. Move source references as metadata/pointers only.
-17. Move comments and activity history.
+10. Add a demo access context for static repository reads. Done.
+11. Select and add production auth/session provider.
+12. Move dashboard read models to the adapter boundary.
+13. Move shared inbox reads, then writes.
+14. Move tasks and reminders.
+15. Move shopping lists.
+16. Move bills and renewals with source-of-truth review.
+17. Move source references as metadata/pointers only.
+18. Move comments and activity history.
 
 ## Bill And Source Safety
 
