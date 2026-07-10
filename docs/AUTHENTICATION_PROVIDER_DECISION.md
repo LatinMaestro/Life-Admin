@@ -2,9 +2,9 @@
 
 ## Status
 
-Recommended for approval. No provider is wired and no production sign-in is active.
+Approved on 10 July 2026. The Clerk SDK, conditional provider wrapper, and Next.js 16 proxy foundation are being added behind an explicit runtime mode. Production sign-in is not active.
 
-This record prepares the next production foundation decision without changing the running app. Static demo mode remains the default until authentication, database environment, migrations, and household membership enforcement are approved as one controlled rollout.
+Static demo mode remains the default until Clerk environment variables, database environment, identity mapping, migrations, and household membership enforcement are ready as one controlled rollout.
 
 ## Recommendation
 
@@ -106,21 +106,20 @@ Production must not fall back to the demo access context. Static demo mode may r
 
 ## Implementation Sequence After Approval
 
-1. Approve Clerk and the initial email-code sign-in posture.
+1. Approve Clerk and the initial email-code sign-in posture. Done.
 2. Provision the Clerk integration and environment variables for development, preview, and production.
 3. Add the external identity mapping to the Prisma schema and create the first reviewed migration.
-4. Add the Clerk SDK, provider boundary, protected route handling, and sign-in page.
+4. Add the Clerk SDK and dormant provider/proxy boundary. Done. Protected route handling and sign-in remain pending.
 5. Implement getCurrentAuthSession() using a trusted provider session and internal user lookup.
 6. Enforce household membership through the existing server access resolver.
 7. Add explicit onboarding states without implementing invitations.
 8. Validate signed-out, signed-in, wrong-household, inactive-member, and missing-membership behavior.
 9. Complete privacy, security, mobile, CI, and production deployment review gates.
 
-## Explicitly Not Approved By This Record
+## Not Included In The Foundation Batch
 
-This decision record does not approve or implement:
+The dormant SDK foundation does not implement:
 
-- provider installation or account provisioning
 - production login
 - database connection or migrations
 - user onboarding
