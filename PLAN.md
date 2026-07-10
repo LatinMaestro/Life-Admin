@@ -2,7 +2,7 @@
 
 ## Current Objective
 
-Continue the approved production foundation in scoped batches. The current foundation includes a Prisma/PostgreSQL schema checkpoint, access-control helpers, a server-only household access resolver, persistence contracts, static and Prisma read adapters, a server-only adapter selector, auth/session contracts, and a pure static-demo seed snapshot mapper. The running app still uses static demo data by default: no live persistence, production authentication, migrations, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, or finance features.
+Continue the approved production foundation in scoped batches. The current foundation includes a Prisma/PostgreSQL schema checkpoint, access-control helpers, a server-only household access resolver, a demo access context, persistence contracts, static and Prisma read adapters, a server-only adapter selector, auth/session contracts, and a pure static-demo seed snapshot mapper. The running app still uses static demo data by default: no live persistence, production authentication, migrations, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, or finance features.
 
 ## Product Summary
 
@@ -21,6 +21,7 @@ In scope for the production foundation path:
 - Household admin and household member roles
 - Household access-control helpers
 - Server-side household access resolver
+- Demo-only access context for static repository reads
 - Auth/session contracts before provider wiring
 - Static and Prisma persistence adapters behind a shared contract
 - Server-only adapter selection that defaults to static mode
@@ -74,18 +75,19 @@ Out of scope until separately approved:
 7. Auth/session contract boundary. Done.
 8. Seed/demo migration bridge. Done.
 9. Static persistence adapter. Done.
-10. Server persistence adapter selector. In progress.
-11. Authentication provider and session strategy.
-12. Household membership enforcement in live routes/actions.
-13. Persist dashboard source queries.
-14. Persist shared inbox.
-15. Persist tasks and reminders.
-16. Persist shopping lists.
-17. Persist bills and renewals with source-of-truth guardrails.
-18. Persist source references as metadata/pointers.
-19. Persist comments and activity history.
-20. Production QA and privacy review.
+10. Server persistence adapter selector. Done.
+11. Demo access context for static repository reads. In progress.
+12. Authentication provider and session strategy.
+13. Household membership enforcement in live routes/actions.
+14. Persist dashboard source queries.
+15. Persist shared inbox.
+16. Persist tasks and reminders.
+17. Persist shopping lists.
+18. Persist bills and renewals with source-of-truth guardrails.
+19. Persist source references as metadata/pointers.
+20. Persist comments and activity history.
+21. Production QA and privacy review.
 
 ## Immediate Next Step
 
-Finish the server-only persistence adapter selector. Keep `FAMILY_LIFE_ADMIN_PERSISTENCE_MODE` defaulting to static and do not wire app pages to Prisma, add production login, migrations, database writes, or executable seed scripts in this batch.
+Finish the demo-only access context for static repository reads. Do not treat it as production auth, and do not add production login, migrations, database writes, or executable seed scripts in this batch.
