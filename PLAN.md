@@ -2,7 +2,7 @@
 
 ## Current Objective
 
-Continue the approved production foundation in scoped batches. The current foundation includes a Prisma/PostgreSQL schema checkpoint, access-control helpers, a server-only household access resolver, a demo access context, persistence contracts, static and Prisma read adapters, a server-only adapter selector, dashboard and module read-model foundations, a shared read-model summary component, auth/session contracts, and a pure static-demo seed snapshot mapper. The running app still uses static demo data by default: no live persistence, production authentication, migrations, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, or finance features.
+Continue the approved production foundation in scoped batches. The current foundation includes a Prisma/PostgreSQL schema checkpoint, access-control helpers, a server-only household access resolver, a demo access context, persistence contracts, static and Prisma read adapters, a server-only adapter selector, dashboard and module read-model foundations, a shared read-model summary component, the Sources page on a repository-backed read model, auth/session contracts, and a pure static-demo seed snapshot mapper. The running app still uses static mode by default: no live persistence, production authentication, migrations, uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, or finance features.
 
 ## Product Summary
 
@@ -27,6 +27,7 @@ In scope for the production foundation path:
 - Server-only adapter selection that defaults to static mode
 - Dashboard and module read-model foundations behind the adapter boundary
 - Shared read-model summary UI component
+- Sources page migrated to the read-model path
 - Static demo data to future seed snapshot mapping
 - Module-by-module persistence migration after schema validation
 - Source references as metadata/pointers only
@@ -81,18 +82,19 @@ Out of scope until separately approved:
 11. Demo access context for static repository reads. Done.
 12. Dashboard read-model foundation. Done.
 13. Module read-model foundations. Done.
-14. Shared read-model summary UI component. In progress.
-15. Authentication provider and session strategy.
-16. Household membership enforcement in live routes/actions.
-17. Move UI pages fully to the adapter boundary module by module.
-18. Persist shared inbox writes.
-19. Persist tasks and reminders writes.
-20. Persist shopping list writes.
-21. Persist bills and renewals writes with source-of-truth guardrails.
-22. Persist source references as metadata/pointers.
-23. Persist comments and activity history.
-24. Production QA and privacy review.
+14. Shared read-model summary UI component. Done.
+15. Sources page read-model migration. In progress.
+16. Authentication provider and session strategy.
+17. Household membership enforcement in live routes/actions.
+18. Move remaining UI pages fully to the adapter boundary module by module.
+19. Persist shared inbox writes.
+20. Persist tasks and reminders writes.
+21. Persist shopping list writes.
+22. Persist bills and renewals writes with source-of-truth guardrails.
+23. Persist source references as metadata/pointers.
+24. Persist comments and activity history.
+25. Production QA and privacy review.
 
 ## Immediate Next Step
 
-Finish the shared read-model summary component. Use it as the bridge for future module-by-module page migration without switching to Prisma or adding live writes.
+Finish the Sources page read-model migration while keeping persistence mode static by default. Do not switch to Prisma, add production auth, add migrations, or add writes in this batch.
