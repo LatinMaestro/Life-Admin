@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "node scripts/check-production-activation.mjs && next build",
+    "build": "node scripts/check-production-activation.mjs && prisma generate && next build",
     "start": "next start",
     "lint": "node ./node_modules/eslint/bin/eslint.js .",
     "typecheck": "tsc --noEmit",
@@ -18,7 +18,8 @@
     "guardrails:migration": "node scripts/check-initial-migration.mjs",
     "check:activation": "node scripts/check-production-activation.mjs",
     "check:activation:live": "node scripts/check-production-activation.mjs --require-live",
-    "db:seed:initial": "node scripts/seed-initial-household.mjs"
+    "db:seed:initial": "node scripts/seed-initial-household.mjs",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@clerk/nextjs": "7.5.16",
