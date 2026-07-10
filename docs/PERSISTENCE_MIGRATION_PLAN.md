@@ -13,11 +13,13 @@ The app has:
 - a server-only Prisma client boundary in `src/lib/server/prisma.ts`
 - a server-only persistence adapter selector in `src/lib/server/persistence.ts`
 - a server-only demo access context in `src/lib/server/demo-access-context.ts`
-- server-only dashboard and module read-model foundations in `src/lib/server/dashboard-read-model.ts` and `src/lib/server/module-read-models.ts`
+- server-only dashboard, module, and workspace read-model foundations in `src/lib/server/`
 - a shared read-model summary component in `src/components/read-model-summary.tsx`
 - the Inbox, Tasks, Lists, and Bills pages reading from their module read models
 - the Sources page reading from the source-reference read model
 - the Activity page reading from the comments/activity read model
+- the Dashboard, Family, and Settings pages reading from household-scoped server read models
+- the app shell receiving server-resolved household and current-member context
 - static comments mapped through `src/lib/persistence/static-adapter.ts`
 - household access-control helpers
 - a server-only household access resolver in `src/lib/server/household-access.ts`
@@ -35,7 +37,6 @@ The app does not yet have:
 - production authentication provider
 - real session resolution
 - wired live writes in app routes
-- all UI pages switched fully to repository read models
 
 ## Migration Principles
 
@@ -62,7 +63,7 @@ The static adapter and Prisma adapter both implement the same contract. The stat
 
 `src/lib/server/demo-access-context.ts` can provide a static `HouseholdAccessContext` for repository-backed demo reads before production auth is selected. It is not a production auth substitute.
 
-`src/lib/server/dashboard-read-model.ts` and `src/lib/server/module-read-models.ts` begin the page migration by building repository-backed summary data.
+`src/lib/server/dashboard-read-model.ts`, `src/lib/server/module-read-models.ts`, and `src/lib/server/workspace-read-model.ts` build household-scoped page and shell data behind the adapter boundary.
 
 `src/components/read-model-summary.tsx` provides a shared mobile-friendly display component for repository-backed page migrations.
 
@@ -112,14 +113,15 @@ Display-only date labels are preserved separately from real database date fields
 15. Map static comments through the persistence adapter. Done.
 16. Move Activity page to the comments/activity read model. Done.
 17. Move Inbox, Tasks, Lists, and Bills pages to module read models. Done.
-18. Select and add production auth/session provider.
-19. Review remaining UI pages and shared components for direct demo-data dependencies.
-20. Move shared inbox writes.
-21. Move tasks and reminders writes.
-22. Move shopping list writes.
-23. Move bills and renewals writes with source-of-truth review.
-24. Move source references as metadata/pointers only.
-25. Move comments and activity history.
+18. Move Dashboard, Family, Settings, and the app shell to household-scoped read models. Done.
+19. Audit remaining direct static dependencies and keep them behind demo boundaries.
+20. Select and add production auth/session provider.
+21. Move shared inbox writes.
+22. Move tasks and reminders writes.
+23. Move shopping list writes.
+24. Move bills and renewals writes with source-of-truth review.
+25. Move source references as metadata/pointers only.
+26. Move comments and activity history.
 
 ## Bill And Source Safety
 

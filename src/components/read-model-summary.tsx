@@ -73,9 +73,9 @@ export function ReadModelSummary({
           <div className="flex items-start justify-between gap-3">
             <div>
               <CardTitle>Latest items</CardTitle>
-              <CardDescription>Repository-backed household rows for this module.</CardDescription>
+              <CardDescription>Household items in this section.</CardDescription>
             </div>
-            <Badge>{rows.length} rows</Badge>
+            <Badge>{rows.length} items</Badge>
           </div>
         </CardHeader>
         <CardContent>

@@ -1,74 +1,92 @@
-import { Database, FileText, Mail, Mic, ShieldCheck, Smartphone, Sparkles, Upload, UsersRound } from "lucide-react";
+import { Clock3, FileText, LockKeyhole, ShieldCheck, UsersRound } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ItemRow } from "@/components/item-row";
 import { PageHeader } from "@/components/page-header";
-import { getCurrentHouseholdBillReminders, getCurrentHouseholdSourceReferences } from "@/lib/demo-data";
-import {
-  canManageHouseholdMembers,
-  canManageHouseholdSettings,
-  getCurrentHousehold,
-  getCurrentHouseholdMembers,
-  getCurrentMember,
-  getRoleCapabilityLabel,
-  getRoleDefinition,
-  getRoleLabel,
-} from "@/lib/household";
+import { getWorkspaceReadModel } from "@/lib/server/workspace-read-model";
 
-export default function SettingsPage() {
-  const household = getCurrentHousehold();
-  const currentMember = getCurrentMember();
-  const members = getCurrentHouseholdMembers();
-  const sources = getCurrentHouseholdSourceReferences();
-  const billReminders = getCurrentHouseholdBillReminders();
-  const currentRole = getRoleDefinition(currentMember.role);
-  const sensitiveSources = sources.filter((source) => source.sensitivity === "Sensitive");
-  const reviewSources = sources.filter((source) => source.reviewStatus === "Needs review");
+export default async function SettingsPage() {
+  const workspace = await getWorkspaceReadModel();
   const settings = [
-    { title: "Household name", detail: household.name, status: "Active" },
-    { title: "Timezone", detail: household.timezone, status: "Active" },
-    { title: "Current member", detail: currentMember.displayName, status: getRoleLabel(currentMember.role) },
-    { title: "Primary household", detail: "The MVP workspace is optimised around this household.", status: household.isPrimary ? "Primary" : "Available" },
+    { title: "Household name", detail: workspace.household.name, status: "Active" },
+    { title: "Timezone", detail: workspace.household.timezone, status: "Active" },
     {
-      title: "Settings access",
-      detail: canManageHouseholdSettings(currentMember)
-        ? "Current member can manage household settings."
-        : "Current member can view household settings.",
-      status: canManageHouseholdSettings(currentMember) ? "Admin" : "Member",
+      title: "Current member",
+      detail: workspace.currentMember.displayName,
+      status: workspace.currentMember.roleLabel,
     },
-    { title: "Manual capture", detail: "New household admin items start in the shared inbox.", status: "Active", href: "/inbox" },
-    { title: "Source references", detail: "Original-source references are available from the source library.", status: `${sources.length} refs`, href: "/sources" },
-    { title: "Activity trail", detail: "Comments and household activity stay scoped to this workspace.", status: "Active", href: "/activity" },
+    {
+      title: "Household access",
+      detail: workspace.access.canManageSettings
+        ? "This member can manage household settings."
+        : "This member can view household settings.",
+      status: workspace.access.canManageSettings ? "Admin" : "Member",
+    },
+    {
+      title: "Member management",
+      detail: workspace.access.canManageMembers
+        ? "Member and role management is available to this role."
+        : "Member and role management is reserved for household admins.",
+      status: workspace.access.canManageMembers ? "Admin" : "View only",
+      href: "/family",
+    },
+    {
+      title: "Manual capture",
+      detail: "New household admin items start in the shared inbox.",
+      status: "Active",
+      href: "/inbox",
+    },
   ];
   const privacyPosture = [
-    { title: "Household scope", detail: `${members.length} active members share this workspace.`, status: "Scoped" },
-    { title: "Source privacy", detail: `${sensitiveSources.length} source references are marked sensitive.`, status: "Metadata" },
-    { title: "Review queue", detail: `${reviewSources.length} source references need review from the original source.`, status: "Manual" },
-    { title: "Bill reminders", detail: `${billReminders.length} admin reminders point back to source references.`, status: "Source-first" },
-  ];
-  const readinessItems = [
-    { title: "Household workspace", detail: "Current-household state and member roles are represented in the static app.", status: "Ready", icon: UsersRound },
-    { title: "Persistence", detail: "Database and Prisma work are still paused until the next approved phase.", status: "Deferred", icon: Database },
-    { title: "Source uploads", detail: "The app uses source references only; uploads remain separately gated.", status: "Deferred", icon: Upload },
-    { title: "Email intake", detail: "Forwarding and mailbox processing are not active in the MVP shell.", status: "Future", icon: Mail },
-    { title: "AI and OCR", detail: "Extraction and classification are future phases with separate review gates.", status: "Future", icon: Sparkles },
-    { title: "Voice capture", detail: "Voice capture waits until the web MVP is validated.", status: "Future", icon: Mic },
-    { title: "Native iOS", detail: "Native iOS is deferred until the mobile-first web app is validated.", status: "Future", icon: Smartphone },
+    {
+      title: "Household scope",
+      detail: `${workspace.members.length} active members share this workspace.`,
+      status: "Scoped",
+    },
+    {
+      title: "Source library",
+      detail: `${workspace.sourcePosture.total} private source references are available.`,
+      status: "References",
+      href: "/sources",
+    },
+    {
+      title: "Sensitive sources",
+      detail: `${workspace.sourcePosture.sensitive} references are marked sensitive.`,
+      status: "Private",
+      href: "/sources",
+    },
+    {
+      title: "Review queue",
+      detail: `${workspace.sourcePosture.needsReview} references need confirmation from the original source.`,
+      status: "Manual",
+      href: "/sources",
+    },
+    {
+      title: "Bills and renewals",
+      detail: `${workspace.sourcePosture.billsAndRenewals} admin reminders follow the source-first workflow.`,
+      status: "Source first",
+      href: "/bills",
+    },
   ];
 
   return (
     <>
       <PageHeader
         title="Settings"
-        description={`Basic ${household.name} settings and role-aware access.`}
+        description={`Household profile, access, and privacy for ${workspace.household.name}.`}
       />
 
-      <div className="grid gap-4 lg:grid-cols-[1fr_0.8fr]">
+      <div className="grid gap-4 lg:grid-cols-[1fr_0.85fr]">
         <div className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Household settings</CardTitle>
-              <CardDescription>Profile, access, and preference settings for the household.</CardDescription>
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <CardTitle>Household settings</CardTitle>
+                  <CardDescription>Profile and access details for the active household.</CardDescription>
+                </div>
+                <Clock3 className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
+              </div>
             </CardHeader>
             <CardContent>
               {settings.map((item) => (
@@ -82,14 +100,14 @@ export default function SettingsPage() {
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <CardTitle>Privacy posture</CardTitle>
-                  <CardDescription>Household boundaries and source-reference handling.</CardDescription>
+                  <CardDescription>Household boundaries and original-source handling.</CardDescription>
                 </div>
                 <ShieldCheck className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
               </div>
             </CardHeader>
             <CardContent>
               {privacyPosture.map((item) => (
-                <ItemRow key={item.title} title={item.title} detail={item.detail} status={item.status} href={item.title === "Source privacy" ? "/sources" : undefined} />
+                <ItemRow key={item.title} title={item.title} detail={item.detail} status={item.status} href={item.href} />
               ))}
             </CardContent>
           </Card>
@@ -100,63 +118,46 @@ export default function SettingsPage() {
             <CardHeader>
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <CardTitle>Current role</CardTitle>
-                  <CardDescription>{currentRole.summary}</CardDescription>
+                  <CardTitle>{workspace.currentMember.roleLabel}</CardTitle>
+                  <CardDescription>Current permissions in this household workspace.</CardDescription>
                 </div>
-                <Badge>{currentRole.label}</Badge>
+                <Badge>{workspace.currentMember.displayName}</Badge>
               </div>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <p className="text-sm font-medium leading-6">Role capabilities</p>
-                <ul className="mt-2 space-y-2">
-                  {currentRole.capabilities.map((capability) => (
-                    <li key={capability} className="text-sm leading-5 text-muted-foreground">
-                      {getRoleCapabilityLabel(capability)}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="border-t pt-4">
-                <p className="text-sm font-medium leading-6">Member management</p>
-                <p className="text-sm leading-5 text-muted-foreground">
-                  {canManageHouseholdMembers(currentMember)
-                    ? "Admin member and role controls belong here."
-                    : "Member and role controls are reserved for household admins."}
-                </p>
-              </div>
+            <CardContent className="space-y-2">
+              {workspace.roleCapabilities.map((capability) => (
+                <div key={capability.key} className="flex min-h-11 items-center gap-3 rounded-md border px-3 py-2">
+                  <LockKeyhole className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+                  <p className="text-sm">{capability.label}</p>
+                </div>
+              ))}
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <CardTitle>MVP readiness</CardTitle>
-                  <CardDescription>What is active in the static shell and what remains gated.</CardDescription>
-                </div>
-                <FileText className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
-              </div>
+              <CardTitle>Workspace status</CardTitle>
+              <CardDescription>The current household experience remains private and manual-first.</CardDescription>
             </CardHeader>
-            <CardContent>
-              {readinessItems.map((item) => {
-                const Icon = item.icon;
-
-                return (
-                  <div key={item.title} className="flex gap-3 border-b py-3 last:border-b-0 last:pb-0 first:pt-0">
-                    <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-accent text-accent-foreground">
-                      <Icon className="h-4 w-4" aria-hidden="true" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-start justify-between gap-3">
-                        <p className="text-sm font-medium leading-5">{item.title}</p>
-                        <Badge variant="outline">{item.status}</Badge>
-                      </div>
-                      <p className="mt-1 text-sm leading-5 text-muted-foreground">{item.detail}</p>
-                    </div>
-                  </div>
-                );
-              })}
+            <CardContent className="grid gap-3">
+              <div className="flex gap-3 rounded-md border p-3">
+                <UsersRound className="mt-0.5 h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
+                <div>
+                  <p className="text-sm font-semibold">One primary household</p>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    The interface stays focused while the architecture remains ready for more households later.
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-3 rounded-md border p-3">
+                <FileText className="mt-0.5 h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
+                <div>
+                  <p className="text-sm font-semibold">Original sources stay authoritative</p>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    Household reminders point back to private source references for confirmation.
+                  </p>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>

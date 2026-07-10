@@ -15,7 +15,6 @@ import {
 } from "lucide-react";
 import type { PropsWithChildren } from "react";
 import { Badge } from "@/components/ui/badge";
-import { getCurrentHousehold, getCurrentMember, getRoleLabel } from "@/lib/household";
 import { cn } from "@/lib/utils";
 
 const navigation = [
@@ -32,10 +31,19 @@ const navigation = [
 
 const mobileNavigation = navigation.filter((item) => item.mobile);
 
-export function AppShell({ children }: PropsWithChildren) {
+type AppShellProps = PropsWithChildren<{
+  household: {
+    name: string;
+    timezone: string;
+  };
+  currentMember: {
+    displayName: string;
+    roleLabel: string;
+  };
+}>;
+
+export function AppShell({ children, household, currentMember }: AppShellProps) {
   const pathname = usePathname();
-  const household = getCurrentHousehold();
-  const currentMember = getCurrentMember();
 
   return (
     <div className="min-h-screen bg-background">
@@ -49,7 +57,7 @@ export function AppShell({ children }: PropsWithChildren) {
           <p className="mt-1 text-sm font-medium">{household.name}</p>
           <p className="mt-1 text-xs text-muted-foreground">{household.timezone}</p>
           <div className="mt-3 flex flex-wrap items-center gap-2">
-            <Badge>{getRoleLabel(currentMember.role)}</Badge>
+            <Badge>{currentMember.roleLabel}</Badge>
             <span className="text-xs text-muted-foreground">{currentMember.displayName}</span>
           </div>
         </div>
@@ -84,7 +92,7 @@ export function AppShell({ children }: PropsWithChildren) {
             <p className="text-base font-semibold">{household.name}</p>
           </Link>
           <div className="mt-2 flex items-center gap-2">
-            <Badge>{getRoleLabel(currentMember.role)}</Badge>
+            <Badge>{currentMember.roleLabel}</Badge>
             <span className="text-xs text-muted-foreground">{currentMember.displayName}</span>
           </div>
         </header>
