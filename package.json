@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "node ./node_modules/eslint/bin/eslint.js .",
     "typecheck": "tsc --noEmit",
+    "guardrails:payment-source": "node scripts/check-payment-source-guardrails.mjs",
     "db:generate": "prisma generate",
     "db:validate": "prisma validate",
     "db:format": "prisma format"
