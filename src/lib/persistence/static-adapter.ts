@@ -4,6 +4,7 @@ import {
   requireHouseholdPermission,
 } from "@/lib/access-control";
 import type { HouseholdAccessContext } from "@/lib/access-control";
+import { getCurrentHouseholdComments } from "@/lib/collaboration-data";
 import {
   getCurrentHouseholdActivity,
   getCurrentHouseholdBillReminders,
@@ -72,6 +73,10 @@ function inferActivityEventType(summary: string) {
 }
 
 function toActivityEntityType(entityType: string) {
+  return entityType === "bill" ? "bill_or_renewal" : entityType;
+}
+
+function toCommentEntityType(entityType: string) {
   return entityType === "bill" ? "bill_or_renewal" : entityType;
 }
 
@@ -202,9 +207,17 @@ export const staticHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
   },
 
   async listComments(context): Promise<CommentSummary[]> {
-    requireStaticHousehold(context);
+    const { householdId } = requireStaticHousehold(context);
 
-    return [];
+    return filterForHousehold(getCurrentHouseholdComments(), householdId).map((comment) => ({
+      id: comment.id,
+      householdId: comment.householdId,
+      entityType: toCommentEntityType(comment.entityType),
+      entityId: comment.entityTitle,
+      body: comment.body,
+      createdByMemberId: comment.createdByMemberId,
+      createdAt: new Date(0),
+    }));
   },
 
   async listActivity(context): Promise<ActivityEventSummary[]> {
