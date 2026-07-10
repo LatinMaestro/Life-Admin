@@ -4,15 +4,15 @@ This document defines the access-control posture for Family Life Admin as the ap
 
 ## Current State
 
-The app has a static MVP, a Prisma schema checkpoint, and server-side access-control foundations. Production authentication, sessions, middleware, live database reads, live database writes, and authorization enforcement in routes are not wired yet.
+The app has a static MVP, a Prisma schema checkpoint, an approved dormant Clerk foundation, immutable internal-user session mapping, and server-side access-control foundations. Production activation, migrations, live database reads, live database writes, and mutation authorization are not wired yet.
 
 `src/lib/access-control.ts` defines pure TypeScript helpers for the future live-data layer. These helpers do not authenticate a user by themselves. They define the shape and checks every live route, server action, and data query should use once authentication and persistence are added.
 
 `src/lib/server/household-access.ts` defines the server-only resolver that will bridge a future authenticated user id to a verified active `HouseholdMember` row. It does not implement an auth provider or session handling. Future server routes and server actions should resolve the authenticated user from the session first, then call this resolver to build `HouseholdAccessContext`.
 
-`src/lib/auth/session.ts` defines the provider-neutral auth/session contract. It currently returns no session and does not implement login, cookies, middleware, invite flows, or provider-specific behavior.
+`src/lib/auth/session.ts` defines the provider-neutral auth/session contract. In Clerk mode it resolves a trusted provider subject to an internal User; in demo mode it returns no production session.
 
-`src/lib/server/demo-access-context.ts` provides a server-only demo context for the current static household/member. It is only a bridge for static MVP data and must not be treated as production authentication.
+`src/lib/server/runtime-access-context.ts` selects the access source. Demo mode uses `src/lib/server/demo-access-context.ts`; Clerk mode requires the mapped internal user and active household membership. The demo context is never a Clerk-mode fallback.
 
 ## Core Rule
 
@@ -47,7 +47,7 @@ When authentication is added, the intended server-side flow is:
 
 For routes/actions that require access, use `requireCurrentHouseholdAccessContext(...)` or `requireHouseholdAccessContext(...)` so missing sessions, missing memberships, or inactive household memberships fail closed.
 
-For static MVP bridge work only, `getDemoHouseholdAccessContext()` may be used to move demo reads behind repository contracts before production auth is selected.
+For static MVP bridge work only, `getDemoHouseholdAccessContext()` is selected by the runtime resolver when auth mode is explicitly `demo`. Clerk mode fails closed instead of falling back.
 
 ## Role Model
 
@@ -98,10 +98,10 @@ Bill and renewal records may store source references, but must not store generat
 
 ## Future Implementation Order
 
-1. Select and add an auth provider and session strategy.
-2. Resolve the active user from the trusted session provider.
-3. Populate the provider-neutral `AuthSession` contract.
-4. Resolve household membership from the database with `src/lib/server/household-access.ts`.
-5. Build `HouseholdAccessContext` server-side.
-6. Require permissions before live reads/mutations.
+1. Select and add an auth provider and session strategy. Done at code checkpoint.
+2. Resolve the active user from the trusted session provider. Done at code checkpoint.
+3. Populate the provider-neutral `AuthSession` contract. Done at code checkpoint.
+4. Resolve household membership from the database with `src/lib/server/household-access.ts`. Done at code checkpoint.
+5. Build `HouseholdAccessContext` server-side. Done at code checkpoint.
+6. Require permissions before live reads/mutations. Read-model checkpoint done; mutations remain pending.
 7. Move modules from static data to live persistence one at a time.
