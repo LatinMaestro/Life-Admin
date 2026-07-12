@@ -131,6 +131,10 @@ export const staticHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
     );
   },
 
+  async setInboxItemArchived(): Promise<InboxItemSummary> {
+    throw new HouseholdAccessError("Inbox updates are available when the private household workspace is connected.");
+  },
+
   async listTasks(context): Promise<TaskSummary[]> {
     const { householdId } = requireStaticHousehold(context);
 
