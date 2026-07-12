@@ -60,6 +60,7 @@ export interface CreateTaskInput {
   notes?: string | null;
   priority: "low" | "normal" | "high";
   dueAt?: Date | null;
+  assignedMemberId?: string | null;
 }
 
 export interface ReminderSummary extends MemberOwnedRecord {
@@ -75,6 +76,7 @@ export interface CreateReminderInput {
   notes?: string | null;
   cadence: "once" | "weekly" | "monthly" | "custom";
   remindAt?: Date | null;
+  assignedMemberId?: string | null;
 }
 
 export interface ShoppingListSummary extends HouseholdRecord {
@@ -124,6 +126,7 @@ export interface CreateBillOrRenewalInput {
   renewalAt?: Date | null;
   notes?: string | null;
   sourceReferenceId?: string | null;
+  assignedMemberId?: string | null;
 }
 
 export interface SourceReferenceSummary extends HouseholdRecord {
