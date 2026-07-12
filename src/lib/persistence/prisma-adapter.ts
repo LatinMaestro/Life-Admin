@@ -239,6 +239,13 @@ export const prismaHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
         throw new Error("Active household membership is required to create a task.");
       }
 
+      const assignedMemberId = input.assignedMemberId ?? context.memberId;
+      const assignedMember = await transaction.householdMember.findFirst({
+        where: { id: assignedMemberId, householdId: context.householdId, status: "active" },
+        select: { id: true },
+      });
+      if (!assignedMember) throw new Error("Choose an active member of this household.");
+
       const task = await transaction.task.create({
         data: {
           householdId: context.householdId,
@@ -247,7 +254,7 @@ export const prismaHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
           priority: input.priority,
           dueAt: input.dueAt,
           createdByMemberId: context.memberId,
-          assignedMemberId: context.memberId,
+          assignedMemberId: assignedMember.id,
         },
         select: {
           id: true,
@@ -362,6 +369,13 @@ export const prismaHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
         throw new Error("Active household membership is required to create a reminder.");
       }
 
+      const assignedMemberId = input.assignedMemberId ?? context.memberId;
+      const assignedMember = await transaction.householdMember.findFirst({
+        where: { id: assignedMemberId, householdId: context.householdId, status: "active" },
+        select: { id: true },
+      });
+      if (!assignedMember) throw new Error("Choose an active member of this household.");
+
       const reminder = await transaction.reminder.create({
         data: {
           householdId: context.householdId,
@@ -370,7 +384,7 @@ export const prismaHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
           cadence: input.cadence,
           remindAt: input.remindAt,
           createdByMemberId: context.memberId,
-          assignedMemberId: context.memberId,
+          assignedMemberId: assignedMember.id,
         },
         select: {
           id: true,
@@ -736,6 +750,13 @@ export const prismaHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
         throw new Error("An active household member and valid source reference are required.");
       }
 
+      const assignedMemberId = input.assignedMemberId ?? context.memberId;
+      const assignedMember = await transaction.householdMember.findFirst({
+        where: { id: assignedMemberId, householdId: context.householdId, status: "active" },
+        select: { id: true },
+      });
+      if (!assignedMember) throw new Error("Choose an active member of this household.");
+
       const item = await transaction.billOrRenewal.create({
         data: {
           householdId: context.householdId,
@@ -746,7 +767,7 @@ export const prismaHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
           renewalAt: input.type === "renewal" ? input.renewalAt : null,
           notes: input.notes,
           sourceReferenceId: source?.id,
-          assignedMemberId: context.memberId,
+          assignedMemberId: assignedMember.id,
           createdByMemberId: context.memberId,
         },
         select: {
