@@ -681,6 +681,7 @@ export const prismaHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
         title: true,
         kind: true,
         label: true,
+        url: true,
         reviewStatus: true,
         sensitivity: true,
         createdByMemberId: true,
