@@ -188,6 +188,11 @@ export interface HouseholdDashboardRepository {
     context: HouseholdAccessContext,
     input: CreateInboxItemInput,
   ): Promise<InboxItemSummary>;
+  setInboxItemArchived(
+    context: HouseholdAccessContext,
+    itemId: string,
+    archived: boolean,
+  ): Promise<InboxItemSummary>;
   listTasks(context: HouseholdAccessContext): Promise<TaskSummary[]>;
   createTask(context: HouseholdAccessContext, input: CreateTaskInput): Promise<TaskSummary>;
   setTaskCompleted(
