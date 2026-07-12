@@ -244,6 +244,46 @@ export const prismaHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
     });
   },
 
+  async setTaskCompleted(context, taskId, completed): Promise<TaskSummary> {
+    requireHouseholdPermission(context, "manage_shared_items");
+    const prisma = getPrismaClient();
+
+    return prisma.$transaction(async (transaction) => {
+      const [member, existing] = await Promise.all([
+        transaction.householdMember.findFirst({
+          where: { id: context.memberId, householdId: context.householdId, userId: context.userId, status: "active" },
+          select: { id: true },
+        }),
+        transaction.task.findFirst({
+          where: { id: taskId, householdId: context.householdId },
+          select: { id: true },
+        }),
+      ]);
+      if (!member || !existing) throw new Error("The task is not available to this household member.");
+
+      const task = await transaction.task.update({
+        where: { id: existing.id },
+        data: {
+          status: completed ? "done" : "open",
+          stage: completed ? "done" : "action",
+          completedAt: completed ? new Date() : null,
+        },
+        select: {
+          id: true, householdId: true, title: true, notes: true, status: true, stage: true,
+          priority: true, dueAt: true, assignedMemberId: true, createdByMemberId: true, sourceReferenceId: true,
+        },
+      });
+      await transaction.activityEvent.create({
+        data: {
+          householdId: context.householdId, actorUserId: context.userId, actorMemberId: context.memberId,
+          entityType: "task", entityId: task.id, eventType: completed ? "completed" : "reopened",
+          summary: `${completed ? "Completed" : "Reopened"} task: ${task.title}`,
+        },
+      });
+      return task;
+    });
+  },
+
   async listReminders(context): Promise<ReminderSummary[]> {
     const where = requireReadableHousehold(context);
 
@@ -321,6 +361,42 @@ export const prismaHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
         },
       });
 
+      return reminder;
+    });
+  },
+
+  async setReminderCompleted(context, reminderId, completed): Promise<ReminderSummary> {
+    requireHouseholdPermission(context, "manage_shared_items");
+    const prisma = getPrismaClient();
+
+    return prisma.$transaction(async (transaction) => {
+      const [member, existing] = await Promise.all([
+        transaction.householdMember.findFirst({
+          where: { id: context.memberId, householdId: context.householdId, userId: context.userId, status: "active" },
+          select: { id: true },
+        }),
+        transaction.reminder.findFirst({
+          where: { id: reminderId, householdId: context.householdId },
+          select: { id: true },
+        }),
+      ]);
+      if (!member || !existing) throw new Error("The reminder is not available to this household member.");
+
+      const reminder = await transaction.reminder.update({
+        where: { id: existing.id },
+        data: { status: completed ? "done" : "scheduled" },
+        select: {
+          id: true, householdId: true, title: true, notes: true, status: true, cadence: true,
+          remindAt: true, assignedMemberId: true, createdByMemberId: true,
+        },
+      });
+      await transaction.activityEvent.create({
+        data: {
+          householdId: context.householdId, actorUserId: context.userId, actorMemberId: context.memberId,
+          entityType: "reminder", entityId: reminder.id, eventType: completed ? "completed" : "reopened",
+          summary: `${completed ? "Completed" : "Reopened"} reminder: ${reminder.title}`,
+        },
+      });
       return reminder;
     });
   },
@@ -664,6 +740,42 @@ export const prismaHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
         },
       });
 
+      return item;
+    });
+  },
+
+  async setBillOrRenewalCompleted(context, itemId, completed): Promise<BillOrRenewalSummary> {
+    requireHouseholdPermission(context, "manage_shared_items");
+    const prisma = getPrismaClient();
+
+    return prisma.$transaction(async (transaction) => {
+      const [member, existing] = await Promise.all([
+        transaction.householdMember.findFirst({
+          where: { id: context.memberId, householdId: context.householdId, userId: context.userId, status: "active" },
+          select: { id: true },
+        }),
+        transaction.billOrRenewal.findFirst({
+          where: { id: itemId, householdId: context.householdId },
+          select: { id: true },
+        }),
+      ]);
+      if (!member || !existing) throw new Error("The reminder is not available to this household member.");
+
+      const item = await transaction.billOrRenewal.update({
+        where: { id: existing.id },
+        data: { status: completed ? "done" : "upcoming" },
+        select: {
+          id: true, householdId: true, title: true, provider: true, type: true, status: true,
+          dueAt: true, renewalAt: true, assignedMemberId: true, createdByMemberId: true, sourceReferenceId: true,
+        },
+      });
+      await transaction.activityEvent.create({
+        data: {
+          householdId: context.householdId, actorUserId: context.userId, actorMemberId: context.memberId,
+          entityType: "bill_or_renewal", entityId: item.id, eventType: completed ? "completed" : "reopened",
+          summary: `${completed ? "Completed" : "Reopened"} ${item.type} reminder: ${item.title}`,
+        },
+      });
       return item;
     });
   },
