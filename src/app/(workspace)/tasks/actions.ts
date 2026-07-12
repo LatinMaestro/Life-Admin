@@ -30,6 +30,7 @@ export async function createTaskAction(
   const notes = readText(formData, "notes");
   const priority = readText(formData, "priority");
   const dueAt = readOptionalDate(formData, "dueAt");
+  const assignedMemberId = readText(formData, "assignedMemberId");
 
   const commonError = validateCommon(title, notes);
   if (commonError) {
@@ -53,6 +54,7 @@ export async function createTaskAction(
       notes: notes || null,
       priority: priority as CreateTaskInput["priority"],
       dueAt,
+      assignedMemberId: assignedMemberId || null,
     });
 
     revalidateWorkPages();
@@ -70,6 +72,7 @@ export async function createReminderAction(
   const notes = readText(formData, "notes");
   const cadence = readText(formData, "cadence");
   const remindAt = readOptionalDate(formData, "remindAt");
+  const assignedMemberId = readText(formData, "assignedMemberId");
 
   const commonError = validateCommon(title, notes);
   if (commonError) {
@@ -93,6 +96,7 @@ export async function createReminderAction(
       notes: notes || null,
       cadence: cadence as CreateReminderInput["cadence"],
       remindAt,
+      assignedMemberId: assignedMemberId || null,
     });
 
     revalidateWorkPages();
