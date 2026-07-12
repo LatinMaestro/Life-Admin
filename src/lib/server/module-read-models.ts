@@ -57,6 +57,23 @@ function formatStatus(status: string) {
     .join(" ");
 }
 
+function formatDate(value: Date | null | undefined) {
+  if (!value) return null;
+  return new Intl.DateTimeFormat("en-AU", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(value);
+}
+
+function isOverdue(value: Date | null | undefined, status: string) {
+  if (!value || status === "done" || status === "archived") return false;
+  const today = new Date();
+  const todayUtc = Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate());
+  return value.getTime() < todayUtc;
+}
+
 function getMemberName(members: MemberLookup, memberId: string | null | undefined) {
   if (!memberId) {
     return "Household";
@@ -123,16 +140,24 @@ export async function getTasksReadModel(
       ...tasks.map((task) => ({
         id: task.id,
         title: task.title,
-        detail: `${task.notes ?? "Household task"} Assigned to ${getMemberName(members, task.assignedMemberId)}.`,
-        status: formatStatus(task.status),
+        detail: [
+          formatDate(task.dueAt) ? `Due ${formatDate(task.dueAt)}` : null,
+          `Assigned to ${getMemberName(members, task.assignedMemberId)}`,
+          task.notes,
+        ].filter(Boolean).join(" - "),
+        status: isOverdue(task.dueAt, task.status) ? "Overdue" : formatStatus(task.status),
         href: "/tasks",
         entityType: "task" as const,
       })),
       ...reminders.map((reminder) => ({
         id: reminder.id,
         title: reminder.title,
-        detail: `${reminder.notes ?? "Household reminder"} Assigned to ${getMemberName(members, reminder.assignedMemberId)}.`,
-        status: formatStatus(reminder.status),
+        detail: [
+          formatDate(reminder.remindAt) ? `On ${formatDate(reminder.remindAt)}` : null,
+          `Assigned to ${getMemberName(members, reminder.assignedMemberId)}`,
+          reminder.notes,
+        ].filter(Boolean).join(" - "),
+        status: isOverdue(reminder.remindAt, reminder.status) ? "Overdue" : formatStatus(reminder.status),
         href: "/tasks",
         entityType: "reminder" as const,
       })),
@@ -201,8 +226,14 @@ export async function getBillsAndRenewalsReadModel(
     rows: billsAndRenewals.map((item) => ({
       id: item.id,
       title: item.title,
-      detail: `${item.provider ?? "Provider"}. Assigned to ${getMemberName(members, item.assignedMemberId)}. Open the original source before household action.`,
-      status: formatStatus(item.status),
+      detail: [
+        item.provider,
+        formatDate(item.dueAt ?? item.renewalAt)
+          ? `${item.type === "bill" ? "Due" : "Renews"} ${formatDate(item.dueAt ?? item.renewalAt)}`
+          : null,
+        `Assigned to ${getMemberName(members, item.assignedMemberId)}`,
+      ].filter(Boolean).join(" - "),
+      status: isOverdue(item.dueAt ?? item.renewalAt, item.status) ? "Overdue" : formatStatus(item.status),
       href: item.sourceReferenceId ? (sourceLinks.get(item.sourceReferenceId) ?? "") : "",
       entityType: "bill_or_renewal" as const,
     })),
