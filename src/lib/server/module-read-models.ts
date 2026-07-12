@@ -29,6 +29,18 @@ type ModuleReadModel = {
   rows: ReadModelRow[];
 };
 
+type ShoppingListsReadModel = ModuleReadModel & {
+  lists: Array<{ id: string; name: string }>;
+  items: Array<{
+    id: string;
+    shoppingListId: string;
+    listName: string;
+    label: string;
+    detail: string;
+    checked: boolean;
+  }>;
+};
+
 function formatStatus(status: string) {
   return status
     .split("_")
@@ -118,17 +130,21 @@ export async function getTasksReadModel(
 
 export async function getShoppingListsReadModel(
   context?: HouseholdAccessContext,
-): Promise<ModuleReadModel> {
+): Promise<ShoppingListsReadModel> {
   const accessContext = context ?? (await getRuntimeHouseholdAccessContext());
   const { adapter, household, members } = await getBaseReadModel(accessContext);
-  const shoppingLists = await adapter.listShoppingLists(accessContext);
+  const [shoppingLists, shoppingItems] = await Promise.all([
+    adapter.listShoppingLists(accessContext),
+    adapter.listShoppingListItems(accessContext),
+  ]);
+  const listNames = new Map(shoppingLists.map((list) => [list.id, list.name]));
 
   return {
     household,
     counts: [
       { label: "Active lists", value: shoppingLists.filter((list) => list.status === "active").length },
-      { label: "Open items", value: shoppingLists.reduce((total, list) => total + list.openItemCount, 0) },
-      { label: "Total items", value: shoppingLists.reduce((total, list) => total + list.totalItemCount, 0) },
+      { label: "Open items", value: shoppingItems.filter((item) => !item.checked).length },
+      { label: "Total items", value: shoppingItems.length },
     ],
     rows: shoppingLists.map((list) => ({
       id: list.id,
@@ -136,6 +152,17 @@ export async function getShoppingListsReadModel(
       detail: `${list.openItemCount} open of ${list.totalItemCount}. Created by ${getMemberName(members, list.createdByMemberId)}.`,
       status: formatStatus(list.status),
       href: "/lists",
+    })),
+    lists: shoppingLists
+      .filter((list) => list.status === "active")
+      .map((list) => ({ id: list.id, name: list.name })),
+    items: shoppingItems.map((item) => ({
+      id: item.id,
+      shoppingListId: item.shoppingListId,
+      listName: listNames.get(item.shoppingListId) ?? "Shopping list",
+      label: item.label,
+      detail: [item.quantity, item.category, item.notes].filter(Boolean).join(" - "),
+      checked: item.checked,
     })),
   };
 }
