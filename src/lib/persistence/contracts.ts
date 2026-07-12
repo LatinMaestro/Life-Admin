@@ -55,11 +55,25 @@ export interface TaskSummary extends MemberOwnedRecord {
   sourceReferenceId?: string | null;
 }
 
+export interface CreateTaskInput {
+  title: string;
+  notes?: string | null;
+  priority: "low" | "normal" | "high";
+  dueAt?: Date | null;
+}
+
 export interface ReminderSummary extends MemberOwnedRecord {
   title: string;
   notes?: string | null;
   status: string;
   cadence: string;
+  remindAt?: Date | null;
+}
+
+export interface CreateReminderInput {
+  title: string;
+  notes?: string | null;
+  cadence: "once" | "weekly" | "monthly" | "custom";
   remindAt?: Date | null;
 }
 
@@ -119,7 +133,12 @@ export interface HouseholdDashboardRepository {
     input: CreateInboxItemInput,
   ): Promise<InboxItemSummary>;
   listTasks(context: HouseholdAccessContext): Promise<TaskSummary[]>;
+  createTask(context: HouseholdAccessContext, input: CreateTaskInput): Promise<TaskSummary>;
   listReminders(context: HouseholdAccessContext): Promise<ReminderSummary[]>;
+  createReminder(
+    context: HouseholdAccessContext,
+    input: CreateReminderInput,
+  ): Promise<ReminderSummary>;
   listShoppingLists(context: HouseholdAccessContext): Promise<ShoppingListSummary[]>;
   listBillsAndRenewals(context: HouseholdAccessContext): Promise<BillOrRenewalSummary[]>;
   listSourceReferences(context: HouseholdAccessContext): Promise<SourceReferenceSummary[]>;
