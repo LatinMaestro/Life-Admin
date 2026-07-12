@@ -99,11 +99,11 @@ Out of scope until separately approved:
 26. Persist shopping list writes. Done for list/item creation and checked-state updates.
 27. Persist bills and renewals writes with source-of-truth guardrails. Done for manual source-first reminder creation.
 28. Persist source references as metadata/pointers. Done for manual https links and original-location references.
-29. Persist comments and activity history.
+29. Persist comments and activity history. Done for item comments and automatic mutation activity.
 30. Production QA and privacy review.
 31. Controlled Clerk/Prisma staging activation. Environment and seed gates done; latest-main deployment and QA pending.
 32. Custom production domain, Clerk production keys, and controlled identity remap. Pending separate domain approval.
 
 ## Immediate Next Step
 
-Complete comments and activity-history writes next, then run the full production privacy and scope review. Keep Vercel activation and browser QA deferred until review access resumes.
+Run the full production privacy, access-control, beginner-usability, and scope review next. Keep Vercel activation and browser QA deferred until review access resumes.
