@@ -2,7 +2,7 @@
 
 ## Current Objective
 
-Complete the controlled staging activation and verify the private household workspace end to end. The production Neon schema is migrated, Clerk and Neon are connected to Vercel, Prisma 7 uses the Neon runtime adapter, and the first provider-mapped internal user has one active household administrator membership. Vercel runtime modes are staged as Clerk and Prisma together, pending a deployment from the latest main commit and signed-out, signed-in, household-isolation, mobile, and privacy QA. Clerk development keys are intentionally used for this staging checkpoint; production Clerk keys remain blocked on an approved custom domain and DNS configuration. Uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, and finance features remain absent.
+Continue the production persistence path while Vercel activation review is deferred. Manual shared-inbox creation now has a household-scoped write contract, server validation, active-membership enforcement, transactional activity history, and a mobile capture form. The production Neon schema is migrated, Clerk and Neon are connected to Vercel, Prisma 7 uses the Neon runtime adapter, and the first provider-mapped internal user has one active household administrator membership. Vercel runtime modes are staged as Clerk and Prisma together, pending a deployment from the latest main commit and signed-out, signed-in, household-isolation, mobile, and privacy QA. Clerk development keys are intentionally used for this staging checkpoint; production Clerk keys remain blocked on an approved custom domain and DNS configuration. Uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, and finance features remain absent.
 
 ## Product Summary
 
@@ -94,7 +94,7 @@ Out of scope until separately approved:
 21. Household membership enforcement. Server read-model checkpoint done; live mutation enforcement pending.
 22. Clerk signed-out and unmapped-account access states. Done; staging activation pending deployment QA.
 23. Audit remaining direct static dependencies and keep them behind approved demo boundaries. Done.
-24. Persist shared inbox writes.
+24. Persist shared inbox writes. Done for manual item creation; triage/status mutation remains a later refinement.
 25. Persist tasks and reminders writes.
 26. Persist shopping list writes.
 27. Persist bills and renewals writes with source-of-truth guardrails.
@@ -106,4 +106,4 @@ Out of scope until separately approved:
 
 ## Immediate Next Step
 
-Merge this control checkpoint to deploy the latest main commit once, then verify signed-out redirect, Clerk sign-in, mapped household access, database-backed reads, mobile layout, and payment-source guardrails. Keep this as a staging activation until a custom production domain and Clerk production keys are approved.
+Complete the tasks and reminders write path next. Keep Vercel activation and browser QA deferred until review access resumes; do not promote or repeatedly redeploy meanwhile.
