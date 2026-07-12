@@ -27,7 +27,7 @@ export function ItemRow({ title, detail, status, href, action }: ItemRowProps) {
 
   const className = "flex min-h-16 items-start justify-between gap-3 border-b py-3 last:border-b-0";
 
-  if (href) {
+  if (href && !action) {
     return (
       <Link
         href={href}
