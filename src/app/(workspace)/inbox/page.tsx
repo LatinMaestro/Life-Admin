@@ -1,10 +1,8 @@
 import Link from "next/link";
 import { ArrowRight, Inbox, Plus, Route } from "lucide-react";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
+import { InboxCaptureForm } from "@/components/inbox-capture-form";
 import { PageHeader } from "@/components/page-header";
 import { ReadModelSummary } from "@/components/read-model-summary";
 import { getInboxReadModel } from "@/lib/server/module-read-models";
@@ -41,62 +39,14 @@ export default async function InboxPage() {
             <Inbox className="mt-1 h-5 w-5 text-muted-foreground" aria-hidden="true" />
             <div>
               <CardTitle>Quick capture</CardTitle>
-              <CardDescription>Static manual intake draft for household admin items.</CardDescription>
+              <CardDescription>
+                Save a manual intake item directly to the active household.
+              </CardDescription>
             </div>
           </div>
         </CardHeader>
         <CardContent>
-          <form className="grid gap-4 md:grid-cols-2">
-            <div className="space-y-2 md:col-span-2">
-              <label htmlFor="capture-title" className="text-sm font-medium">
-                Title
-              </label>
-              <Input id="capture-title" name="title" placeholder="School form, home service note, or errand" />
-            </div>
-
-            <div className="space-y-2">
-              <label htmlFor="capture-destination" className="text-sm font-medium">
-                Destination
-              </label>
-              <Select id="capture-destination" name="destination" defaultValue="task">
-                <option value="task">Task</option>
-                <option value="reminder">Reminder</option>
-                <option value="bill_or_renewal">Bill or renewal</option>
-                <option value="source_reference">Source reference</option>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <label htmlFor="capture-priority" className="text-sm font-medium">
-                Priority
-              </label>
-              <Select id="capture-priority" name="priority" defaultValue="normal">
-                <option value="high">High</option>
-                <option value="normal">Normal</option>
-                <option value="low">Low</option>
-              </Select>
-            </div>
-
-            <div className="space-y-2 md:col-span-2">
-              <label htmlFor="capture-notes" className="text-sm font-medium">
-                Notes
-              </label>
-              <Textarea id="capture-notes" name="notes" placeholder="What needs to happen, who is involved, and any timing to remember." />
-            </div>
-
-            <div className="space-y-2 md:col-span-2">
-              <label htmlFor="capture-source" className="text-sm font-medium">
-                Source reference
-              </label>
-              <Input id="capture-source" name="sourceReference" placeholder="Original email, PDF, link, image, or note reference" />
-            </div>
-
-            <div className="md:col-span-2">
-              <Button type="reset" variant="outline" className="w-full sm:w-auto">
-                Clear draft
-              </Button>
-            </div>
-          </form>
+          <InboxCaptureForm />
         </CardContent>
       </Card>
 
@@ -107,12 +57,16 @@ export default async function InboxPage() {
               <Route className="mt-1 h-5 w-5 text-muted-foreground" aria-hidden="true" />
               <div>
                 <CardTitle>Manual routing</CardTitle>
-                <CardDescription>Inbox items stay reviewable before they become tasks, reminders, bills, renewals, or source references.</CardDescription>
+                <CardDescription>
+                  Inbox items stay reviewable before they become tasks, reminders, bills,
+                  renewals, lists, or source references.
+                </CardDescription>
               </div>
             </div>
           </CardHeader>
           <CardContent className="text-sm leading-6 text-muted-foreground">
-            Future writes can attach the selected household, creator, owner, and destination while the current page remains static.
+            Saving records the active household and creator automatically. The selected
+            destination remains a suggestion until a household member reviews and routes it.
           </CardContent>
         </Card>
 
@@ -122,7 +76,9 @@ export default async function InboxPage() {
               <ArrowRight className="mt-1 h-5 w-5 text-muted-foreground" aria-hidden="true" />
               <div>
                 <CardTitle>Next step</CardTitle>
-                <CardDescription>Keep manual capture as the default until live persistence and review flows are approved.</CardDescription>
+                <CardDescription>
+                  Review captured items before turning them into household work.
+                </CardDescription>
               </div>
             </div>
           </CardHeader>
