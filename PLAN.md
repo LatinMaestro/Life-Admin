@@ -91,7 +91,7 @@ Out of scope until separately approved:
 18. Inbox, tasks, lists, and bills page read-model migration. Done.
 19. Workspace read model and Dashboard, Family, Settings, and app shell migration. Done.
 20. Authentication provider and session strategy. Clerk provisioned and linked; SDK, session mapping, sign-in, and protected workspace checkpoints done.
-21. Household membership enforcement. Done for production reads, writes, target ownership, and optional assignee validation; invitation onboarding remains pending.
+21. Household membership enforcement. Done for production reads, writes, target ownership, and optional assignee validation; invitation onboarding is implemented in the active branch using verified-email claim and transactional membership checks.
 22. Clerk signed-out and unmapped-account access states. Done; staging activation pending deployment QA.
 23. Audit remaining direct static dependencies and keep them behind approved demo boundaries. Done.
 24. Persist shared inbox writes. Done for manual item creation, archiving, and reopening; richer routing remains a later refinement.
@@ -106,4 +106,4 @@ Out of scope until separately approved:
 
 ## Immediate Next Step
 
-Design and implement the minimum secure household invitation and onboarding flow next, then add edit/delete recovery and inbox routing. Complete authenticated Vercel browser QA before merging or production activation.
+Validate the secure household invitation and onboarding batch, then add minimal edit/archive recovery and manual inbox routing. Complete authenticated Vercel browser QA before merging or production activation.
