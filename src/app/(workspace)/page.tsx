@@ -59,7 +59,7 @@ export default async function DashboardPage() {
               <ItemRow
                 key={item.id}
                 title={item.title}
-                detail="Assigned to you"
+                detail={item.detail}
                 status={formatStatus(item.status)}
                 href={item.href}
               />
