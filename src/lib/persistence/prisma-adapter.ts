@@ -4,6 +4,7 @@ import { createHouseholdScopedWhere, requireHouseholdPermission } from "@/lib/ac
 import type { HouseholdAccessContext } from "@/lib/access-control";
 import type {
   ActivityEventSummary,
+  CreateBillOrRenewalInput,
   CreateInboxItemInput,
   CreateReminderInput,
   CreateShoppingListInput,
@@ -585,6 +586,83 @@ export const prismaHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
         createdByMemberId: true,
         sourceReferenceId: true,
       },
+    });
+  },
+
+  async createBillOrRenewal(
+    context,
+    input: CreateBillOrRenewalInput,
+  ): Promise<BillOrRenewalSummary> {
+    requireHouseholdPermission(context, "manage_shared_items");
+    const prisma = getPrismaClient();
+
+    return prisma.$transaction(async (transaction) => {
+      const [member, source] = await Promise.all([
+        transaction.householdMember.findFirst({
+          where: {
+            id: context.memberId,
+            householdId: context.householdId,
+            userId: context.userId,
+            status: "active",
+          },
+          select: { id: true },
+        }),
+        input.sourceReferenceId
+          ? transaction.sourceReference.findFirst({
+              where: {
+                id: input.sourceReferenceId,
+                householdId: context.householdId,
+              },
+              select: { id: true },
+            })
+          : Promise.resolve(null),
+      ]);
+
+      if (!member || (input.sourceReferenceId && !source)) {
+        throw new Error("An active household member and valid source reference are required.");
+      }
+
+      const item = await transaction.billOrRenewal.create({
+        data: {
+          householdId: context.householdId,
+          title: input.title,
+          provider: input.provider,
+          type: input.type,
+          dueAt: input.type === "bill" ? input.dueAt : null,
+          renewalAt: input.type === "renewal" ? input.renewalAt : null,
+          notes: input.notes,
+          sourceReferenceId: source?.id,
+          assignedMemberId: context.memberId,
+          createdByMemberId: context.memberId,
+        },
+        select: {
+          id: true,
+          householdId: true,
+          title: true,
+          provider: true,
+          type: true,
+          status: true,
+          dueAt: true,
+          renewalAt: true,
+          assignedMemberId: true,
+          createdByMemberId: true,
+          sourceReferenceId: true,
+        },
+      });
+
+      await transaction.activityEvent.create({
+        data: {
+          householdId: context.householdId,
+          actorUserId: context.userId,
+          actorMemberId: context.memberId,
+          entityType: "bill_or_renewal",
+          entityId: item.id,
+          eventType: "created",
+          summary: `Created ${item.type} reminder: ${item.title}`,
+        },
+      });
+
+      return item;
     });
   },
 
