@@ -56,7 +56,7 @@ export function ReadModelSummary({
                 title={row.title}
                 detail={row.detail}
                 status={row.status}
-                href={row.href}
+                href={row.href.startsWith("https://") ? row.href : undefined}
               />
             ))}
           </div>
