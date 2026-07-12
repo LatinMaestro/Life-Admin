@@ -190,10 +190,20 @@ export interface HouseholdDashboardRepository {
   ): Promise<InboxItemSummary>;
   listTasks(context: HouseholdAccessContext): Promise<TaskSummary[]>;
   createTask(context: HouseholdAccessContext, input: CreateTaskInput): Promise<TaskSummary>;
+  setTaskCompleted(
+    context: HouseholdAccessContext,
+    taskId: string,
+    completed: boolean,
+  ): Promise<TaskSummary>;
   listReminders(context: HouseholdAccessContext): Promise<ReminderSummary[]>;
   createReminder(
     context: HouseholdAccessContext,
     input: CreateReminderInput,
+  ): Promise<ReminderSummary>;
+  setReminderCompleted(
+    context: HouseholdAccessContext,
+    reminderId: string,
+    completed: boolean,
   ): Promise<ReminderSummary>;
   listShoppingLists(context: HouseholdAccessContext): Promise<ShoppingListSummary[]>;
   listShoppingListItems(context: HouseholdAccessContext): Promise<ShoppingListItemSummary[]>;
@@ -214,6 +224,11 @@ export interface HouseholdDashboardRepository {
   createBillOrRenewal(
     context: HouseholdAccessContext,
     input: CreateBillOrRenewalInput,
+  ): Promise<BillOrRenewalSummary>;
+  setBillOrRenewalCompleted(
+    context: HouseholdAccessContext,
+    itemId: string,
+    completed: boolean,
   ): Promise<BillOrRenewalSummary>;
   listSourceReferences(context: HouseholdAccessContext): Promise<SourceReferenceSummary[]>;
   createSourceReference(
