@@ -102,6 +102,25 @@ export async function createReminderAction(
   }
 }
 
+export async function toggleWorkCompletedAction(formData: FormData) {
+  const itemId = readText(formData, "itemId");
+  const entityType = readText(formData, "entityType");
+  const completed = readText(formData, "completed") === "true";
+
+  if (!itemId || (entityType !== "task" && entityType !== "reminder")) return;
+
+  const context = await getRuntimeHouseholdAccessContext();
+  const adapter = await getHouseholdPersistenceAdapter();
+
+  if (entityType === "task") {
+    await adapter.setTaskCompleted(context, itemId, completed);
+  } else {
+    await adapter.setReminderCompleted(context, itemId, completed);
+  }
+
+  revalidateWorkPages();
+}
+
 function validateCommon(title: string, notes: string): WorkCaptureState | null {
   if (title.length < 2 || title.length > 120) {
     return errorState("Enter a title between 2 and 120 characters.");
