@@ -50,7 +50,7 @@ export default async function TasksPage() {
         }}
       />
 
-      <TaskReminderCapture />
+      <TaskReminderCapture members={tasks.members} />
     </>
   );
 }
