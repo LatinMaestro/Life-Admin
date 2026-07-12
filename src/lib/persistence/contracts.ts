@@ -116,6 +116,16 @@ export interface BillOrRenewalSummary extends MemberOwnedRecord {
   sourceReferenceId?: string | null;
 }
 
+export interface CreateBillOrRenewalInput {
+  title: string;
+  provider?: string | null;
+  type: "bill" | "renewal";
+  dueAt?: Date | null;
+  renewalAt?: Date | null;
+  notes?: string | null;
+  sourceReferenceId?: string | null;
+}
+
 export interface SourceReferenceSummary extends HouseholdRecord {
   title: string;
   kind: string;
@@ -176,6 +186,10 @@ export interface HouseholdDashboardRepository {
     checked: boolean,
   ): Promise<ShoppingListItemSummary>;
   listBillsAndRenewals(context: HouseholdAccessContext): Promise<BillOrRenewalSummary[]>;
+  createBillOrRenewal(
+    context: HouseholdAccessContext,
+    input: CreateBillOrRenewalInput,
+  ): Promise<BillOrRenewalSummary>;
   listSourceReferences(context: HouseholdAccessContext): Promise<SourceReferenceSummary[]>;
   listComments(context: HouseholdAccessContext): Promise<CommentSummary[]>;
   listActivity(context: HouseholdAccessContext): Promise<ActivityEventSummary[]>;
