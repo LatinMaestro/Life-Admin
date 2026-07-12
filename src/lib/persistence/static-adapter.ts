@@ -124,6 +124,12 @@ export const staticHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
     }));
   },
 
+  async createInboxItem(): Promise<InboxItemSummary> {
+    throw new HouseholdAccessError(
+      "Manual inbox saving is available when the private household workspace is connected.",
+    );
+  },
+
   async listTasks(context): Promise<TaskSummary[]> {
     const { householdId } = requireStaticHousehold(context);
 
