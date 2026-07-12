@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
@@ -7,16 +8,20 @@ interface ItemRowProps {
   detail: string;
   status?: string;
   href?: string;
+  action?: ReactNode;
 }
 
-export function ItemRow({ title, detail, status, href }: ItemRowProps) {
+export function ItemRow({ title, detail, status, href, action }: ItemRowProps) {
   const content = (
     <>
       <div className="min-w-0">
         <p className="text-sm font-medium leading-6">{title}</p>
         <p className="text-sm leading-5 text-muted-foreground">{detail}</p>
       </div>
-      {status ? <Badge className="shrink-0">{status}</Badge> : null}
+      <div className="flex shrink-0 items-center gap-2">
+        {status ? <Badge>{status}</Badge> : null}
+        {action}
+      </div>
     </>
   );
 
