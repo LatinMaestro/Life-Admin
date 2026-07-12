@@ -9,7 +9,6 @@ type DashboardQueue = {
   label: string;
   count: number;
   href: string;
-  detail: string;
 };
 
 type DashboardWorkItem = {
@@ -17,6 +16,7 @@ type DashboardWorkItem = {
   title: string;
   status: string;
   href: string;
+  detail: string;
 };
 
 type DashboardReadModel = {
