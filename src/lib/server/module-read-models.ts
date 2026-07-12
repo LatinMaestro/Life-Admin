@@ -12,6 +12,7 @@ type ReadModelRow = {
   detail: string;
   status: string;
   href: string;
+  entityType?: "task" | "reminder" | "bill_or_renewal";
 };
 
 type CountSummary = {
@@ -124,6 +125,7 @@ export async function getTasksReadModel(
         detail: `${task.notes ?? "Household task"} Assigned to ${getMemberName(members, task.assignedMemberId)}.`,
         status: formatStatus(task.status),
         href: "/tasks",
+        entityType: "task" as const,
       })),
       ...reminders.map((reminder) => ({
         id: reminder.id,
@@ -131,6 +133,7 @@ export async function getTasksReadModel(
         detail: `${reminder.notes ?? "Household reminder"} Assigned to ${getMemberName(members, reminder.assignedMemberId)}.`,
         status: formatStatus(reminder.status),
         href: "/tasks",
+        entityType: "reminder" as const,
       })),
     ],
   };
@@ -200,6 +203,7 @@ export async function getBillsAndRenewalsReadModel(
       detail: `${item.provider ?? "Provider"}. Assigned to ${getMemberName(members, item.assignedMemberId)}. Open the original source before household action.`,
       status: formatStatus(item.status),
       href: item.sourceReferenceId ? (sourceLinks.get(item.sourceReferenceId) ?? "") : "",
+      entityType: "bill_or_renewal" as const,
     })),
     sources: sourceReferences.map((source) => ({ id: source.id, title: source.title })),
   };
