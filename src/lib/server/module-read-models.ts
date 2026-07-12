@@ -30,6 +30,10 @@ type ModuleReadModel = {
   rows: ReadModelRow[];
 };
 
+type InboxReadModel = ModuleReadModel & {
+  lists: Array<{ id: string; name: string }>;
+};
+
 type TasksReadModel = ModuleReadModel & {
   members: Array<{ id: string; name: string }>;
 };
@@ -107,13 +111,19 @@ async function getBaseReadModel(context: HouseholdAccessContext) {
 
 export async function getInboxReadModel(
   context?: HouseholdAccessContext,
-): Promise<ModuleReadModel> {
+): Promise<InboxReadModel> {
   const accessContext = context ?? (await getRuntimeHouseholdAccessContext());
   const { adapter, household, members } = await getBaseReadModel(accessContext);
-  const inboxItems = await adapter.listInboxItems(accessContext);
+  const [inboxItems, shoppingLists] = await Promise.all([
+    adapter.listInboxItems(accessContext),
+    adapter.listShoppingLists(accessContext),
+  ]);
 
   return {
     household,
+    lists: shoppingLists
+      .filter((list) => list.status === "active")
+      .map((list) => ({ id: list.id, name: list.name })),
     counts: [
       { label: "New", value: inboxItems.filter((item) => item.status === "new").length },
       { label: "Needs review", value: inboxItems.filter((item) => item.status === "needs_review").length },
