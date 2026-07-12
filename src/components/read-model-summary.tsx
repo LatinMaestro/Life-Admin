@@ -13,7 +13,7 @@ export type ReadModelRow = {
   detail: string;
   status: string;
   href: string;
-  entityType?: "task" | "reminder" | "bill_or_renewal";
+  entityType?: "inbox_item" | "task" | "reminder" | "bill_or_renewal";
 };
 
 interface ReadModelSummaryProps {
