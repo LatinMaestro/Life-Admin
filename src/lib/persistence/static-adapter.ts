@@ -268,6 +268,12 @@ export const staticHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
     }));
   },
 
+  async createSourceReference(): Promise<SourceReferenceSummary> {
+    throw new HouseholdAccessError(
+      "Source reference saving is available when the private household workspace is connected.",
+    );
+  },
+
   async listComments(context): Promise<CommentSummary[]> {
     const { householdId } = requireStaticHousehold(context);
 
