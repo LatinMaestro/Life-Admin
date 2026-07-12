@@ -31,6 +31,20 @@ export interface InboxItemSummary extends MemberOwnedRecord {
   sourceReferenceId?: string | null;
 }
 
+export interface CreateInboxItemInput {
+  title: string;
+  description?: string | null;
+  category: "school" | "appointment" | "renewal" | "household_admin" | "shopping" | "other";
+  priority: "low" | "normal" | "high";
+  suggestedDestination:
+    | "task"
+    | "reminder"
+    | "bill_or_renewal"
+    | "shopping_list"
+    | "source_reference"
+    | "none";
+}
+
 export interface TaskSummary extends MemberOwnedRecord {
   title: string;
   notes?: string | null;
@@ -100,6 +114,10 @@ export interface HouseholdWorkspaceRepository {
 
 export interface HouseholdDashboardRepository {
   listInboxItems(context: HouseholdAccessContext): Promise<InboxItemSummary[]>;
+  createInboxItem(
+    context: HouseholdAccessContext,
+    input: CreateInboxItemInput,
+  ): Promise<InboxItemSummary>;
   listTasks(context: HouseholdAccessContext): Promise<TaskSummary[]>;
   listReminders(context: HouseholdAccessContext): Promise<ReminderSummary[]>;
   listShoppingLists(context: HouseholdAccessContext): Promise<ShoppingListSummary[]>;
@@ -109,4 +127,6 @@ export interface HouseholdDashboardRepository {
   listActivity(context: HouseholdAccessContext): Promise<ActivityEventSummary[]>;
 }
 
-export interface HouseholdPersistenceAdapter extends HouseholdWorkspaceRepository, HouseholdDashboardRepository {}
+export interface HouseholdPersistenceAdapter
+  extends HouseholdWorkspaceRepository,
+    HouseholdDashboardRepository {}
