@@ -135,6 +135,18 @@ export interface SourceReferenceSummary extends HouseholdRecord {
   createdByMemberId: string;
 }
 
+export interface CreateSourceReferenceInput {
+  title: string;
+  kind:
+    | "source_link"
+    | "source_document_reference"
+    | "source_image_reference"
+    | "source_email_reference"
+    | "source_crop_reference";
+  label: string;
+  url?: string | null;
+}
+
 export interface CommentSummary extends HouseholdRecord {
   entityType: string;
   entityId: string;
@@ -191,6 +203,10 @@ export interface HouseholdDashboardRepository {
     input: CreateBillOrRenewalInput,
   ): Promise<BillOrRenewalSummary>;
   listSourceReferences(context: HouseholdAccessContext): Promise<SourceReferenceSummary[]>;
+  createSourceReference(
+    context: HouseholdAccessContext,
+    input: CreateSourceReferenceInput,
+  ): Promise<SourceReferenceSummary>;
   listComments(context: HouseholdAccessContext): Promise<CommentSummary[]>;
   listActivity(context: HouseholdAccessContext): Promise<ActivityEventSummary[]>;
 }
