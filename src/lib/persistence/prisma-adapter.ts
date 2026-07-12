@@ -162,6 +162,42 @@ export const prismaHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
     });
   },
 
+  async setInboxItemArchived(context, itemId, archived): Promise<InboxItemSummary> {
+    requireHouseholdPermission(context, "manage_shared_items");
+    const prisma = getPrismaClient();
+
+    return prisma.$transaction(async (transaction) => {
+      const [member, existing] = await Promise.all([
+        transaction.householdMember.findFirst({
+          where: { id: context.memberId, householdId: context.householdId, userId: context.userId, status: "active" },
+          select: { id: true },
+        }),
+        transaction.inboxItem.findFirst({
+          where: { id: itemId, householdId: context.householdId },
+          select: { id: true },
+        }),
+      ]);
+      if (!member || !existing) throw new Error("The inbox item is not available to this household member.");
+
+      const item = await transaction.inboxItem.update({
+        where: { id: existing.id },
+        data: { status: archived ? "archived" : "new" },
+        select: {
+          id: true, householdId: true, title: true, description: true, status: true, category: true,
+          priority: true, assignedMemberId: true, createdByMemberId: true, sourceReferenceId: true,
+        },
+      });
+      await transaction.activityEvent.create({
+        data: {
+          householdId: context.householdId, actorUserId: context.userId, actorMemberId: context.memberId,
+          entityType: "inbox_item", entityId: item.id, eventType: archived ? "archived" : "reopened",
+          summary: `${archived ? "Archived" : "Reopened"} inbox item: ${item.title}`,
+        },
+      });
+      return item;
+    });
+  },
+
   async listTasks(context): Promise<TaskSummary[]> {
     const where = requireReadableHousehold(context);
 
