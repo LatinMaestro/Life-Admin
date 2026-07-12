@@ -29,6 +29,10 @@ type ModuleReadModel = {
   rows: ReadModelRow[];
 };
 
+type ActivityReadModel = ModuleReadModel & {
+  targets: Array<{ value: string; label: string }>;
+};
+
 type BillsReadModel = ModuleReadModel & {
   sources: Array<{ id: string; title: string }>;
 };
@@ -225,17 +229,34 @@ export async function getSourceReferencesReadModel(
 
 export async function getActivityReadModel(
   context?: HouseholdAccessContext,
-): Promise<ModuleReadModel> {
+): Promise<ActivityReadModel> {
   const accessContext = context ?? (await getRuntimeHouseholdAccessContext());
   const { adapter, household, members } = await getBaseReadModel(accessContext);
-  const [comments, activity] = await Promise.all([adapter.listComments(accessContext), adapter.listActivity(accessContext)]);
+  const [comments, activity, inbox, tasks, reminders, lists, bills, sources] = await Promise.all([
+    adapter.listComments(accessContext),
+    adapter.listActivity(accessContext),
+    adapter.listInboxItems(accessContext),
+    adapter.listTasks(accessContext),
+    adapter.listReminders(accessContext),
+    adapter.listShoppingLists(accessContext),
+    adapter.listBillsAndRenewals(accessContext),
+    adapter.listSourceReferences(accessContext),
+  ]);
+
+  const targets = [
+    ...inbox.map((item) => ({ value: `inbox_item:${item.id}`, label: `Inbox: ${item.title}` })),
+    ...tasks.map((item) => ({ value: `task:${item.id}`, label: `Task: ${item.title}` })),
+    ...reminders.map((item) => ({ value: `reminder:${item.id}`, label: `Reminder: ${item.title}` })),
+    ...lists.map((item) => ({ value: `shopping_list:${item.id}`, label: `List: ${item.name}` })),
+    ...bills.map((item) => ({ value: `bill_or_renewal:${item.id}`, label: `${item.type === "bill" ? "Bill" : "Renewal"}: ${item.title}` })),
+    ...sources.map((item) => ({ value: `source_reference:${item.id}`, label: `Source: ${item.title}` })),
+  ];
 
   return {
     household,
     counts: [
       { label: "Comments", value: comments.length },
       { label: "Activity", value: activity.length },
-      { label: "Household notes", value: comments.length + activity.length },
     ],
     rows: [
       ...comments.map((comment) => ({
@@ -253,5 +274,6 @@ export async function getActivityReadModel(
         href: "/activity",
       })),
     ],
+    targets,
   };
 }
