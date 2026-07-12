@@ -85,6 +85,27 @@ export interface ShoppingListSummary extends HouseholdRecord {
   totalItemCount: number;
 }
 
+export interface ShoppingListItemSummary extends MemberOwnedRecord {
+  shoppingListId: string;
+  label: string;
+  notes?: string | null;
+  quantity?: string | null;
+  category?: string | null;
+  checked: boolean;
+}
+
+export interface CreateShoppingListInput {
+  name: string;
+}
+
+export interface CreateShoppingListItemInput {
+  shoppingListId: string;
+  label: string;
+  notes?: string | null;
+  quantity?: string | null;
+  category?: string | null;
+}
+
 export interface BillOrRenewalSummary extends MemberOwnedRecord {
   title: string;
   provider?: string | null;
@@ -140,6 +161,20 @@ export interface HouseholdDashboardRepository {
     input: CreateReminderInput,
   ): Promise<ReminderSummary>;
   listShoppingLists(context: HouseholdAccessContext): Promise<ShoppingListSummary[]>;
+  listShoppingListItems(context: HouseholdAccessContext): Promise<ShoppingListItemSummary[]>;
+  createShoppingList(
+    context: HouseholdAccessContext,
+    input: CreateShoppingListInput,
+  ): Promise<ShoppingListSummary>;
+  createShoppingListItem(
+    context: HouseholdAccessContext,
+    input: CreateShoppingListItemInput,
+  ): Promise<ShoppingListItemSummary>;
+  setShoppingListItemChecked(
+    context: HouseholdAccessContext,
+    itemId: string,
+    checked: boolean,
+  ): Promise<ShoppingListItemSummary>;
   listBillsAndRenewals(context: HouseholdAccessContext): Promise<BillOrRenewalSummary[]>;
   listSourceReferences(context: HouseholdAccessContext): Promise<SourceReferenceSummary[]>;
   listComments(context: HouseholdAccessContext): Promise<CommentSummary[]>;
