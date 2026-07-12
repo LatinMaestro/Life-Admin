@@ -95,9 +95,9 @@ Out of scope until separately approved:
 22. Clerk signed-out and unmapped-account access states. Done; staging activation pending deployment QA.
 23. Audit remaining direct static dependencies and keep them behind approved demo boundaries. Done.
 24. Persist shared inbox writes. Done for manual item creation; triage/status mutation remains a later refinement.
-25. Persist tasks and reminders writes. Done for manual creation; completion and status mutation remain later refinements.
+25. Persist tasks and reminders writes. Done for manual creation, completion, and reopening.
 26. Persist shopping list writes. Done for list/item creation and checked-state updates.
-27. Persist bills and renewals writes with source-of-truth guardrails. Done for manual source-first reminder creation.
+27. Persist bills and renewals writes with source-of-truth guardrails. Done for manual source-first creation, completion, and reopening.
 28. Persist source references as metadata/pointers. Done for manual https links and original-location references.
 29. Persist comments and activity history. Done for item comments and automatic mutation activity.
 30. Production QA and privacy review. Code, scope, privacy, and beginner-usability review done; authenticated Vercel browser QA pending.
@@ -106,4 +106,4 @@ Out of scope until separately approved:
 
 ## Immediate Next Step
 
-Complete authenticated Vercel browser QA when review access resumes, then merge the reviewed batch and verify the controlled activation before starting any deferred feature phase.
+Continue small daily-action refinements behind the same review branch. Complete authenticated Vercel browser QA when access resumes, then merge and verify the controlled activation before starting any deferred feature phase.
