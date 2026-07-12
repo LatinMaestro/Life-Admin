@@ -12,7 +12,13 @@ import { Select } from "@/components/ui/select";
 
 const initialState: BillCaptureState = { status: "idle", message: "" };
 
-export function BillCapture({ sources }: { sources: Array<{ id: string; title: string }> }) {
+export function BillCapture({
+  sources,
+  members,
+}: {
+  sources: Array<{ id: string; title: string }>;
+  members: Array<{ id: string; name: string }>;
+}) {
   const [state, formAction] = useActionState(createBillOrRenewalAction, initialState);
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -39,7 +45,13 @@ export function BillCapture({ sources }: { sources: Array<{ id: string; title: s
         <Field label="Provider (optional)" htmlFor="bill-provider">
           <Input id="bill-provider" name="provider" maxLength={120} placeholder="Provider name" />
         </Field>
-        <div className="space-y-2 sm:col-span-2">
+        <Field label="Assign to (optional)" htmlFor="bill-assignee">
+          <Select id="bill-assignee" name="assignedMemberId" defaultValue="">
+            <option value="">Me</option>
+            {members.map((member) => <option key={member.id} value={member.id}>{member.name}</option>)}
+          </Select>
+        </Field>
+        <div className="space-y-2">
           <label htmlFor="bill-source" className="text-sm font-medium">Original source (optional)</label>
           <Select id="bill-source" name="sourceReferenceId" defaultValue="">
             <option value="">No source selected</option>
