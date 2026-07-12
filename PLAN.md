@@ -94,7 +94,7 @@ Out of scope until separately approved:
 21. Household membership enforcement. Server read-model checkpoint done; live mutation enforcement pending.
 22. Clerk signed-out and unmapped-account access states. Done; staging activation pending deployment QA.
 23. Audit remaining direct static dependencies and keep them behind approved demo boundaries. Done.
-24. Persist shared inbox writes. Done for manual item creation; triage/status mutation remains a later refinement.
+24. Persist shared inbox writes. Done for manual item creation, archiving, and reopening; richer routing remains a later refinement.
 25. Persist tasks and reminders writes. Done for manual creation, completion, and reopening.
 26. Persist shopping list writes. Done for list/item creation and checked-state updates.
 27. Persist bills and renewals writes with source-of-truth guardrails. Done for manual source-first creation, completion, and reopening.
