@@ -262,6 +262,7 @@ export const staticHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
       title: source.title,
       kind: source.kind,
       label: source.label,
+      url: null,
       reviewStatus: toStatusValue(source.reviewStatus),
       sensitivity: source.sensitivity.toLowerCase(),
       createdByMemberId: source.createdByMemberId,
