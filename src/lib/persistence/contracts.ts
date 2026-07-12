@@ -155,6 +155,18 @@ export interface CommentSummary extends HouseholdRecord {
   createdAt: Date;
 }
 
+export interface CreateCommentInput {
+  entityType:
+    | "inbox_item"
+    | "task"
+    | "reminder"
+    | "shopping_list"
+    | "bill_or_renewal"
+    | "source_reference";
+  entityId: string;
+  body: string;
+}
+
 export interface ActivityEventSummary extends HouseholdRecord {
   entityType: string;
   entityId?: string | null;
@@ -208,6 +220,10 @@ export interface HouseholdDashboardRepository {
     input: CreateSourceReferenceInput,
   ): Promise<SourceReferenceSummary>;
   listComments(context: HouseholdAccessContext): Promise<CommentSummary[]>;
+  createComment(
+    context: HouseholdAccessContext,
+    input: CreateCommentInput,
+  ): Promise<CommentSummary>;
   listActivity(context: HouseholdAccessContext): Promise<ActivityEventSummary[]>;
 }
 
