@@ -29,6 +29,10 @@ type ModuleReadModel = {
   rows: ReadModelRow[];
 };
 
+type BillsReadModel = ModuleReadModel & {
+  sources: Array<{ id: string; title: string }>;
+};
+
 type ShoppingListsReadModel = ModuleReadModel & {
   lists: Array<{ id: string; name: string }>;
   items: Array<{
@@ -169,10 +173,13 @@ export async function getShoppingListsReadModel(
 
 export async function getBillsAndRenewalsReadModel(
   context?: HouseholdAccessContext,
-): Promise<ModuleReadModel> {
+): Promise<BillsReadModel> {
   const accessContext = context ?? (await getRuntimeHouseholdAccessContext());
   const { adapter, household, members } = await getBaseReadModel(accessContext);
-  const billsAndRenewals = await adapter.listBillsAndRenewals(accessContext);
+  const [billsAndRenewals, sourceReferences] = await Promise.all([
+    adapter.listBillsAndRenewals(accessContext),
+    adapter.listSourceReferences(accessContext),
+  ]);
 
   return {
     household,
@@ -188,6 +195,7 @@ export async function getBillsAndRenewalsReadModel(
       status: formatStatus(item.status),
       href: "/bills",
     })),
+    sources: sourceReferences.map((source) => ({ id: source.id, title: source.title })),
   };
 }
 
