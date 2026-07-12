@@ -30,11 +30,16 @@ type ModuleReadModel = {
   rows: ReadModelRow[];
 };
 
+type TasksReadModel = ModuleReadModel & {
+  members: Array<{ id: string; name: string }>;
+};
+
 type ActivityReadModel = ModuleReadModel & {
   targets: Array<{ value: string; label: string }>;
 };
 
 type BillsReadModel = ModuleReadModel & {
+  members: Array<{ id: string; name: string }>;
   sources: Array<{ id: string; title: string }>;
 };
 
@@ -94,6 +99,9 @@ async function getBaseReadModel(context: HouseholdAccessContext) {
       timezone: household.timezone,
     },
     members: new Map(members.map((member) => [member.id, member.displayName])),
+    memberOptions: members
+      .filter((member) => member.status === "active")
+      .map((member) => ({ id: member.id, name: member.displayName })),
   };
 }
 
@@ -124,9 +132,9 @@ export async function getInboxReadModel(
 
 export async function getTasksReadModel(
   context?: HouseholdAccessContext,
-): Promise<ModuleReadModel> {
+): Promise<TasksReadModel> {
   const accessContext = context ?? (await getRuntimeHouseholdAccessContext());
-  const { adapter, household, members } = await getBaseReadModel(accessContext);
+  const { adapter, household, members, memberOptions } = await getBaseReadModel(accessContext);
   const [tasks, reminders] = await Promise.all([adapter.listTasks(accessContext), adapter.listReminders(accessContext)]);
 
   return {
@@ -136,6 +144,7 @@ export async function getTasksReadModel(
       { label: "Done tasks", value: tasks.filter((task) => task.status === "done").length },
       { label: "Scheduled reminders", value: reminders.filter((reminder) => reminder.status === "scheduled").length },
     ],
+    members: memberOptions,
     rows: [
       ...tasks.map((task) => ({
         id: task.id,
@@ -208,7 +217,7 @@ export async function getBillsAndRenewalsReadModel(
   context?: HouseholdAccessContext,
 ): Promise<BillsReadModel> {
   const accessContext = context ?? (await getRuntimeHouseholdAccessContext());
-  const { adapter, household, members } = await getBaseReadModel(accessContext);
+  const { adapter, household, members, memberOptions } = await getBaseReadModel(accessContext);
   const [billsAndRenewals, sourceReferences] = await Promise.all([
     adapter.listBillsAndRenewals(accessContext),
     adapter.listSourceReferences(accessContext),
@@ -237,6 +246,7 @@ export async function getBillsAndRenewalsReadModel(
       href: item.sourceReferenceId ? (sourceLinks.get(item.sourceReferenceId) ?? "") : "",
       entityType: "bill_or_renewal" as const,
     })),
+    members: memberOptions,
     sources: sourceReferences.map((source) => ({ id: source.id, title: source.title })),
   };
 }
