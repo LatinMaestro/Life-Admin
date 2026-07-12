@@ -185,6 +185,8 @@ export async function getBillsAndRenewalsReadModel(
     adapter.listSourceReferences(accessContext),
   ]);
 
+  const sourceLinks = new Map(sourceReferences.map((source) => [source.id, source.url]));
+
   return {
     household,
     counts: [
@@ -197,7 +199,7 @@ export async function getBillsAndRenewalsReadModel(
       title: item.title,
       detail: `${item.provider ?? "Provider"}. Assigned to ${getMemberName(members, item.assignedMemberId)}. Open the original source before household action.`,
       status: formatStatus(item.status),
-      href: "/bills",
+      href: item.sourceReferenceId ? (sourceLinks.get(item.sourceReferenceId) ?? "") : "",
     })),
     sources: sourceReferences.map((source) => ({ id: source.id, title: source.title })),
   };
@@ -222,7 +224,7 @@ export async function getSourceReferencesReadModel(
       title: source.title,
       detail: `${source.label}. Created by ${getMemberName(members, source.createdByMemberId)}.`,
       status: formatStatus(source.reviewStatus),
-      href: "/sources",
+      href: source.url ?? "",
     })),
   };
 }
