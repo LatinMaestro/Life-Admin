@@ -1,4 +1,5 @@
 import { FileCheck2, Plus } from "lucide-react";
+import { BillCapture } from "@/components/bill-capture";
 import { PageHeader } from "@/components/page-header";
 import { ReadModelSummary } from "@/components/read-model-summary";
 import { buttonVariants } from "@/components/ui/button";
@@ -13,7 +14,7 @@ export default async function BillsPage() {
         title="Bills and renewals"
         description={`Due dates and renewals for ${bills.household.name}.`}
         action={
-          <a href="/inbox#quick-capture" className={buttonVariants()}>
+          <a href="#bill-capture" className={buttonVariants()}>
             <Plus className="h-4 w-4" aria-hidden="true" />
             Add
           </a>
@@ -27,6 +28,8 @@ export default async function BillsPage() {
         rows={bills.rows}
         emptyLabel="No bills or renewals need attention."
       />
+
+      <BillCapture sources={bills.sources} />
 
       <div className="mt-4 flex items-start gap-3 rounded-md border px-4 py-3 text-sm text-muted-foreground">
         <FileCheck2 className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
