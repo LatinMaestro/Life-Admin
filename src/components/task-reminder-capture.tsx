@@ -20,7 +20,7 @@ type CaptureAction = (
   formData: FormData,
 ) => Promise<WorkCaptureState>;
 
-export function TaskReminderCapture() {
+export function TaskReminderCapture({ members }: { members: Array<{ id: string; name: string }> }) {
   return (
     <div id="capture-work" className="mt-6 grid scroll-mt-24 gap-3 md:grid-cols-2">
       <details className="rounded-md border bg-card">
@@ -44,6 +44,7 @@ export function TaskReminderCapture() {
               <Input id="task-due" name="dueAt" type="date" />
             </Field>
           </div>
+          <AssigneeField id="task-assignee" members={members} />
           <NotesField id="task-notes" />
         </CaptureForm>
       </details>
@@ -70,6 +71,7 @@ export function TaskReminderCapture() {
               <Input id="reminder-date" name="remindAt" type="date" required />
             </Field>
           </div>
+          <AssigneeField id="reminder-assignee" members={members} />
           <NotesField id="reminder-notes" />
         </CaptureForm>
       </details>
@@ -123,6 +125,17 @@ function TextField({ id, name, label, placeholder }: { id: string; name: string;
   return (
     <Field label={label} htmlFor={id}>
       <Input id={id} name={name} minLength={2} maxLength={120} placeholder={placeholder} required />
+    </Field>
+  );
+}
+
+function AssigneeField({ id, members }: { id: string; members: Array<{ id: string; name: string }> }) {
+  return (
+    <Field label="Assign to (optional)" htmlFor={id}>
+      <Select id={id} name="assignedMemberId" defaultValue="">
+        <option value="">Me</option>
+        {members.map((member) => <option key={member.id} value={member.id}>{member.name}</option>)}
+      </Select>
     </Field>
   );
 }
