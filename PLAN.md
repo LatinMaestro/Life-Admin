@@ -94,7 +94,7 @@ Out of scope until separately approved:
 21. Household membership enforcement. Done for production reads, writes, target ownership, and optional assignee validation; invitation onboarding is implemented in the active branch using verified-email claim and transactional membership checks.
 22. Clerk signed-out and unmapped-account access states. Done; staging activation pending deployment QA.
 23. Audit remaining direct static dependencies and keep them behind approved demo boundaries. Done.
-24. Persist shared inbox writes. Done for manual item creation, archiving, and reopening; richer routing remains a later refinement.
+24. Persist shared inbox writes. Done for manual item creation, archiving, reopening, and transactional routing into tasks, reminders, shopping items, bills, and renewals.
 25. Persist tasks and reminders writes. Done for manual creation, completion, and reopening.
 26. Persist shopping list writes. Done for list/item creation and checked-state updates.
 27. Persist bills and renewals writes with source-of-truth guardrails. Done for manual source-first creation, completion, and reopening.
@@ -106,4 +106,4 @@ Out of scope until separately approved:
 
 ## Immediate Next Step
 
-Validate the secure household invitation and onboarding batch, then add minimal edit/archive recovery and manual inbox routing. Complete authenticated Vercel browser QA before merging or production activation.
+Validate the secure household invitation and inbox-routing batches, then add minimal item editing and archive recovery. Complete authenticated Vercel browser QA before merging or production activation.
