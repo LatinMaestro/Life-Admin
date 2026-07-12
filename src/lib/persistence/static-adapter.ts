@@ -148,6 +148,12 @@ export const staticHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
     }));
   },
 
+  async createTask(): Promise<TaskSummary> {
+    throw new HouseholdAccessError(
+      "Manual task saving is available when the private household workspace is connected.",
+    );
+  },
+
   async listReminders(context): Promise<ReminderSummary[]> {
     const { householdId } = requireStaticHousehold(context);
 
@@ -162,6 +168,12 @@ export const staticHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
       assignedMemberId: reminder.assignedMemberId,
       createdByMemberId: reminder.createdByMemberId,
     }));
+  },
+
+  async createReminder(): Promise<ReminderSummary> {
+    throw new HouseholdAccessError(
+      "Manual reminder saving is available when the private household workspace is connected.",
+    );
   },
 
   async listShoppingLists(context): Promise<ShoppingListSummary[]> {
