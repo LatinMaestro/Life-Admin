@@ -20,6 +20,7 @@ export async function createBillOrRenewalAction(
   const type = readText(formData, "type");
   const date = readDate(formData, "date");
   const sourceReferenceId = readText(formData, "sourceReferenceId");
+  const assignedMemberId = readText(formData, "assignedMemberId");
 
   if (title.length < 2 || title.length > 120) {
     return errorState("Enter a title between 2 and 120 characters.");
@@ -47,6 +48,7 @@ export async function createBillOrRenewalAction(
       dueAt: type === "bill" ? date : null,
       renewalAt: type === "renewal" ? date : null,
       sourceReferenceId: sourceReferenceId || null,
+      assignedMemberId: assignedMemberId || null,
     };
 
     await adapter.createBillOrRenewal(context, input);
