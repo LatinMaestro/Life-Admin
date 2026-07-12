@@ -27,6 +27,7 @@ This document records approved product, architecture, and scope decisions for Fa
 21. Phase 2 should validate static household workspace architecture before production authentication, database hosting, invite flow, or persistence details are selected.
 22. Phase 2 should not add dynamic `/households/[householdId]` routes; it should use typed current-household state first.
 23. After static MVP completion, the production layer begins with a Prisma/PostgreSQL schema checkpoint before live persistence, production authentication, migrations, invite flows, uploads, or integrations are wired into the app.
+24. The app must be easy for beginner app users: each screen should present one obvious primary action, use plain language, hide optional detail until needed, and avoid duplicate actions, instructional panels, unnecessary metadata, and controls that do not help complete the current task.
 
 ## Practical Effect
 
