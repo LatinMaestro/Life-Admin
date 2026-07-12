@@ -5,6 +5,7 @@ import { HouseholdAccessError } from "@/lib/access-control";
 import type { CreateInboxItemInput } from "@/lib/persistence/contracts";
 import { getRuntimeHouseholdAccessContext } from "@/lib/server/runtime-access-context";
 import { getHouseholdPersistenceAdapter } from "@/lib/server/persistence";
+import { InboxRoutingError, routeInboxItem, type InboxRouteDestination } from "@/lib/server/inbox-routing";
 
 export type InboxCaptureState = {
   status: "idle" | "success" | "error";
@@ -21,6 +22,8 @@ const categories = new Set<CreateInboxItemInput["category"]>([
 ]);
 
 const priorities = new Set<CreateInboxItemInput["priority"]>(["low", "normal", "high"]);
+
+const routeDestinations = new Set<InboxRouteDestination>(["task", "reminder", "shopping_item", "bill", "renewal"]);
 
 const destinations = new Set<CreateInboxItemInput["suggestedDestination"]>([
   "task",
@@ -99,6 +102,52 @@ export async function toggleInboxArchivedAction(formData: FormData) {
   revalidatePath("/");
   revalidatePath("/inbox");
   revalidatePath("/activity");
+}
+
+export async function routeInboxItemAction(formData: FormData) {
+  const inboxItemId = readText(formData, "inboxItemId");
+  const destination = readText(formData, "routeDestination");
+  const date = readOptionalDate(formData, "routeDate");
+  const shoppingListId = readText(formData, "shoppingListId");
+
+  if (!inboxItemId || !routeDestinations.has(destination as InboxRouteDestination)) {
+    return;
+  }
+
+  if (date === "invalid") {
+    return;
+  }
+
+  try {
+    const context = await getRuntimeHouseholdAccessContext();
+    await routeInboxItem(context, {
+      inboxItemId,
+      destination: destination as InboxRouteDestination,
+      date,
+      shoppingListId: shoppingListId || null,
+    });
+  } catch (error) {
+    if (error instanceof InboxRoutingError) {
+      console.warn("Inbox item was not routed.", error.message);
+      return;
+    }
+    throw error;
+  }
+
+  revalidatePath("/");
+  revalidatePath("/inbox");
+  revalidatePath("/tasks");
+  revalidatePath("/lists");
+  revalidatePath("/bills");
+  revalidatePath("/activity");
+}
+
+function readOptionalDate(formData: FormData, field: string): Date | null | "invalid" {
+  const value = readText(formData, field);
+  if (!value) return null;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return "invalid";
+  const parsed = new Date(`${value}T00:00:00.000Z`);
+  return Number.isNaN(parsed.getTime()) ? "invalid" : parsed;
 }
 
 function readText(formData: FormData, field: string) {
