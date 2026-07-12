@@ -5,6 +5,8 @@ import type { HouseholdAccessContext } from "@/lib/access-control";
 import type {
   ActivityEventSummary,
   CreateInboxItemInput,
+  CreateReminderInput,
+  CreateTaskInput,
   BillOrRenewalSummary,
   CommentSummary,
   HouseholdMemberSummary,
@@ -176,6 +178,66 @@ export const prismaHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
     });
   },
 
+  async createTask(context, input: CreateTaskInput): Promise<TaskSummary> {
+    requireHouseholdPermission(context, "manage_shared_items");
+    const prisma = getPrismaClient();
+
+    return prisma.$transaction(async (transaction) => {
+      const member = await transaction.householdMember.findFirst({
+        where: {
+          id: context.memberId,
+          householdId: context.householdId,
+          userId: context.userId,
+          status: "active",
+        },
+        select: { id: true },
+      });
+
+      if (!member) {
+        throw new Error("Active household membership is required to create a task.");
+      }
+
+      const task = await transaction.task.create({
+        data: {
+          householdId: context.householdId,
+          title: input.title,
+          notes: input.notes,
+          priority: input.priority,
+          dueAt: input.dueAt,
+          createdByMemberId: context.memberId,
+          assignedMemberId: context.memberId,
+        },
+        select: {
+          id: true,
+          householdId: true,
+          title: true,
+          notes: true,
+          status: true,
+          stage: true,
+          priority: true,
+          dueAt: true,
+          assignedMemberId: true,
+          createdByMemberId: true,
+          sourceReferenceId: true,
+        },
+      });
+
+      await transaction.activityEvent.create({
+        data: {
+          householdId: context.householdId,
+          actorUserId: context.userId,
+          actorMemberId: context.memberId,
+          entityType: "task",
+          entityId: task.id,
+          eventType: "created",
+          summary: `Created task: ${task.title}`,
+        },
+      });
+
+      return task;
+    });
+  },
+
   async listReminders(context): Promise<ReminderSummary[]> {
     const where = requireReadableHousehold(context);
 
@@ -193,6 +255,67 @@ export const prismaHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
         assignedMemberId: true,
         createdByMemberId: true,
       },
+    });
+  },
+
+  async createReminder(
+    context,
+    input: CreateReminderInput,
+  ): Promise<ReminderSummary> {
+    requireHouseholdPermission(context, "manage_shared_items");
+    const prisma = getPrismaClient();
+
+    return prisma.$transaction(async (transaction) => {
+      const member = await transaction.householdMember.findFirst({
+        where: {
+          id: context.memberId,
+          householdId: context.householdId,
+          userId: context.userId,
+          status: "active",
+        },
+        select: { id: true },
+      });
+
+      if (!member) {
+        throw new Error("Active household membership is required to create a reminder.");
+      }
+
+      const reminder = await transaction.reminder.create({
+        data: {
+          householdId: context.householdId,
+          title: input.title,
+          notes: input.notes,
+          cadence: input.cadence,
+          remindAt: input.remindAt,
+          createdByMemberId: context.memberId,
+          assignedMemberId: context.memberId,
+        },
+        select: {
+          id: true,
+          householdId: true,
+          title: true,
+          notes: true,
+          status: true,
+          cadence: true,
+          remindAt: true,
+          assignedMemberId: true,
+          createdByMemberId: true,
+        },
+      });
+
+      await transaction.activityEvent.create({
+        data: {
+          householdId: context.householdId,
+          actorUserId: context.userId,
+          actorMemberId: context.memberId,
+          entityType: "reminder",
+          entityId: reminder.id,
+          eventType: "created",
+          summary: `Created reminder: ${reminder.title}`,
+        },
+      });
+
+      return reminder;
     });
   },
 
