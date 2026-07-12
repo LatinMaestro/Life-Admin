@@ -97,8 +97,8 @@ Out of scope until separately approved:
 24. Persist shared inbox writes. Done for manual item creation; triage/status mutation remains a later refinement.
 25. Persist tasks and reminders writes. Done for manual creation; completion and status mutation remain later refinements.
 26. Persist shopping list writes. Done for list/item creation and checked-state updates.
-27. Persist bills and renewals writes with source-of-truth guardrails.
-28. Persist source references as metadata/pointers.
+27. Persist bills and renewals writes with source-of-truth guardrails. Done for manual source-first reminder creation.
+28. Persist source references as metadata/pointers. Done for manual https links and original-location references.
 29. Persist comments and activity history.
 30. Production QA and privacy review.
 31. Controlled Clerk/Prisma staging activation. Environment and seed gates done; latest-main deployment and QA pending.
@@ -106,4 +106,4 @@ Out of scope until separately approved:
 
 ## Immediate Next Step
 
-Complete bills and renewals writes next with a dedicated payment-source guardrail review, following the approved beginner-friendly interface rules. Keep Vercel activation and browser QA deferred until review access resumes.
+Complete comments and activity-history writes next, then run the full production privacy and scope review. Keep Vercel activation and browser QA deferred until review access resumes.
