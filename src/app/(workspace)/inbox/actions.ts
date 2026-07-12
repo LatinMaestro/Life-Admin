@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { HouseholdAccessError } from "@/lib/access-control";
 import type { CreateInboxItemInput } from "@/lib/persistence/contracts";
 import { getRuntimeHouseholdAccessContext } from "@/lib/server/runtime-access-context";
@@ -102,6 +103,7 @@ export async function toggleInboxArchivedAction(formData: FormData) {
   revalidatePath("/");
   revalidatePath("/inbox");
   revalidatePath("/activity");
+  redirect("/inbox?route=done");
 }
 
 export async function routeInboxItemAction(formData: FormData) {
@@ -110,12 +112,8 @@ export async function routeInboxItemAction(formData: FormData) {
   const date = readOptionalDate(formData, "routeDate");
   const shoppingListId = readText(formData, "shoppingListId");
 
-  if (!inboxItemId || !routeDestinations.has(destination as InboxRouteDestination)) {
-    return;
-  }
-
-  if (date === "invalid") {
-    return;
+  if (!inboxItemId || !routeDestinations.has(destination as InboxRouteDestination) || date === "invalid") {
+    redirect("/inbox?route=invalid#sort-inbox");
   }
 
   try {
@@ -128,8 +126,7 @@ export async function routeInboxItemAction(formData: FormData) {
     });
   } catch (error) {
     if (error instanceof InboxRoutingError) {
-      console.warn("Inbox item was not routed.", error.message);
-      return;
+      redirect("/inbox?route=invalid#sort-inbox");
     }
     throw error;
   }
