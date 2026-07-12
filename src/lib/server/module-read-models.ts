@@ -12,7 +12,7 @@ type ReadModelRow = {
   detail: string;
   status: string;
   href: string;
-  entityType?: "task" | "reminder" | "bill_or_renewal";
+  entityType?: "inbox_item" | "task" | "reminder" | "bill_or_renewal";
 };
 
 type CountSummary = {
@@ -100,6 +100,7 @@ export async function getInboxReadModel(
       detail: `${item.description ?? "Manual household inbox item"} Assigned to ${getMemberName(members, item.assignedMemberId)}.`,
       status: formatStatus(item.status),
       href: "/inbox",
+      entityType: "inbox_item" as const,
     })),
   };
 }
