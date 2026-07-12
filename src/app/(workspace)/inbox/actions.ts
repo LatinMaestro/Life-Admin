@@ -103,7 +103,6 @@ export async function toggleInboxArchivedAction(formData: FormData) {
   revalidatePath("/");
   revalidatePath("/inbox");
   revalidatePath("/activity");
-  redirect("/inbox?route=done");
 }
 
 export async function routeInboxItemAction(formData: FormData) {
@@ -137,6 +136,7 @@ export async function routeInboxItemAction(formData: FormData) {
   revalidatePath("/lists");
   revalidatePath("/bills");
   revalidatePath("/activity");
+  redirect("/inbox?route=done");
 }
 
 function readOptionalDate(formData: FormData, field: string): Date | null | "invalid" {
