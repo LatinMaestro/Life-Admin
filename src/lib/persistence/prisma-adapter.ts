@@ -9,6 +9,7 @@ import type {
   CreateReminderInput,
   CreateShoppingListInput,
   CreateShoppingListItemInput,
+  CreateSourceReferenceInput,
   CreateTaskInput,
   BillOrRenewalSummary,
   CommentSummary,
@@ -683,6 +684,66 @@ export const prismaHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
         sensitivity: true,
         createdByMemberId: true,
       },
+    });
+  },
+
+  async createSourceReference(
+    context,
+    input: CreateSourceReferenceInput,
+  ): Promise<SourceReferenceSummary> {
+    requireHouseholdPermission(context, "manage_shared_items");
+    requireHouseholdPermission(context, "view_source_references");
+    const prisma = getPrismaClient();
+
+    return prisma.$transaction(async (transaction) => {
+      const member = await transaction.householdMember.findFirst({
+        where: {
+          id: context.memberId,
+          householdId: context.householdId,
+          userId: context.userId,
+          status: "active",
+        },
+        select: { id: true },
+      });
+
+      if (!member) {
+        throw new Error("Active household membership is required to create a source reference.");
+      }
+
+      const source = await transaction.sourceReference.create({
+        data: {
+          householdId: context.householdId,
+          title: input.title,
+          kind: input.kind,
+          label: input.label,
+          url: input.url,
+          createdByMemberId: context.memberId,
+        },
+        select: {
+          id: true,
+          householdId: true,
+          title: true,
+          kind: true,
+          label: true,
+          reviewStatus: true,
+          sensitivity: true,
+          createdByMemberId: true,
+        },
+      });
+
+      await transaction.activityEvent.create({
+        data: {
+          householdId: context.householdId,
+          actorUserId: context.userId,
+          actorMemberId: context.memberId,
+          entityType: "source_reference",
+          entityId: source.id,
+          eventType: "created",
+          summary: `Created source reference: ${source.title}`,
+        },
+      });
+
+      return source;
     });
   },
 
