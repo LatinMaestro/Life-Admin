@@ -246,6 +246,12 @@ export const staticHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
     }));
   },
 
+  async createBillOrRenewal(): Promise<BillOrRenewalSummary> {
+    throw new HouseholdAccessError(
+      "Bill and renewal saving is available when the private household workspace is connected.",
+    );
+  },
+
   async listSourceReferences(context): Promise<SourceReferenceSummary[]> {
     requireHouseholdPermission(context, "view_source_references");
     const { householdId } = requireStaticHousehold(context);
