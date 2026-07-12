@@ -155,6 +155,10 @@ export const staticHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
     );
   },
 
+  async setTaskCompleted(): Promise<TaskSummary> {
+    throw new HouseholdAccessError("Task updates are available when the private household workspace is connected.");
+  },
+
   async listReminders(context): Promise<ReminderSummary[]> {
     const { householdId } = requireStaticHousehold(context);
 
@@ -175,6 +179,10 @@ export const staticHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
     throw new HouseholdAccessError(
       "Manual reminder saving is available when the private household workspace is connected.",
     );
+  },
+
+  async setReminderCompleted(): Promise<ReminderSummary> {
+    throw new HouseholdAccessError("Reminder updates are available when the private household workspace is connected.");
   },
 
   async listShoppingLists(context): Promise<ShoppingListSummary[]> {
@@ -250,6 +258,10 @@ export const staticHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
     throw new HouseholdAccessError(
       "Bill and renewal saving is available when the private household workspace is connected.",
     );
+  },
+
+  async setBillOrRenewalCompleted(): Promise<BillOrRenewalSummary> {
+    throw new HouseholdAccessError("Bill and renewal updates are available when the private household workspace is connected.");
   },
 
   async listSourceReferences(context): Promise<SourceReferenceSummary[]> {
