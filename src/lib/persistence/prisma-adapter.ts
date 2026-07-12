@@ -4,6 +4,7 @@ import { createHouseholdScopedWhere, requireHouseholdPermission } from "@/lib/ac
 import type { HouseholdAccessContext } from "@/lib/access-control";
 import type {
   ActivityEventSummary,
+  CreateInboxItemInput,
   BillOrRenewalSummary,
   CommentSummary,
   HouseholdMemberSummary,
@@ -88,6 +89,68 @@ export const prismaHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
         createdByMemberId: true,
         sourceReferenceId: true,
       },
+    });
+  },
+
+  async createInboxItem(
+    context,
+    input: CreateInboxItemInput,
+  ): Promise<InboxItemSummary> {
+    requireHouseholdPermission(context, "manage_shared_items");
+    const prisma = getPrismaClient();
+
+    return prisma.$transaction(async (transaction) => {
+      const member = await transaction.householdMember.findFirst({
+        where: {
+          id: context.memberId,
+          householdId: context.householdId,
+          userId: context.userId,
+          status: "active",
+        },
+        select: { id: true },
+      });
+
+      if (!member) {
+        throw new Error("Active household membership is required to create an inbox item.");
+      }
+
+      const item = await transaction.inboxItem.create({
+        data: {
+          householdId: context.householdId,
+          title: input.title,
+          description: input.description,
+          category: input.category,
+          priority: input.priority,
+          suggestedDestination: input.suggestedDestination,
+          createdByMemberId: context.memberId,
+        },
+        select: {
+          id: true,
+          householdId: true,
+          title: true,
+          description: true,
+          status: true,
+          category: true,
+          priority: true,
+          assignedMemberId: true,
+          createdByMemberId: true,
+          sourceReferenceId: true,
+        },
+      });
+
+      await transaction.activityEvent.create({
+        data: {
+          householdId: context.householdId,
+          actorUserId: context.userId,
+          actorMemberId: context.memberId,
+          entityType: "inbox_item",
+          entityId: item.id,
+          eventType: "created",
+          summary: `Created inbox item: ${item.title}`,
+        },
+      });
+
+      return item;
     });
   },
 
