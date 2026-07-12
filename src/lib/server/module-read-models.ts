@@ -100,7 +100,7 @@ async function getBaseReadModel(context: HouseholdAccessContext) {
     },
     members: new Map(members.map((member) => [member.id, member.displayName])),
     memberOptions: members
-      .filter((member) => member.status === "active")
+      .filter((member) => member.status === "active" && member.id !== context.memberId)
       .map((member) => ({ id: member.id, name: member.displayName })),
   };
 }
