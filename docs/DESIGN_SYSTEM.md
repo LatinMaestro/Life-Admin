@@ -9,6 +9,11 @@ The first experience is mobile-first web. Desktop should be useful, but phone wo
 ## Interface Principles
 
 - Prioritise scanning and quick action.
+- Design for beginner app users without requiring setup knowledge.
+- Give each screen one obvious primary action.
+- Show only information needed for the current decision or task.
+- Hide optional fields and secondary actions until the user asks for them.
+- Avoid duplicate calls to action, instructional panels, implementation language, and empty controls.
 - Keep pages dense enough for repeated use without feeling cramped.
 - Use clear labels for household tasks, reminders, lists, bills, renewals, source references, and members.
 - Avoid decorative layouts that reduce clarity.
