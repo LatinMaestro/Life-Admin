@@ -9,6 +9,7 @@ type DashboardQueue = {
   label: string;
   count: number;
   href: string;
+  detail: string;
 };
 
 type DashboardWorkItem = {
@@ -42,6 +43,15 @@ type DashboardReadModel = {
   reviewQueues: DashboardQueue[];
   assignedToCurrentMember: DashboardWorkItem[];
 };
+
+function formatDate(value: Date | null | undefined) {
+  if (!value) return "No date";
+  return new Intl.DateTimeFormat("en-AU", {
+    day: "numeric",
+    month: "short",
+    timeZone: "UTC",
+  }).format(value);
+}
 
 function isOpenStatus(status: string) {
   return !["done", "archived", "linked"].includes(status);
@@ -95,13 +105,13 @@ export async function getDashboardReadModel(
   const assignedToCurrentMember: DashboardWorkItem[] = [
     ...openTasks
       .filter((task) => task.assignedMemberId === currentMember.id)
-      .map((task) => ({ id: task.id, title: task.title, status: task.status, href: "/tasks" })),
+      .map((task) => ({ id: task.id, title: task.title, status: task.status, href: "/tasks", detail: task.dueAt ? `Due ${formatDate(task.dueAt)}` : "No due date" })),
     ...scheduledReminders
       .filter((reminder) => reminder.assignedMemberId === currentMember.id)
-      .map((reminder) => ({ id: reminder.id, title: reminder.title, status: reminder.status, href: "/tasks" })),
+      .map((reminder) => ({ id: reminder.id, title: reminder.title, status: reminder.status, href: "/tasks", detail: `On ${formatDate(reminder.remindAt)}` })),
     ...billsAndRenewals
-      .filter((bill) => bill.assignedMemberId === currentMember.id)
-      .map((bill) => ({ id: bill.id, title: bill.title, status: bill.status, href: "/bills" })),
+      .filter((bill) => bill.assignedMemberId === currentMember.id && isOpenStatus(bill.status))
+      .map((bill) => ({ id: bill.id, title: bill.title, status: bill.status, href: "/bills", detail: `${bill.type === "bill" ? "Due" : "Renews"} ${formatDate(bill.dueAt ?? bill.renewalAt)}` })),
   ];
 
   return {
@@ -120,7 +130,7 @@ export async function getDashboardReadModel(
       openTasks: openTasks.length,
       scheduledReminders: scheduledReminders.length,
       openShoppingItems: shoppingLists.reduce((total, list) => total + list.openItemCount, 0),
-      billsAndRenewals: billsAndRenewals.length,
+      billsAndRenewals: billsAndRenewals.filter((item) => isOpenStatus(item.status)).length,
       sourceReferences: sourceReferences.length,
       comments: comments.length,
       activityEvents: activity.length,
