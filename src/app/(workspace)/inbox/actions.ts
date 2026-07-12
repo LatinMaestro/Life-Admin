@@ -88,6 +88,19 @@ export async function createInboxItemAction(
   }
 }
 
+export async function toggleInboxArchivedAction(formData: FormData) {
+  const itemId = readText(formData, "itemId");
+  const archived = readText(formData, "archived") === "true";
+  if (!itemId) return;
+
+  const context = await getRuntimeHouseholdAccessContext();
+  const adapter = await getHouseholdPersistenceAdapter();
+  await adapter.setInboxItemArchived(context, itemId, archived);
+  revalidatePath("/");
+  revalidatePath("/inbox");
+  revalidatePath("/activity");
+}
+
 function readText(formData: FormData, field: string) {
   const value = formData.get(field);
   return typeof value === "string" ? value.trim() : "";
