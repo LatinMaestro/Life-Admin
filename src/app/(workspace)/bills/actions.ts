@@ -64,6 +64,19 @@ export async function createBillOrRenewalAction(
   }
 }
 
+export async function toggleBillOrRenewalCompletedAction(formData: FormData) {
+  const itemId = readText(formData, "itemId");
+  const completed = readText(formData, "completed") === "true";
+  if (!itemId) return;
+
+  const context = await getRuntimeHouseholdAccessContext();
+  const adapter = await getHouseholdPersistenceAdapter();
+  await adapter.setBillOrRenewalCompleted(context, itemId, completed);
+  revalidatePath("/");
+  revalidatePath("/bills");
+  revalidatePath("/activity");
+}
+
 function readText(formData: FormData, field: string) {
   const value = formData.get(field);
   return typeof value === "string" ? value.trim() : "";
