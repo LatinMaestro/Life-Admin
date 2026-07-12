@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ItemRow } from "@/components/item-row";
 
@@ -6,12 +7,13 @@ type ReadModelCount = {
   value: number;
 };
 
-type ReadModelRow = {
+export type ReadModelRow = {
   id: string;
   title: string;
   detail: string;
   status: string;
   href: string;
+  entityType?: "task" | "reminder" | "bill_or_renewal";
 };
 
 interface ReadModelSummaryProps {
@@ -22,6 +24,7 @@ interface ReadModelSummaryProps {
   emptyLabel: string;
   actionHref?: string;
   actionLabel?: string;
+  renderAction?: (row: ReadModelRow) => ReactNode;
 }
 
 export function ReadModelSummary({
@@ -30,6 +33,7 @@ export function ReadModelSummary({
   counts,
   rows,
   emptyLabel,
+  renderAction,
 }: ReadModelSummaryProps) {
   return (
     <Card>
@@ -57,6 +61,7 @@ export function ReadModelSummary({
                 detail={row.detail}
                 status={row.status}
                 href={row.href.startsWith("https://") ? row.href : undefined}
+                action={renderAction?.(row)}
               />
             ))}
           </div>
