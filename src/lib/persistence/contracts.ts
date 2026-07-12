@@ -130,6 +130,7 @@ export interface SourceReferenceSummary extends HouseholdRecord {
   title: string;
   kind: string;
   label: string;
+  url?: string | null;
   reviewStatus: string;
   sensitivity: string;
   createdByMemberId: string;
