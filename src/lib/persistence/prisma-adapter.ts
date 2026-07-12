@@ -6,6 +6,8 @@ import type {
   ActivityEventSummary,
   CreateInboxItemInput,
   CreateReminderInput,
+  CreateShoppingListInput,
+  CreateShoppingListItemInput,
   CreateTaskInput,
   BillOrRenewalSummary,
   CommentSummary,
@@ -14,6 +16,7 @@ import type {
   HouseholdSummary,
   InboxItemSummary,
   ReminderSummary,
+  ShoppingListItemSummary,
   ShoppingListSummary,
   SourceReferenceSummary,
   TaskSummary,
@@ -348,6 +351,219 @@ export const prismaHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
       openItemCount: list.items.filter((item) => !item.checked).length,
       totalItemCount: list.items.length,
     }));
+  },
+
+  async listShoppingListItems(context): Promise<ShoppingListItemSummary[]> {
+    const where = requireReadableHousehold(context);
+
+    return getPrismaClient().shoppingListItem.findMany({
+      where,
+      orderBy: [{ checked: "asc" }, { updatedAt: "desc" }],
+      select: {
+        id: true,
+        householdId: true,
+        shoppingListId: true,
+        label: true,
+        notes: true,
+        quantity: true,
+        category: true,
+        checked: true,
+        assignedMemberId: true,
+        createdByMemberId: true,
+      },
+    });
+  },
+
+  async createShoppingList(
+    context,
+    input: CreateShoppingListInput,
+  ): Promise<ShoppingListSummary> {
+    requireHouseholdPermission(context, "manage_shared_items");
+    const prisma = getPrismaClient();
+
+    return prisma.$transaction(async (transaction) => {
+      const member = await transaction.householdMember.findFirst({
+        where: {
+          id: context.memberId,
+          householdId: context.householdId,
+          userId: context.userId,
+          status: "active",
+        },
+        select: { id: true },
+      });
+
+      if (!member) {
+        throw new Error("Active household membership is required to create a shopping list.");
+      }
+
+      const list = await transaction.shoppingList.create({
+        data: {
+          householdId: context.householdId,
+          name: input.name,
+          createdByMemberId: context.memberId,
+        },
+        select: {
+          id: true,
+          householdId: true,
+          name: true,
+          status: true,
+          createdByMemberId: true,
+        },
+      });
+
+      await transaction.activityEvent.create({
+        data: {
+          householdId: context.householdId,
+          actorUserId: context.userId,
+          actorMemberId: context.memberId,
+          entityType: "shopping_list",
+          entityId: list.id,
+          eventType: "created",
+          summary: `Created shopping list: ${list.name}`,
+        },
+      });
+
+      return { ...list, openItemCount: 0, totalItemCount: 0 };
+    });
+  },
+
+  async createShoppingListItem(
+    context,
+    input: CreateShoppingListItemInput,
+  ): Promise<ShoppingListItemSummary> {
+    requireHouseholdPermission(context, "manage_shared_items");
+    const prisma = getPrismaClient();
+
+    return prisma.$transaction(async (transaction) => {
+      const [member, list] = await Promise.all([
+        transaction.householdMember.findFirst({
+          where: {
+            id: context.memberId,
+            householdId: context.householdId,
+            userId: context.userId,
+            status: "active",
+          },
+          select: { id: true },
+        }),
+        transaction.shoppingList.findFirst({
+          where: {
+            id: input.shoppingListId,
+            householdId: context.householdId,
+            status: "active",
+          },
+          select: { id: true },
+        }),
+      ]);
+
+      if (!member || !list) {
+        throw new Error("An active household member and shopping list are required.");
+      }
+
+      const item = await transaction.shoppingListItem.create({
+        data: {
+          householdId: context.householdId,
+          shoppingListId: list.id,
+          label: input.label,
+          notes: input.notes,
+          quantity: input.quantity,
+          category: input.category,
+          assignedMemberId: context.memberId,
+          createdByMemberId: context.memberId,
+        },
+        select: {
+          id: true,
+          householdId: true,
+          shoppingListId: true,
+          label: true,
+          notes: true,
+          quantity: true,
+          category: true,
+          checked: true,
+          assignedMemberId: true,
+          createdByMemberId: true,
+        },
+      });
+
+      await transaction.activityEvent.create({
+        data: {
+          householdId: context.householdId,
+          actorUserId: context.userId,
+          actorMemberId: context.memberId,
+          entityType: "shopping_list_item",
+          entityId: item.id,
+          eventType: "created",
+          summary: `Added shopping item: ${item.label}`,
+        },
+      });
+
+      return item;
+    });
+  },
+
+  async setShoppingListItemChecked(
+    context,
+    itemId,
+    checked,
+  ): Promise<ShoppingListItemSummary> {
+    requireHouseholdPermission(context, "manage_shared_items");
+    const prisma = getPrismaClient();
+
+    return prisma.$transaction(async (transaction) => {
+      const [member, existingItem] = await Promise.all([
+        transaction.householdMember.findFirst({
+          where: {
+            id: context.memberId,
+            householdId: context.householdId,
+            userId: context.userId,
+            status: "active",
+          },
+          select: { id: true },
+        }),
+        transaction.shoppingListItem.findFirst({
+          where: { id: itemId, householdId: context.householdId },
+          select: { id: true },
+        }),
+      ]);
+
+      if (!member || !existingItem) {
+        throw new Error("The shopping item is not available to this household member.");
+      }
+
+      const item = await transaction.shoppingListItem.update({
+        where: { id: existingItem.id },
+        data: {
+          checked,
+          checkedAt: checked ? new Date() : null,
+          checkedByMemberId: checked ? context.memberId : null,
+        },
+        select: {
+          id: true,
+          householdId: true,
+          shoppingListId: true,
+          label: true,
+          notes: true,
+          quantity: true,
+          category: true,
+          checked: true,
+          assignedMemberId: true,
+          createdByMemberId: true,
+        },
+      });
+
+      await transaction.activityEvent.create({
+        data: {
+          householdId: context.householdId,
+          actorUserId: context.userId,
+          actorMemberId: context.memberId,
+          entityType: "shopping_list_item",
+          entityId: item.id,
+          eventType: checked ? "completed" : "reopened",
+          summary: `${checked ? "Checked" : "Reopened"} shopping item: ${item.label}`,
+        },
+      });
+
+      return item;
+    });
   },
 
   async listBillsAndRenewals(context): Promise<BillOrRenewalSummary[]> {
