@@ -288,6 +288,12 @@ export const staticHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
     }));
   },
 
+  async createComment(): Promise<CommentSummary> {
+    throw new HouseholdAccessError(
+      "Comment saving is available when the private household workspace is connected.",
+    );
+  },
+
   async listActivity(context): Promise<ActivityEventSummary[]> {
     const { householdId } = requireStaticHousehold(context);
 
