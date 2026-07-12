@@ -5,6 +5,7 @@ import type { HouseholdAccessContext } from "@/lib/access-control";
 import type {
   ActivityEventSummary,
   CreateBillOrRenewalInput,
+  CreateCommentInput,
   CreateInboxItemInput,
   CreateReminderInput,
   CreateShoppingListInput,
@@ -762,6 +763,97 @@ export const prismaHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
         createdByMemberId: true,
         createdAt: true,
       },
+    });
+  },
+
+  async createComment(
+    context,
+    input: CreateCommentInput,
+  ): Promise<CommentSummary> {
+    requireHouseholdPermission(context, "comment_on_items");
+    const prisma = getPrismaClient();
+
+    return prisma.$transaction(async (transaction) => {
+      const member = await transaction.householdMember.findFirst({
+        where: {
+          id: context.memberId,
+          householdId: context.householdId,
+          userId: context.userId,
+          status: "active",
+        },
+        select: { id: true },
+      });
+
+      if (!member) {
+        throw new Error("Active household membership is required to comment.");
+      }
+
+      let targetExists = false;
+      const targetWhere = { id: input.entityId, householdId: context.householdId };
+
+      switch (input.entityType) {
+        case "inbox_item":
+          targetExists = Boolean(await transaction.inboxItem.findFirst({ where: targetWhere, select: { id: true } }));
+          break;
+        case "task":
+          targetExists = Boolean(await transaction.task.findFirst({ where: targetWhere, select: { id: true } }));
+          break;
+        case "reminder":
+          targetExists = Boolean(await transaction.reminder.findFirst({ where: targetWhere, select: { id: true } }));
+          break;
+        case "shopping_list":
+          targetExists = Boolean(await transaction.shoppingList.findFirst({ where: targetWhere, select: { id: true } }));
+          break;
+        case "bill_or_renewal":
+          targetExists = Boolean(await transaction.billOrRenewal.findFirst({ where: targetWhere, select: { id: true } }));
+          break;
+        case "source_reference":
+          requireHouseholdPermission(context, "view_source_references");
+          targetExists = Boolean(await transaction.sourceReference.findFirst({ where: targetWhere, select: { id: true } }));
+          break;
+      }
+
+      if (!targetExists) {
+        throw new Error("The comment target is not available in this household.");
+      }
+
+      const comment = await transaction.comment.create({
+        data: {
+          householdId: context.householdId,
+          entityType: input.entityType,
+          entityId: input.entityId,
+          body: input.body,
+          createdByUserId: context.userId,
+          createdByMemberId: context.memberId,
+        },
+        select: {
+          id: true,
+          householdId: true,
+          entityType: true,
+          entityId: true,
+          body: true,
+          createdByMemberId: true,
+          createdAt: true,
+        },
+      });
+
+      await transaction.activityEvent.create({
+        data: {
+          householdId: context.householdId,
+          actorUserId: context.userId,
+          actorMemberId: context.memberId,
+          entityType: "comment",
+          entityId: comment.id,
+          eventType: "commented",
+          summary: "Added a household comment",
+          metadata: {
+            targetType: input.entityType,
+            targetId: input.entityId,
+          },
+        },
+      });
+
+      return comment;
     });
   },
 
