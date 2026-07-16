@@ -6,6 +6,7 @@ import { PageHeader } from "@/components/page-header";
 import { ReadModelSummary } from "@/components/read-model-summary";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { getBillsAndRenewalsReadModel } from "@/lib/server/module-read-models";
+import { getConfiguredPersistenceMode } from "@/lib/server/persistence";
 
 export default async function BillsPage() {
   const bills = await getBillsAndRenewalsReadModel();
@@ -29,6 +30,7 @@ export default async function BillsPage() {
         counts={bills.counts}
         rows={bills.rows}
         emptyLabel="No bills or renewals need attention."
+        allowEditing={getConfiguredPersistenceMode() === "prisma"}
         renderAction={(row) => {
           const completed = row.status === "Done";
           return (
