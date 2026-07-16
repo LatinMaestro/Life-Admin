@@ -13,12 +13,12 @@ import { getInboxReadModel } from "@/lib/server/module-read-models";
 import { getConfiguredPersistenceMode } from "@/lib/server/persistence";
 
 type InboxPageProps = {
-  searchParams: Promise<{ route?: string }>;
+  searchParams: Promise<{ route?: string; updated?: string }>;
 };
 
 export default async function InboxPage({ searchParams }: InboxPageProps) {
   const inbox = await getInboxReadModel();
-  const { route } = await searchParams;
+  const { route, updated } = await searchParams;
   const openItems = inbox.rows.filter(
     (row) => row.status === "New" || row.status === "Needs Review",
   );
@@ -37,6 +37,12 @@ export default async function InboxPage({ searchParams }: InboxPageProps) {
           </a>
         }
       />
+
+      {updated === "true" ? (
+        <p className="mb-4 text-sm text-primary" role="status">
+          Changes saved.
+        </p>
+      ) : null}
 
       {route === "done" ? (
         <p className="mb-4 text-sm text-primary" role="status">
