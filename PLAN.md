@@ -100,10 +100,10 @@ Out of scope until separately approved:
 27. Persist bills and renewals writes with source-of-truth guardrails. Done for manual source-first creation, completion, and reopening.
 28. Persist source references as metadata/pointers. Done for manual https links and original-location references.
 29. Persist comments and activity history. Done for item comments and automatic mutation activity.
-30. Production QA and privacy review. Code, scope, privacy, and beginner-usability review done; authenticated Vercel browser QA pending.
+30. Production QA and privacy review. Code, scope, privacy, beginner usability, reversible completion/archive controls, and minimal correction workflows are implemented; authenticated Vercel browser QA remains pending.
 31. Controlled Clerk/Prisma staging activation. Environment and seed gates done; latest-main deployment and QA pending.
 32. Custom production domain, Clerk production keys, and controlled identity remap. Pending separate domain approval.
 
 ## Immediate Next Step
 
-Validate the secure household invitation and inbox-routing batches, then add minimal item editing and archive recovery. Complete authenticated Vercel browser QA before merging or production activation.
+Validate secure household onboarding, inbox routing, and minimal item editing through authenticated browser QA. Then merge the completion branch and perform controlled production activation and household-isolation review.
