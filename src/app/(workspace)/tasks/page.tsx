@@ -7,8 +7,10 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { getTasksReadModel } from "@/lib/server/module-read-models";
 import { getConfiguredPersistenceMode } from "@/lib/server/persistence";
 
-export default async function TasksPage() {
-  const tasks = await getTasksReadModel();
+type TasksPageProps = { searchParams: Promise<{ updated?: string }> };
+
+export default async function TasksPage({ searchParams }: TasksPageProps) {
+  const [tasks, query] = await Promise.all([getTasksReadModel(), searchParams]);
 
   return (
     <>
@@ -22,6 +24,10 @@ export default async function TasksPage() {
           </a>
         }
       />
+
+      {query.updated === "true" ? (
+        <p className="mb-4 text-sm text-primary" role="status">Changes saved.</p>
+      ) : null}
 
       <ReadModelSummary
         title="Tasks and reminders"
