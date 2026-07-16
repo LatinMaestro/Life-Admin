@@ -26,7 +26,7 @@ export type EditableItem =
     })
   | (EditableItemBase & {
       type: "reminder";
-      date: Date;
+      date: Date | null;
     })
   | (EditableItemBase & {
       type: "bill_or_renewal";
