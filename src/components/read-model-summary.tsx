@@ -1,6 +1,9 @@
+import Link from "next/link";
 import type { ReactNode } from "react";
+import { Pencil } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ItemRow } from "@/components/item-row";
+import { buttonVariants } from "@/components/ui/button";
 
 type ReadModelCount = {
   label: string;
@@ -25,6 +28,7 @@ interface ReadModelSummaryProps {
   actionHref?: string;
   actionLabel?: string;
   renderAction?: (row: ReadModelRow) => ReactNode;
+  allowEditing?: boolean;
 }
 
 export function ReadModelSummary({
@@ -34,6 +38,7 @@ export function ReadModelSummary({
   rows,
   emptyLabel,
   renderAction,
+  allowEditing = false,
 }: ReadModelSummaryProps) {
   return (
     <Card>
@@ -61,7 +66,23 @@ export function ReadModelSummary({
                 detail={row.detail}
                 status={row.status}
                 href={row.href.startsWith("https://") ? row.href : undefined}
-                action={renderAction?.(row)}
+                action={
+                  allowEditing && row.entityType ? (
+                    <div className="flex items-center gap-2">
+                      <Link
+                        href={`/edit/${row.entityType}/${row.id}`}
+                        className={buttonVariants({ variant: "outline", size: "icon" })}
+                        title="Edit"
+                        aria-label={`Edit ${row.title}`}
+                      >
+                        <Pencil className="h-4 w-4" aria-hidden="true" />
+                      </Link>
+                      {renderAction?.(row)}
+                    </div>
+                  ) : (
+                    renderAction?.(row)
+                  )
+                }
               />
             ))}
           </div>
