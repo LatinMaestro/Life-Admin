@@ -50,6 +50,7 @@ export default async function InboxPage({ searchParams }: InboxPageProps) {
         counts={inbox.counts}
         rows={inbox.rows}
         emptyLabel="Your inbox is clear."
+        allowEditing={getConfiguredPersistenceMode() === "prisma"}
         renderAction={(row) => {
           const archived = row.status === "Archived";
           return (
