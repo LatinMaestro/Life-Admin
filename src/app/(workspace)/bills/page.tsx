@@ -8,8 +8,10 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { getBillsAndRenewalsReadModel } from "@/lib/server/module-read-models";
 import { getConfiguredPersistenceMode } from "@/lib/server/persistence";
 
-export default async function BillsPage() {
-  const bills = await getBillsAndRenewalsReadModel();
+type BillsPageProps = { searchParams: Promise<{ updated?: string }> };
+
+export default async function BillsPage({ searchParams }: BillsPageProps) {
+  const [bills, query] = await Promise.all([getBillsAndRenewalsReadModel(), searchParams]);
 
   return (
     <>
@@ -23,6 +25,10 @@ export default async function BillsPage() {
           </a>
         }
       />
+
+      {query.updated === "true" ? (
+        <p className="mb-4 text-sm text-primary" role="status">Changes saved.</p>
+      ) : null}
 
       <ReadModelSummary
         title="Reminders"
