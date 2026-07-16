@@ -5,6 +5,7 @@ import { ReadModelSummary } from "@/components/read-model-summary";
 import { TaskReminderCapture } from "@/components/task-reminder-capture";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { getTasksReadModel } from "@/lib/server/module-read-models";
+import { getConfiguredPersistenceMode } from "@/lib/server/persistence";
 
 export default async function TasksPage() {
   const tasks = await getTasksReadModel();
@@ -28,6 +29,7 @@ export default async function TasksPage() {
         counts={tasks.counts}
         rows={tasks.rows}
         emptyLabel="Nothing needs attention."
+        allowEditing={getConfiguredPersistenceMode() === "prisma"}
         renderAction={(row) => {
           if (row.entityType !== "task" && row.entityType !== "reminder") return null;
           const completed = row.status === "Done";
