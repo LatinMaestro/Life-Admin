@@ -32,7 +32,7 @@ Family Life Admin is private household administration, not personal finance. Bil
 18. Native household comments, activity, invitations, roles, settings, assignments, and task dates.
 19. EAS build configuration, stable app identifiers, deterministic icons and splash artwork.
 20. App Store and Google Play listing copy, review notes, and submission checklist.
-21. Native email-code password recovery with secure session finalization.
+21. Native email-code password recovery with secure session finalization.\n22. Grovekind production domain, Vercel DNS, Clerk DNS, and Clerk SSL certificate configuration.
 
 ## Remaining Delivery Plan
 
@@ -60,4 +60,4 @@ Family Life Admin is private household administration, not personal finance. Bil
 
 ## Immediate Next Step
 
-Complete the external release setup: custom domain, production Clerk configuration, Expo project/signing credentials, developer accounts, internal builds, and physical-device QA. No additional product features are required for the first store candidate unless QA identifies a release-blocking issue.
+Complete the production redeployment and authenticated smoke test, then configure the Expo project/signing credentials, developer accounts, internal builds, and physical-device QA. No additional product features are required for the first store candidate unless QA identifies a release-blocking issue.

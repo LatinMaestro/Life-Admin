@@ -61,8 +61,15 @@ for (const [assetPath, label] of requiredAssets) {
 if (requireLive) {
   const apiUrl = process.env.EXPO_PUBLIC_API_URL ?? "";
   const clerkKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY ?? "";
-  if (!apiUrl.startsWith("https://") || apiUrl.includes("localhost") || apiUrl.includes("vercel.app")) {
-    errors.push("EXPO_PUBLIC_API_URL must use the approved custom production domain.");
+  let apiHostname = "";
+  try {
+    const parsedApiUrl = new URL(apiUrl);
+    apiHostname = parsedApiUrl.protocol === "https:" ? parsedApiUrl.hostname : "";
+  } catch {
+    apiHostname = "";
+  }
+  if (apiHostname !== "lifeadmin.grovekind.com") {
+    errors.push("EXPO_PUBLIC_API_URL must use https://lifeadmin.grovekind.com.");
   }
   if (!clerkKey.startsWith("pk_live_")) {
     errors.push("EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY must be a production Clerk key.");
