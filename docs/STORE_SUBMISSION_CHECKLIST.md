@@ -14,6 +14,7 @@ This checklist separates completed repository work from release-owner steps that
 - [x] Account deletion has last-admin and household ownership safeguards.
 - [x] Native password recovery uses Clerk's email-code flow.
 - [x] Store listing copy and reviewer guidance are documented.
+- [x] Store privacy declarations are mapped to the current implementation.
 - [x] Bill/payment source-of-truth guardrails remain enforced.
 
 ## Production Services
@@ -57,8 +58,9 @@ This checklist separates completed repository work from release-owner steps that
 - [ ] Capture screenshots with fictional Rivera Household data.
 - [ ] Create a support email address owned by the product operator.
 - [ ] Replace every placeholder URL in `docs/STORE_LISTING.md`.
-- [ ] Complete Apple privacy details from the actual production behaviour.
-- [ ] Complete Google Play Data safety from the actual production behaviour.
+- [ ] Reconcile `docs/STORE_PRIVACY_DECLARATIONS.md` against production Clerk, Vercel, Neon, and Expo settings.
+- [ ] Complete Apple privacy details from the reconciled inventory.
+- [ ] Complete Google Play Data safety from the reconciled inventory.
 - [ ] Complete content-rating and encryption questionnaires truthfully.
 - [ ] Create a stable reviewer account with fictional data.
 - [ ] Supply reviewer credentials privately in each store console.
