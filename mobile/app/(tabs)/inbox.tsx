@@ -1,10 +1,28 @@
+import { Alert } from "react-native";
+import { useState } from "react";
+
+import { ActionButton } from "@/components/action-button";
 import { PageTitle, Pill, Row, Screen, Section, StatusView } from "@/components/ui";
-import { useApiResource } from "@/lib/api";
+import { useApiResource, useHouseholdMutation } from "@/lib/api";
 import type { InboxResponse } from "@/lib/contracts";
 
 export default function InboxScreen() {
   const state = useApiResource<InboxResponse>("/api/v1/inbox");
+  const mutate = useHouseholdMutation();
+  const [busyId, setBusyId] = useState<string | null>(null);
   const items = state.data?.items ?? [];
+
+  const archive = async (id: string) => {
+    setBusyId(id);
+    try {
+      await mutate(`/api/v1/inbox/${id}`, { archived: true });
+      await state.refresh();
+    } catch (error) {
+      Alert.alert("Could not update", error instanceof Error ? error.message : "Please try again.");
+    } finally {
+      setBusyId(null);
+    }
+  };
 
   return (
     <Screen refreshing={state.loading} onRefresh={() => void state.refresh()}>
@@ -18,7 +36,18 @@ export default function InboxScreen() {
               title={item.title}
               detail={item.description}
               meta={item.category.replaceAll("_", " ")}
-              trailing={item.priority === "high" ? <Pill>High</Pill> : null}
+              trailing={
+                item.priority === "high" ? (
+                  <Pill>High</Pill>
+                ) : (
+                  <ActionButton
+                    busy={busyId === item.id}
+                    icon="checkmark"
+                    label={`Mark ${item.title} as sorted`}
+                    onPress={() => void archive(item.id)}
+                  />
+                )
+              }
             />
           ))}
         </Section>
