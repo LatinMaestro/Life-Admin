@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   quality:
-    name: Lint, guardrails, Prisma validate, generate, typecheck, and build
+    name: Web quality and build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -62,3 +62,24 @@ jobs:
 
       - name: Build
         run: pnpm build
+
+  mobile:
+    name: Mobile typecheck
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Typecheck
+        run: npm run typecheck
