@@ -1,7 +1,12 @@
 import Link from "next/link";
-import { ChevronRight, FileText, History, Users } from "lucide-react";
+import { ChevronRight, FileText, History, Pencil, Users } from "lucide-react";
+import { updateHouseholdProfileAction } from "@/app/(workspace)/settings/actions";
 import { PageHeader } from "@/components/page-header";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { householdTimezones } from "@/lib/server/household-settings";
+import { getConfiguredPersistenceMode } from "@/lib/server/persistence";
 import { getWorkspaceReadModel } from "@/lib/server/workspace-read-model";
 
 const links = [
@@ -10,8 +15,14 @@ const links = [
   { href: "/activity", label: "Activity", icon: History },
 ];
 
-export default async function SettingsPage() {
-  const workspace = await getWorkspaceReadModel();
+type SettingsPageProps = {
+  searchParams: Promise<{ profile?: string }>;
+};
+
+export default async function SettingsPage({ searchParams }: SettingsPageProps) {
+  const [workspace, query] = await Promise.all([getWorkspaceReadModel(), searchParams]);
+  const profileEditingEnabled =
+    getConfiguredPersistenceMode() === "prisma" && workspace.access.canManageSettings;
 
   return (
     <>
@@ -27,13 +38,61 @@ export default async function SettingsPage() {
               <dt className="text-muted-foreground">Member</dt>
               <dd className="text-right font-medium">{workspace.currentMember.displayName}</dd>
             </div>
-            <div className="flex justify-between gap-4">
+            <div className="flex justify-between gap-4 border-b pb-3">
               <dt className="text-muted-foreground">Role</dt>
               <dd className="text-right font-medium">{workspace.currentMember.roleLabel}</dd>
+            </div>
+            <div className="flex justify-between gap-4">
+              <dt className="text-muted-foreground">Timezone</dt>
+              <dd className="text-right font-medium">{workspace.household.timezone.replace("Australia/", "")}</dd>
             </div>
           </dl>
         </CardContent>
       </Card>
+
+      {profileEditingEnabled ? (
+        <details id="household-profile" className="mt-4 scroll-mt-24 rounded-md border bg-card">
+          <summary className="flex cursor-pointer list-none items-center gap-2 p-4 text-sm font-medium">
+            <Pencil className="h-4 w-4" aria-hidden="true" />
+            Edit household details
+          </summary>
+          <form action={updateHouseholdProfileAction} className="space-y-4 border-t p-4">
+            {query.profile === "saved" ? (
+              <p className="text-sm text-primary" role="status">Household details saved.</p>
+            ) : null}
+            {query.profile === "error" ? (
+              <p className="text-sm text-destructive" role="alert">Check the household details.</p>
+            ) : null}
+            <div className="space-y-1.5">
+              <label htmlFor="household-name" className="text-sm font-medium">Household name</label>
+              <Input
+                id="household-name"
+                name="name"
+                defaultValue={workspace.household.name}
+                minLength={2}
+                maxLength={80}
+                required
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label htmlFor="household-timezone" className="text-sm font-medium">Timezone</label>
+              <select
+                id="household-timezone"
+                name="timezone"
+                defaultValue={workspace.household.timezone}
+                className="flex h-10 w-full rounded-md border bg-background px-3 text-sm"
+              >
+                {householdTimezones.map((timezone) => (
+                  <option key={timezone} value={timezone}>
+                    {timezone.replace("Australia/", "")}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <Button type="submit">Save details</Button>
+          </form>
+        </details>
+      ) : null}
 
       <nav aria-label="More sections" className="mt-4 space-y-2">
         {links.map((item) => {
