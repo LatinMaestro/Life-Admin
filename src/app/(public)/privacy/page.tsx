@@ -21,7 +21,7 @@ export default function PrivacyPage() {
         <p>The service does not provide budgeting, banking, transaction, cashflow, tax, lending, or financial analytics.</p>
       </PolicySection>
       <PolicySection title="Bills and source references">
-        <p>Bill and renewal records are administrative reminders only. The service is designed not to store generated or transcribed payment identifiers such as bank account details, BPAY details, customer reference numbers, or payment reference values.</p>
+        <p>Bill and renewal records are administrative reminders only. The service is designed not to store generated or transcribed payment routing credentials or bill-specific payment codes.</p>
         <p>Payment-related reminders direct household members to an original source link or user-confirmed source reference.</p>
       </PolicySection>
       <PolicySection title="How information is used">
