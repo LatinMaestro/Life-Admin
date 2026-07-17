@@ -26,7 +26,11 @@ export default function SettingsScreen() {
       {state.data ? (
         <>
           <Section title="Household">
-            <Row title={state.data.household.name} detail={state.data.household.timezone} />
+            {state.data.capabilities.canManageHousehold ? (
+              <SettingsLink label={state.data.household.name} onPress={() => router.push({ pathname: "/edit-household", params: { name: state.data!.household.name, timezone: state.data!.household.timezone } })} />
+            ) : (
+              <Row title={state.data.household.name} detail={state.data.household.timezone} />
+            )}
             <Row
               title={state.data.currentMember.displayName}
               detail={state.data.currentMember.role === "household_admin" ? "Household admin" : "Household member"}
