@@ -146,6 +146,6 @@ export type ActivityResponse = Envelope & {
     summary: string;
     actorMemberId: string | null;
     createdAt: string;
-  }>;  }>;
+  }>;
   targets: CommentTarget[];
 };
