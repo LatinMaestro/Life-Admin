@@ -1,5 +1,9 @@
-import { Plus } from "lucide-react";
-import { createHouseholdInvitationAction } from "@/app/(workspace)/family/actions";
+import { Plus, UserCog, X } from "lucide-react";
+import {
+  createHouseholdInvitationAction,
+  manageHouseholdMemberAction,
+  revokeHouseholdInvitationAction,
+} from "@/app/(workspace)/family/actions";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,7 +18,14 @@ import { getConfiguredPersistenceMode } from "@/lib/server/persistence";
 import { getWorkspaceReadModel } from "@/lib/server/workspace-read-model";
 
 type FamilyPageProps = {
-  searchParams: Promise<{ invite?: string }>;
+  searchParams: Promise<{ invite?: string; manage?: string }>;
+};
+
+const manageMessages: Record<string, string> = {
+  updated: "Member role updated.",
+  removed: "Household access removed.",
+  revoked: "Invitation revoked.",
+  error: "That change could not be completed.",
 };
 
 const inviteMessages: Record<string, string> = {
@@ -32,7 +43,7 @@ export default async function FamilyPage({ searchParams }: FamilyPageProps) {
   const invitations: PendingHouseholdInvitation[] = invitationEnabled
     ? await listPendingHouseholdInvitations(await getRuntimeHouseholdAccessContext())
     : [];
-  const { invite } = await searchParams;
+  const { invite, manage } = await searchParams;
 
   return (
     <>
@@ -41,23 +52,65 @@ export default async function FamilyPage({ searchParams }: FamilyPageProps) {
         description={`People in ${workspace.household.name}.`}
       />
 
+      {manage && manageMessages[manage] ? (
+        <p
+          className={manage === "error" ? "mb-4 text-sm text-destructive" : "mb-4 text-sm text-primary"}
+          role="status"
+        >
+          {manageMessages[manage]}
+        </p>
+      ) : null}
+
       <Card>
         <CardHeader>
           <CardTitle>{members.length} {members.length === 1 ? "member" : "members"}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
           {members.map((member) => (
-            <div key={member.id} className="flex items-center justify-between gap-3 rounded-md border p-3">
-              <div className="flex min-w-0 items-center gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-primary text-sm font-semibold text-primary-foreground">
-                  {member.initials}
+            <div key={member.id} className="rounded-md border">
+              <div className="flex items-center justify-between gap-3 p-3">
+                <div className="flex min-w-0 items-center gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-primary text-sm font-semibold text-primary-foreground">
+                    {member.initials}
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">{member.displayName}</p>
+                    <p className="text-sm text-muted-foreground">{member.roleLabel}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm font-medium">{member.displayName}</p>
-                  <p className="text-sm text-muted-foreground">{member.roleLabel}</p>
-                </div>
+                {member.isCurrent ? <Badge variant="secondary">You</Badge> : null}
               </div>
-              {member.isCurrent ? <Badge variant="secondary">You</Badge> : null}
+              {invitationEnabled && !member.isCurrent ? (
+                <details className="border-t">
+                  <summary className="flex cursor-pointer list-none items-center gap-2 p-3 text-sm font-medium">
+                    <UserCog className="h-4 w-4" aria-hidden="true" />
+                    Manage
+                  </summary>
+                  <div className="grid gap-3 border-t p-3 sm:grid-cols-[1fr_auto]">
+                    <form action={manageHouseholdMemberAction} className="flex flex-wrap gap-2">
+                      <input type="hidden" name="memberId" value={member.id} />
+                      <input type="hidden" name="operation" value="role" />
+                      <select
+                        name="role"
+                        defaultValue={member.role}
+                        aria-label={`Role for ${member.displayName}`}
+                        className="h-10 min-w-44 rounded-md border bg-background px-3 text-sm"
+                      >
+                        <option value="household_member">Household member</option>
+                        <option value="household_admin">Household admin</option>
+                      </select>
+                      <Button type="submit" variant="outline">Save role</Button>
+                    </form>
+                    <form action={manageHouseholdMemberAction}>
+                      <input type="hidden" name="memberId" value={member.id} />
+                      <input type="hidden" name="operation" value="remove" />
+                      <Button type="submit" variant="outline" className="text-destructive">
+                        Remove access
+                      </Button>
+                    </form>
+                  </div>
+                </details>
+              ) : null}
             </div>
           ))}
         </CardContent>
@@ -107,9 +160,23 @@ export default async function FamilyPage({ searchParams }: FamilyPageProps) {
                 {invitations.map((invitation) => (
                   <div key={invitation.id} className="flex items-center justify-between gap-3 text-sm">
                     <span className="min-w-0 truncate">{invitation.invitedEmail}</span>
-                    <Badge variant="secondary">
-                      {invitation.role === "household_admin" ? "Admin" : "Member"}
-                    </Badge>
+                    <div className="flex items-center gap-2">
+                      <Badge variant="secondary">
+                        {invitation.role === "household_admin" ? "Admin" : "Member"}
+                      </Badge>
+                      <form action={revokeHouseholdInvitationAction}>
+                        <input type="hidden" name="invitationId" value={invitation.id} />
+                        <Button
+                          type="submit"
+                          variant="outline"
+                          size="icon"
+                          title="Revoke invitation"
+                          aria-label={`Revoke invitation for ${invitation.invitedEmail}`}
+                        >
+                          <X className="h-4 w-4" aria-hidden="true" />
+                        </Button>
+                      </form>
+                    </div>
                   </div>
                 ))}
               </div>

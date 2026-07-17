@@ -235,3 +235,178 @@ function getInitials(name: string) {
     .map((part) => part[0]?.toUpperCase())
     .join("");
 }
+
+
+export async function revokeHouseholdInvitation(
+  context: HouseholdAccessContext,
+  invitationId: string,
+) {
+  requireHouseholdPermission(context, "manage_household_members");
+
+  await getPrismaClient().$transaction(async (tx) => {
+    const [admin, invitation] = await Promise.all([
+      tx.householdMember.findFirst({
+        where: {
+          id: context.memberId,
+          householdId: context.householdId,
+          userId: context.userId,
+          role: "household_admin",
+          status: "active",
+        },
+        select: { id: true },
+      }),
+      tx.invitation.findFirst({
+        where: {
+          id: invitationId,
+          householdId: context.householdId,
+          status: "pending",
+        },
+        select: { id: true },
+      }),
+    ]);
+
+    if (!admin || !invitation) throw new HouseholdInvitationError();
+
+    await tx.invitation.update({
+      where: { id: invitation.id },
+      data: { status: "revoked" },
+    });
+    await tx.activityEvent.create({
+      data: {
+        householdId: context.householdId,
+        actorUserId: context.userId,
+        actorMemberId: context.memberId,
+        entityType: "member",
+        eventType: "updated",
+        summary: "A household invitation was revoked.",
+      },
+    });
+  });
+}
+
+export async function updateHouseholdMemberRole(
+  context: HouseholdAccessContext,
+  memberId: string,
+  role: HouseholdRole,
+) {
+  requireHouseholdPermission(context, "manage_household_members");
+  if (memberId === context.memberId) {
+    throw new HouseholdInvitationError("You cannot change your own role.");
+  }
+
+  await getPrismaClient().$transaction(async (tx) => {
+    const [admin, target] = await Promise.all([
+      tx.householdMember.findFirst({
+        where: {
+          id: context.memberId,
+          householdId: context.householdId,
+          userId: context.userId,
+          role: "household_admin",
+          status: "active",
+        },
+        select: { id: true },
+      }),
+      tx.householdMember.findFirst({
+        where: {
+          id: memberId,
+          householdId: context.householdId,
+          status: "active",
+        },
+        select: { id: true, role: true, displayName: true },
+      }),
+    ]);
+    if (!admin || !target) throw new HouseholdInvitationError();
+
+    if (target.role === "household_admin" && role !== "household_admin") {
+      const adminCount = await tx.householdMember.count({
+        where: {
+          householdId: context.householdId,
+          role: "household_admin",
+          status: "active",
+        },
+      });
+      if (adminCount <= 1) {
+        throw new HouseholdInvitationError("A household must keep an administrator.");
+      }
+    }
+
+    await tx.householdMember.update({
+      where: { id: target.id },
+      data: { role },
+    });
+    await tx.activityEvent.create({
+      data: {
+        householdId: context.householdId,
+        actorUserId: context.userId,
+        actorMemberId: context.memberId,
+        entityType: "member",
+        entityId: target.id,
+        eventType: "updated",
+        summary: `Updated ${target.displayName}'s household role.`,
+      },
+    });
+  });
+}
+
+export async function deactivateHouseholdMember(
+  context: HouseholdAccessContext,
+  memberId: string,
+) {
+  requireHouseholdPermission(context, "manage_household_members");
+  if (memberId === context.memberId) {
+    throw new HouseholdInvitationError("You cannot remove your own access.");
+  }
+
+  await getPrismaClient().$transaction(async (tx) => {
+    const [admin, target] = await Promise.all([
+      tx.householdMember.findFirst({
+        where: {
+          id: context.memberId,
+          householdId: context.householdId,
+          userId: context.userId,
+          role: "household_admin",
+          status: "active",
+        },
+        select: { id: true },
+      }),
+      tx.householdMember.findFirst({
+        where: {
+          id: memberId,
+          householdId: context.householdId,
+          status: "active",
+        },
+        select: { id: true, role: true, displayName: true },
+      }),
+    ]);
+    if (!admin || !target) throw new HouseholdInvitationError();
+
+    if (target.role === "household_admin") {
+      const adminCount = await tx.householdMember.count({
+        where: {
+          householdId: context.householdId,
+          role: "household_admin",
+          status: "active",
+        },
+      });
+      if (adminCount <= 1) {
+        throw new HouseholdInvitationError("A household must keep an administrator.");
+      }
+    }
+
+    await tx.householdMember.update({
+      where: { id: target.id },
+      data: { status: "inactive" },
+    });
+    await tx.activityEvent.create({
+      data: {
+        householdId: context.householdId,
+        actorUserId: context.userId,
+        actorMemberId: context.memberId,
+        entityType: "member",
+        entityId: target.id,
+        eventType: "archived",
+        summary: `Removed ${target.displayName}'s household access.`,
+      },
+    });
+  });
+}

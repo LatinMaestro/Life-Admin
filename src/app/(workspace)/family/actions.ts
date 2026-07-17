@@ -8,6 +8,9 @@ import {
   acceptCurrentUserHouseholdInvitation,
   createHouseholdInvitation,
   HouseholdInvitationError,
+  deactivateHouseholdMember,
+  revokeHouseholdInvitation,
+  updateHouseholdMemberRole,
 } from "@/lib/server/household-invitations";
 
 const roles = new Set<HouseholdRole>(["household_admin", "household_member"]);
@@ -47,4 +50,53 @@ export async function acceptHouseholdInvitationAction() {
   }
 
   redirect("/");
+}
+
+
+export async function revokeHouseholdInvitationAction(formData: FormData) {
+  const invitationId = readText(formData, "invitationId");
+  if (!invitationId) redirect("/family?manage=error");
+
+  try {
+    const context = await getRuntimeHouseholdAccessContext();
+    await revokeHouseholdInvitation(context, invitationId);
+  } catch {
+    redirect("/family?manage=error");
+  }
+
+  revalidatePath("/family");
+  revalidatePath("/activity");
+  redirect("/family?manage=revoked");
+}
+
+export async function manageHouseholdMemberAction(formData: FormData) {
+  const memberId = readText(formData, "memberId");
+  const operation = readText(formData, "operation");
+  const role = readText(formData, "role");
+
+  if (!memberId || (operation !== "role" && operation !== "remove")) {
+    redirect("/family?manage=error");
+  }
+
+  try {
+    const context = await getRuntimeHouseholdAccessContext();
+    if (operation === "remove") {
+      await deactivateHouseholdMember(context, memberId);
+    } else {
+      if (!roles.has(role as HouseholdRole)) redirect("/family?manage=error");
+      await updateHouseholdMemberRole(context, memberId, role as HouseholdRole);
+    }
+  } catch {
+    redirect("/family?manage=error");
+  }
+
+  revalidatePath("/");
+  revalidatePath("/family");
+  revalidatePath("/activity");
+  redirect(`/family?manage=${operation === "remove" ? "removed" : "updated"}`);
+}
+
+function readText(formData: FormData, field: string) {
+  const value = formData.get(field);
+  return typeof value === "string" ? value.trim() : "";
 }
