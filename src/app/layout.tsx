@@ -5,6 +5,7 @@ import { AuthenticationProvider } from "@/components/authentication-provider";
 import { isClerkAuthenticationEnabled } from "@/lib/auth/config";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://lifeadmin.grovekind.com"),
   applicationName: "Family Life Admin",
   title: {
     default: "Family Life Admin",
