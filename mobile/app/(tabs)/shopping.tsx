@@ -1,7 +1,7 @@
-import { Alert } from "react-native";
+import { Alert } from "react-native";\nimport { useRouter } from "expo-router";
 import { useState } from "react";
 
-import { ActionButton } from "@/components/action-button";
+import { ActionButton } from "@/components/action-button";\nimport { PrimaryButton } from "@/components/primary-button";
 import { PageTitle, Row, Screen, Section, StatusView } from "@/components/ui";
 import { useApiResource, useHouseholdMutation } from "@/lib/api";
 import type { ShoppingResponse } from "@/lib/contracts";
@@ -27,7 +27,7 @@ export default function ShoppingScreen() {
 
   return (
     <Screen refreshing={state.loading} onRefresh={() => void state.refresh()}>
-      <PageTitle title="Shopping" subtitle="The household lists, kept together." />
+      <PageTitle title="Shopping" subtitle="The household lists, kept together." />\n      <PrimaryButton label="Add item" onPress={() => router.push("/new-shopping-item")} />
       <StatusView {...state} empty={Boolean(state.data) && lists.length === 0} onRetry={() => void state.refresh()} />
       {lists.map((list) => {
         const listItems = items.filter((item) => item.shoppingListId === list.id);
