@@ -1,10 +1,11 @@
-import { readFile } from "node:fs/promises";
+import { access, readFile } from "node:fs/promises";
 
 const requireLive = process.argv.includes("--require-live");
 const app = JSON.parse(await readFile(new URL("../app.json", import.meta.url), "utf8")).expo;
 const eas = JSON.parse(await readFile(new URL("../eas.json", import.meta.url), "utf8"));
 const errors = [];
 const expectedIdentifier = "com.latinmaestro.familylifeadmin";
+const projectRoot = new URL("../", import.meta.url);
 
 if (app.name !== "Family Life Admin") errors.push("The app display name has changed.");
 if (app.version !== "1.0.0") errors.push("The first store version must be 1.0.0.");
@@ -23,10 +24,38 @@ if (eas.build?.production?.credentialsSource !== "remote") {
   errors.push("Production signing credentials must be remotely managed.");
 }
 
+const plugins = new Map(
+  (app.plugins ?? []).map((plugin) => [
+    Array.isArray(plugin) ? plugin[0] : plugin,
+    Array.isArray(plugin) ? plugin[1] : undefined,
+  ]),
+);
 const forbiddenPlugins = ["expo-camera", "expo-image-picker", "expo-notifications", "expo-av"];
-for (const plugin of app.plugins ?? []) {
-  const name = Array.isArray(plugin) ? plugin[0] : plugin;
+for (const name of plugins.keys()) {
   if (forbiddenPlugins.includes(name)) errors.push(`${name} is outside the approved first-store scope.`);
+}
+
+const splash = plugins.get("expo-splash-screen");
+if (!splash || splash.backgroundColor !== "#F7F8F5" || splash.image !== "./assets/splash-icon.png") {
+  errors.push("The approved native splash screen is not configured.");
+}
+
+const requiredAssets = [
+  [app.icon, "App icon"],
+  [app.android?.adaptiveIcon?.foregroundImage, "Android adaptive icon"],
+  [app.android?.adaptiveIcon?.monochromeImage, "Android monochrome icon"],
+  [splash?.image, "Splash icon"],
+];
+for (const [assetPath, label] of requiredAssets) {
+  if (!assetPath) {
+    errors.push(`${label} is not configured.`);
+    continue;
+  }
+  try {
+    await access(new URL(assetPath, projectRoot));
+  } catch {
+    errors.push(`${label} is missing at ${assetPath}.`);
+  }
 }
 
 if (requireLive) {

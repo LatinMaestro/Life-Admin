@@ -2,9 +2,9 @@
 
 ## Current Objective
 
-Move the completed household web application through release hardening and into approved native iOS and Android delivery. The production data model, Clerk identity mapping, household access enforcement, live manual workflows, privacy guardrails, and beginner-friendly web interface are implemented.
+Move the completed household web and native applications through final production activation, physical-device quality assurance, signed builds, and store submission. The production data model, Clerk identity mapping, household access enforcement, live manual workflows, privacy guardrails, beginner-friendly interfaces, native release configuration, and store materials are implemented.
 
-The web application and native core workflows are implemented. The immediate work is release hardening, physical-device testing, production environment activation, store assets, and signed TestFlight/Google Play internal builds. Notifications, uploads, email forwarding, AI, OCR, and voice capture remain deferred.
+Notifications, uploads, email forwarding, AI, OCR, and voice capture remain deferred.
 
 ## Product Boundary
 
@@ -26,51 +26,37 @@ Family Life Admin is private household administration, not personal finance. Bil
 12. Household invitations and member administration.
 13. Live household-scoped create, update, complete, reopen, archive, and routing workflows.
 14. Beginner usability and production code/privacy review.
-15. Release candidate merged to `main`.\n16. Authenticated, household-scoped mobile read API.\n17. Expo iOS and Android foundation with secure Clerk sessions and core read screens.
+15. Release candidate merged to `main`.
+16. Authenticated, household-scoped mobile API.
+17. Expo iOS and Android app with secure Clerk sessions and core native workflows.
+18. Native household comments, activity, invitations, roles, settings, assignments, and task dates.
+19. EAS build configuration, stable app identifiers, deterministic icons and splash artwork.
+20. App Store and Google Play listing copy, review notes, and submission checklist.
 
 ## Remaining Delivery Plan
 
-### Phase A: Web Production Verification
+### Phase A: Production Activation
 
-- Complete a production deployment after Vercel build capacity is available.
-- Run authenticated desktop and mobile workflow QA.
-- Verify invitation, role recovery, multi-household isolation, source-link safety, and error states.
-- Move Clerk from development keys to production keys when the custom domain and DNS are approved.
+- Approve and attach a stable custom production domain.
+- Move Clerk and mobile clients to production keys for that domain.
+- Confirm production environment variables and run the live release gate.
+- Run authenticated web smoke tests against production.
 
-### Phase B: Release And Store Compliance
+### Phase B: Physical Device QA
 
-- Publish privacy policy, support, and account-deletion web resources.
-- Add in-app account deletion with last-admin and household ownership safeguards.
-- Define data retention and deletion handling across Clerk and PostgreSQL.
-- Prepare Apple privacy details and Google Play Data safety declarations.
-- Prepare a stable reviewer demo account or approved full-feature demo mode.
-- Complete accessibility, empty/error state, and device QA.
+- Build internal iOS and Android releases with EAS.
+- Test sign-in, household isolation, invitation acceptance, writes, source-link safety, account deletion, accessibility, and recovery states.
+- Test representative phones and tablets on supported OS versions.
+- Record and resolve any release-blocking defects.
 
-### Phase C: Versioned Mobile API
+### Phase C: Store Submission
 
-- Add `/api/v1` authenticated household endpoints.
-- Reuse server authorization and persistence services.
-- Publish stable TypeScript contracts with ISO date serialization.
-- Add request validation, safe error envelopes, rate limits where justified, and API tests.
-- Keep source references metadata/link-only and fail closed outside live Clerk mode.
-
-### Phase D: Expo Native App
-
-- Add an Expo Router application for iOS and Android.
-- Use Clerk Expo with secure token storage.
-- Implement Home, Inbox, Tasks, Shopping, Bills/Renewals, Family, Sources, Activity, and Settings.
-- Match the web app's plain language and one-primary-action interaction model.
-- Add local loading/error states and safe retry behavior.
-- Do not add notifications, uploads, camera, OCR, AI, or voice capture in this phase.
-
-### Phase E: Store Testing And Submission
-
-- Configure bundle identifiers, signing, EAS Build, and environment separation.
-- Test physical iPhone/iPad and Android phone/tablet builds.
-- Distribute through TestFlight and Google Play internal testing.
-- Produce icons, screenshots using fictional data, descriptions, age ratings, support URL, and review notes.
-- Submit to the Apple App Store and Google Play only after privacy, deletion, authentication, and reviewer-access gates pass.
+- Capture final screenshots using fictional household data.
+- Complete Apple privacy and Google Play Data safety forms from the approved privacy documentation.
+- Supply support and privacy URLs on the custom domain.
+- Create a private reviewer account and provide credentials only through store review consoles.
+- Submit version 1.0.0 after all checklist items pass.
 
 ## Immediate Next Step
 
-Complete release hardening and store delivery: validate production Clerk and custom-domain environments, add final visual assets and store metadata, run physical-device accessibility QA, then create signed TestFlight and Google Play internal builds.
+Complete the external release setup: custom domain, production Clerk configuration, Expo project/signing credentials, developer accounts, internal builds, and physical-device QA. No additional product features are required for the first store candidate unless QA identifies a release-blocking issue.
