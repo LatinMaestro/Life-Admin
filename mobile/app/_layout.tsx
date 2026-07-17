@@ -30,6 +30,8 @@ export default function RootLayout() {
         <Stack.Screen name="sources" options={{ title: "Sources" }} />
         <Stack.Screen name="activity" options={{ title: "Activity" }} />
         <Stack.Screen name="settings" options={{ title: "Settings" }} />\n        <Stack.Screen name="new-inbox" options={{ title: "Add to inbox", presentation: "modal" }} />\n        <Stack.Screen name="new-task" options={{ title: "Add task", presentation: "modal" }} />\n        <Stack.Screen name="new-shopping-item" options={{ title: "Add shopping item", presentation: "modal" }} />
+        <Stack.Screen name="new-bill" options={{ title: "Add bill or renewal", presentation: "modal" }} />
+        <Stack.Screen name="new-source" options={{ title: "Add source", presentation: "modal" }} />
       </Stack>
     </ClerkProvider>
   );
