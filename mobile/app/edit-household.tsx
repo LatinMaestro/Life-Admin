@@ -67,7 +67,13 @@ export default function EditHouseholdScreen() {
           );
         })}
         {message ? <Text accessibilityLiveRegion="polite" style={styles.error}>{message}</Text> : null}
-        <PrimaryButton busy={busy} icon="checkmark" label="Save household" onPress={() => void submit()} />
+        <PrimaryButton
+          busy={busy}
+          disabled={!name.trim()}
+          icon="checkmark"
+          label="Save household"
+          onPress={() => void submit()}
+        />
       </ScrollView>
     </SafeAreaView>
   );

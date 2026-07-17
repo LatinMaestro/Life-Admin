@@ -95,6 +95,7 @@ export default function NewShoppingItemScreen() {
             {message ? <Text accessibilityLiveRegion="polite" style={styles.error}>{message}</Text> : null}
             <PrimaryButton
               busy={busy}
+              disabled={!shoppingListId || !label.trim()}
               icon="checkmark"
               label="Add item"
               onPress={() => void submit()}

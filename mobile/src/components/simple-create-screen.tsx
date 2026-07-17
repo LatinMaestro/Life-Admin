@@ -69,6 +69,7 @@ export function SimpleCreateScreen({
         {message ? <Text accessibilityLiveRegion="polite" style={styles.error}>{message}</Text> : null}
         <PrimaryButton
           busy={busy}
+          disabled={!title.trim()}
           icon="checkmark"
           label={submitLabel}
           onPress={() => void submit()}

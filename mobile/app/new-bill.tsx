@@ -7,7 +7,7 @@ import { DateField } from "@/components/date-field";
 import { MemberField } from "@/components/member-field";
 import { PrimaryButton } from "@/components/primary-button";
 import { StatusView } from "@/components/ui";
-import { useApiResource, useHouseholdMutation } from "@/lib/api";
+import { toCalendarDateValue, useApiResource, useHouseholdMutation } from "@/lib/api";
 import type { BillsResponse, BootstrapResponse } from "@/lib/contracts";
 import { colors } from "@/lib/theme";
 
@@ -39,7 +39,7 @@ export default function NewBillScreen() {
           title,
           provider,
           type,
-          date: date.toISOString().slice(0, 10),
+          date: toCalendarDateValue(date),
           sourceReferenceId,
           assignedMemberId: assignedMemberId || household.data?.currentMember.id,
         },
@@ -146,6 +146,7 @@ export default function NewBillScreen() {
         {message ? <Text accessibilityLiveRegion="polite" style={styles.error}>{message}</Text> : null}
         <PrimaryButton
           busy={busy}
+          disabled={!title.trim()}
           icon="checkmark"
           label="Add reminder"
           onPress={() => void submit()}
