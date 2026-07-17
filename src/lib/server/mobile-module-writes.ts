@@ -170,3 +170,16 @@ export async function createMobileSourceReference(
   });
   return success();
 }
+
+export async function createMobileComment(
+  context: HouseholdAccessContext,
+  input: {
+    entityType: "inbox_item" | "task" | "reminder" | "shopping_list" | "bill_or_renewal" | "source_reference";
+    entityId: string;
+    body: string;
+  },
+) {
+  const adapter = await getHouseholdPersistenceAdapter();
+  await adapter.createComment(context, input);
+  return success();
+}

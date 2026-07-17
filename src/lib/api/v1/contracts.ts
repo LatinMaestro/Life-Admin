@@ -151,6 +151,13 @@ export type MobileSourceReference = {
   createdByMemberId: string;
 };
 
+export type MobileCommentTarget = {
+  entityType: "inbox_item" | "task" | "reminder" | "shopping_list" | "bill_or_renewal" | "source_reference";
+  entityId: string;
+  label: string;
+  group: string;
+};
+
 export type MobileActivityResponse = MobileApiEnvelope & {
   comments: Array<{
     id: string;
@@ -169,4 +176,5 @@ export type MobileActivityResponse = MobileApiEnvelope & {
     actorMemberId: string | null;
     createdAt: string;
   }>;
+  targets: MobileCommentTarget[];
 };
