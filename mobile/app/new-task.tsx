@@ -4,21 +4,26 @@ import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { DateField } from "@/components/date-field";
+import { MemberField } from "@/components/member-field";
 import { PrimaryButton } from "@/components/primary-button";
-import { useHouseholdMutation } from "@/lib/api";
+import { StatusView } from "@/components/ui";
+import { useApiResource, useHouseholdMutation } from "@/lib/api";
+import type { BootstrapResponse } from "@/lib/contracts";
 import { colors } from "@/lib/theme";
 
 export default function NewWorkScreen() {
   const router = useRouter();
+  const household = useApiResource<BootstrapResponse>("/api/v1/bootstrap");
   const mutate = useHouseholdMutation();
   const [kind, setKind] = useState<"task" | "reminder">("task");
   const [title, setTitle] = useState("");
   const [notes, setNotes] = useState("");
-  const [remindAt, setRemindAt] = useState(() => {
-    const date = new Date();
-    date.setDate(date.getDate() + 1);
-    return date;
+  const [date, setDate] = useState(() => {
+    const value = new Date();
+    value.setDate(value.getDate() + 1);
+    return value;
   });
+  const [assignedMemberId, setAssignedMemberId] = useState("");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
@@ -26,13 +31,16 @@ export default function NewWorkScreen() {
     setBusy(true);
     setMessage(null);
     try {
+      const dateValue = date.toISOString().slice(0, 10);
       await mutate(
         "/api/v1/tasks",
         {
           kind,
           title,
           notes,
-          remindAt: remindAt.toISOString().slice(0, 10),
+          dueAt: dateValue,
+          remindAt: dateValue,
+          assignedMemberId: assignedMemberId || household.data?.currentMember.id,
         },
         "POST",
       );
@@ -43,6 +51,14 @@ export default function NewWorkScreen() {
       setBusy(false);
     }
   };
+
+  if (!household.data) {
+    return (
+      <SafeAreaView edges={["bottom"]} style={styles.safeArea}>
+        <StatusView {...household} onRetry={() => void household.refresh()} />
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView edges={["bottom"]} style={styles.safeArea}>
@@ -76,9 +92,16 @@ export default function NewWorkScreen() {
           style={styles.input}
           value={title}
         />
-        {kind === "reminder" ? (
-          <DateField label="Reminder date" onChange={setRemindAt} value={remindAt} />
-        ) : null}
+        <DateField
+          label={kind === "task" ? "Due date" : "Reminder date"}
+          onChange={setDate}
+          value={date}
+        />
+        <MemberField
+          members={household.data.members}
+          onChange={setAssignedMemberId}
+          value={assignedMemberId || household.data.currentMember.id}
+        />
         <Text style={styles.label}>Notes (optional)</Text>
         <TextInput
           accessibilityLabel="Optional notes"
