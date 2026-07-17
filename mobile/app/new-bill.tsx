@@ -57,7 +57,7 @@ export default function NewBillScreen() {
     const pending = !bills.data ? bills : household;
     return (
       <SafeAreaView edges={["bottom"]} style={styles.safeArea}>
-        <StatusView {...pending} onRetry={() => void bills.refresh()} />
+        <StatusView {...pending} onRetry={() => void pending.refresh()} />
       </SafeAreaView>
     );
   }
