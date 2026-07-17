@@ -38,6 +38,27 @@ Partial activation is rejected by `pnpm check:activation`. The build runs this c
 10. Deploy once and complete signed-out, signed-in, unmapped-account, household-isolation, mobile, and source-reference QA.
 11. Roll back both modes to `demo` and `static` together if any activation gate fails.
 
+## Production Migration History Baseline
+
+The production schema was applied through the reviewed Neon migration process before Prisma Migrate created its history table. Before future migrations are deployed, record the two already-applied migrations through Prisma's supported baseline workflow.
+
+The command is guarded: it verifies the reviewed schema exists, skips migrations already recorded, and performs no write without `--apply`.
+
+Inspect the intended remote production environment:
+
+```bash
+pnpm db:baseline:production
+```
+
+After confirming the target, apply and verify the migration history:
+
+```bash
+pnpm db:baseline:production -- --apply
+pnpm db:migrate:status
+```
+
+Run this only from a controlled remote environment that already owns the production `DATABASE_URL`. Do not copy the production connection string into a local file, build log, issue, or pull request.
+
 ## Initial Household Seed
 
 Required secure environment values:
@@ -69,7 +90,7 @@ The seed is intentionally narrow and idempotent. It creates only the first inter
 
 ## Verification Gates
 
-- Production migration status is clean.
+- Production migration history records both reviewed migrations and migration status is clean.
 - Runtime activation check passes.
 - The first Clerk subject maps to exactly one internal user.
 - The user has exactly one intended active household membership.
