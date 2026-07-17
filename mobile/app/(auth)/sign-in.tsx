@@ -12,15 +12,8 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { getClerkErrorMessage } from "@/lib/clerk-error";
 import { colors } from "@/lib/theme";
-
-function getMessage(error: unknown) {
-  if (typeof error === "object" && error && "errors" in error) {
-    const errors = (error as { errors?: Array<{ longMessage?: string; message?: string }> }).errors;
-    return errors?.[0]?.longMessage ?? errors?.[0]?.message;
-  }
-  return error instanceof Error ? error.message : undefined;
-}
 
 export default function SignInScreen() {
   const { signIn, fetchStatus } = useSignIn();
@@ -46,7 +39,7 @@ export default function SignInScreen() {
     setMessage(null);
     const { error } = await signIn.password({ emailAddress: emailAddress.trim(), password });
     if (error) {
-      setMessage(getMessage(error) ?? "Check your email and password, then try again.");
+      setMessage(getClerkErrorMessage(error) ?? "Check your email and password, then try again.");
       return;
     }
     if (signIn.status === "complete") {
@@ -67,7 +60,7 @@ export default function SignInScreen() {
     setMessage(null);
     const { error } = await signIn.mfa.verifyEmailCode({ code });
     if (error) {
-      setMessage(getMessage(error) ?? "That code could not be verified.");
+      setMessage(getClerkErrorMessage(error) ?? "That code could not be verified.");
       return;
     }
     if (signIn.status === "complete") await finish();
@@ -126,6 +119,13 @@ export default function SignInScreen() {
                 style={styles.input}
                 value={password}
               />
+              <Pressable
+                accessibilityRole="button"
+                onPress={() => router.push("/(auth)/forgot-password")}
+                style={styles.forgotButton}
+              >
+                <Text style={styles.textButtonLabel}>Forgot password?</Text>
+              </Pressable>
             </>
           )}
           <Pressable
@@ -143,7 +143,7 @@ export default function SignInScreen() {
             </Text>
           </Pressable>
           {needsCode ? (
-            <Pressable onPress={() => signIn.reset()} style={styles.textButton}>
+            <Pressable accessibilityRole="button" onPress={() => signIn.reset()} style={styles.textButton}>
               <Text style={styles.textButtonLabel}>Start again</Text>
             </Pressable>
           ) : null}
@@ -183,6 +183,7 @@ const styles = StyleSheet.create({
   buttonText: { color: "#FFFFFF", fontSize: 16, fontWeight: "700" },
   disabled: { opacity: 0.5 },
   pressed: { backgroundColor: colors.primaryPressed },
+  forgotButton: { alignSelf: "flex-end", paddingHorizontal: 4, paddingVertical: 6 },
   textButton: { alignItems: "center", padding: 10 },
   textButtonLabel: { color: colors.primary, fontSize: 15, fontWeight: "700" },
   error: { color: colors.danger, fontSize: 14, lineHeight: 20 },
