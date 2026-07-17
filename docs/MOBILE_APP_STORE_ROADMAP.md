@@ -107,11 +107,9 @@ References:
 
 ## External Inputs Required Before Submission
 
-- Final app display name.
-- iOS bundle identifier and Android package name.
 - Apple Developer and Google Play developer accounts.
 - Custom production domain and support email.
 - Privacy policy owner/legal publisher details.
 - Store territories and age-rating answers.
 
-These inputs do not block API and native application development.
+Approved build identity: display name `Family Life Admin`; iOS and Android identifier `com.latinmaestro.familylifeadmin`. The remaining inputs do not block application development, but they do block signed store submission.

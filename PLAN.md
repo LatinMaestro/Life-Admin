@@ -4,7 +4,7 @@
 
 Move the completed household web application through release hardening and into approved native iOS and Android delivery. The production data model, Clerk identity mapping, household access enforcement, live manual workflows, privacy guardrails, and beginner-friendly web interface are implemented.
 
-The immediate work is to establish a stable versioned mobile API and store-readiness controls before building the Expo client. Notifications, uploads, email forwarding, AI, OCR, and voice capture remain deferred.
+The web application and native core workflows are implemented. The immediate work is release hardening, physical-device testing, production environment activation, store assets, and signed TestFlight/Google Play internal builds. Notifications, uploads, email forwarding, AI, OCR, and voice capture remain deferred.
 
 ## Product Boundary
 
@@ -73,4 +73,4 @@ Family Life Admin is private household administration, not personal finance. Bil
 
 ## Immediate Next Step
 
-Complete the mobile-store foundation batch: reconcile product decisions, add installable web metadata, and establish the read-only authenticated `/api/v1/bootstrap` boundary. Follow with tested module endpoints and the Expo application scaffold.
+Complete release hardening and store delivery: validate production Clerk and custom-domain environments, add final visual assets and store metadata, run physical-device accessibility QA, then create signed TestFlight and Google Play internal builds.

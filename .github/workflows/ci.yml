@@ -83,3 +83,6 @@ jobs:
 
       - name: Typecheck
         run: npm run typecheck
+
+      - name: Check store configuration
+        run: npm run release:check
