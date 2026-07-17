@@ -3,6 +3,7 @@ import type { HouseholdRole } from "@/lib/access-control";
 export type MobileApiErrorCode =
   | "authentication_required"
   | "household_access_required"
+  | "invalid_request"
   | "live_mode_required"
   | "unexpected_error";
 
@@ -16,6 +17,10 @@ export type MobileApiError = {
 type MobileApiEnvelope = {
   apiVersion: "1";
   generatedAt: string;
+};
+
+export type MobileMutationResponse = MobileApiEnvelope & {
+  success: true;
 };
 
 export type MobileBootstrapResponse = MobileApiEnvelope & {

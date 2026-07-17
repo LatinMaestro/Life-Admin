@@ -15,6 +15,39 @@ export type ResourceState<T> = {
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL?.replace(/\/$/, "");
 
+async function readResponse<T>(response: Response) {
+  const body = (await response.json().catch(() => ({}))) as T & ApiErrorBody;
+  if (!response.ok) {
+    throw new Error(body.error?.message ?? "The household request could not be completed.");
+  }
+  return body;
+}
+
+export function useHouseholdMutation() {
+  const { getToken } = useAuth();
+
+  return useCallback(
+    async (path: `/api/v1/${string}`, body: Record<string, unknown>) => {
+      if (!apiUrl) throw new Error("The app service has not been configured.");
+      const token = await getToken();
+      if (!token) throw new Error("Your session could not be verified. Please sign in again.");
+
+      const response = await fetch(`${apiUrl}${path}`, {
+        method: "PATCH",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+
+      return readResponse<{ success: true }>(response);
+    },
+    [getToken],
+  );
+}
+
 export function useApiResource<T>(path: `/api/v1/${string}`): ResourceState<T> {
   const { getToken, isLoaded, isSignedIn } = useAuth();
   const [data, setData] = useState<T | null>(null);
@@ -33,14 +66,9 @@ export function useApiResource<T>(path: `/api/v1/${string}`): ResourceState<T> {
     setErrorCode(null);
 
     try {
-      if (!apiUrl) {
-        throw new Error("The app service has not been configured.");
-      }
-
+      if (!apiUrl) throw new Error("The app service has not been configured.");
       const token = await getToken();
-      if (!token) {
-        throw new Error("Your session could not be verified. Please sign in again.");
-      }
+      if (!token) throw new Error("Your session could not be verified. Please sign in again.");
 
       const response = await fetch(`${apiUrl}${path}`, {
         headers: {
@@ -54,7 +82,6 @@ export function useApiResource<T>(path: `/api/v1/${string}`): ResourceState<T> {
         setErrorCode(body.error?.code ?? "unexpected_error");
         throw new Error(body.error?.message ?? "We could not load this household.");
       }
-
       setData(body);
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Something went wrong.");
