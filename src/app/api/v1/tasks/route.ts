@@ -1,4 +1,5 @@
 import {
+  optionalId,
   optionalText,
   readJsonObject,
   requireDate,
@@ -22,14 +23,16 @@ export function POST(request: Request) {
     const input = await readJsonObject(request);
     const title = requireText(input, "title", 2, 120);
     const notes = optionalText(input, "notes", 1_000);
+    const assignedMemberId = optionalId(input, "assignedMemberId");
     const kind = input.kind ?? "task";
 
     if (kind === "task") {
-      return createMobileTask(context, title, notes);
+      const dueAt = requireDate(input, "dueAt");
+      return createMobileTask(context, title, notes, dueAt, assignedMemberId);
     }
     if (kind === "reminder") {
       const remindAt = requireDate(input, "remindAt");
-      return createMobileReminder(context, title, notes, remindAt);
+      return createMobileReminder(context, title, notes, remindAt, assignedMemberId);
     }
     throw new MobileApiRequestError("Choose task or reminder.");
   });
