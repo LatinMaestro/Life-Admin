@@ -66,3 +66,52 @@ export async function setMobileSourceReviewStatus(
   await adapter.setSourceReferenceReviewStatus(context, sourceId, status);
   return success();
 }
+
+export async function createMobileInboxItem(
+  context: HouseholdAccessContext,
+  title: string,
+  description: string | null,
+) {
+  const adapter = await getHouseholdPersistenceAdapter();
+  await adapter.createInboxItem(context, {
+    title,
+    description,
+    category: "other",
+    priority: "normal",
+    suggestedDestination: "none",
+  });
+  return success();
+}
+
+export async function createMobileTask(
+  context: HouseholdAccessContext,
+  title: string,
+  notes: string | null,
+) {
+  const adapter = await getHouseholdPersistenceAdapter();
+  await adapter.createTask(context, {
+    title,
+    notes,
+    priority: "normal",
+    dueAt: null,
+    assignedMemberId: context.memberId,
+  });
+  return success();
+}
+
+export async function createMobileShoppingItem(
+  context: HouseholdAccessContext,
+  shoppingListId: string,
+  label: string,
+  notes: string | null,
+) {
+  const adapter = await getHouseholdPersistenceAdapter();
+  await adapter.createShoppingListItem(context, {
+    shoppingListId,
+    label,
+    notes,
+    quantity: null,
+    category: null,
+  });
+  return success();
+}
