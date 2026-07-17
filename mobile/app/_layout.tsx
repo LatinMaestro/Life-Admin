@@ -33,6 +33,9 @@ export default function RootLayout() {
         <Stack.Screen name="new-bill" options={{ title: "Add bill or renewal", presentation: "modal" }} />
         <Stack.Screen name="new-source" options={{ title: "Add source", presentation: "modal" }} />
         <Stack.Screen name="new-comment" options={{ title: "Add comment", presentation: "modal" }} />
+        <Stack.Screen name="invite-member" options={{ title: "Add family member", presentation: "modal" }} />
+        <Stack.Screen name="manage-member" options={{ title: "Manage family member", presentation: "modal" }} />
+        <Stack.Screen name="edit-household" options={{ title: "Household details", presentation: "modal" }} />
         <Stack.Screen name="delete-account" options={{ title: "Delete account", presentation: "modal" }} />
       </Stack>
     </ClerkProvider>
