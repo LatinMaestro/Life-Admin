@@ -175,6 +175,6 @@ export type MobileActivityResponse = MobileApiEnvelope & {
     summary: string;
     actorMemberId: string | null;
     createdAt: string;
-  }>;  }>;
+  }>;
   targets: MobileCommentTarget[];
 };
