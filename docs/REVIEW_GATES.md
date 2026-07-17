@@ -72,6 +72,10 @@ Checklist:
 - Lists, tasks, reminders, and due items are easy to scan.
 - Text fits within controls.
 - The interface is calm and task-focused.
+- Each page has one obvious primary action.
+- Optional controls stay hidden until needed.
+- Duplicate actions, implementation language, and non-actionable panels are absent.
+- Mobile primary navigation remains limited and predictable.
 
 ## Gate 7: Documentation
 

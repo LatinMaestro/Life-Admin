@@ -1,9 +1,13 @@
-import Link from "next/link";
-import { ClipboardList, Plus, ShoppingCart } from "lucide-react";
-import { buttonVariants } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Archive, Check, Plus, ShoppingCart, Undo2 } from "lucide-react";
+import {
+  toggleShoppingItemAction,
+  toggleShoppingListArchivedAction,
+} from "@/app/(workspace)/lists/actions";
 import { PageHeader } from "@/components/page-header";
 import { ReadModelSummary } from "@/components/read-model-summary";
+import { ShoppingCapture } from "@/components/shopping-capture";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getShoppingListsReadModel } from "@/lib/server/module-read-models";
 
 export default async function ListsPage() {
@@ -12,57 +16,86 @@ export default async function ListsPage() {
   return (
     <>
       <PageHeader
-        title="Shopping lists"
-        description={`Shared ${lists.household.name} lists for groceries, supplies, and errands.`}
+        title="Shopping"
+        description={`Shared lists for ${lists.household.name}.`}
         action={
-          <Link href="/inbox" className={buttonVariants()}>
+          <a href="#shopping-capture" className={buttonVariants()}>
             <Plus className="h-4 w-4" aria-hidden="true" />
-            Capture item
-          </Link>
+            Add
+          </a>
         }
       />
 
       <ReadModelSummary
-        title="Shopping list overview"
-        description="Household-scoped shopping lists and open item counts for the shared workspace."
+        title="Lists"
+        description="What your household needs."
         counts={lists.counts}
         rows={lists.rows}
-        emptyLabel="No shopping lists have been created yet."
-        actionHref="/inbox"
-        actionLabel="Capture item"
+        emptyLabel="No shopping lists yet."
+        renderAction={(row) => {
+          if (row.entityType !== "shopping_list") return null;
+          const archived = row.status === "Archived";
+          return (
+            <form action={toggleShoppingListArchivedAction}>
+              <input type="hidden" name="listId" value={row.id} />
+              <input type="hidden" name="archived" value={String(!archived)} />
+              <Button
+                type="submit"
+                variant="outline"
+                size="icon"
+                title={archived ? "Reopen list" : "Archive list"}
+                aria-label={archived ? `Reopen ${row.title}` : `Archive ${row.title}`}
+              >
+                {archived ? <Undo2 className="h-4 w-4" /> : <Archive className="h-4 w-4" />}
+              </Button>
+            </form>
+          );
+        }}
       />
 
-      <div className="mt-6 grid gap-4 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <div className="flex items-start gap-3">
-              <ShoppingCart className="mt-1 h-5 w-5 text-muted-foreground" aria-hidden="true" />
-              <div>
-                <CardTitle>Next shop view</CardTitle>
-                <CardDescription>Future list detail screens can group open items by shop, category, and owner.</CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="text-sm leading-6 text-muted-foreground">
-            The summary now reads through the household adapter boundary while detailed item editing remains a future live-write step.
-          </CardContent>
-        </Card>
+      <ShoppingCapture lists={lists.lists} />
 
-        <Card>
-          <CardHeader>
-            <div className="flex items-start gap-3">
-              <ClipboardList className="mt-1 h-5 w-5 text-muted-foreground" aria-hidden="true" />
-              <div>
-                <CardTitle>Shared list rules</CardTitle>
-                <CardDescription>Lists stay practical, mobile-first, and focused on household coordination.</CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="text-sm leading-6 text-muted-foreground">
-            Live item toggles, assignment, and list history should be added after the persistence write path is approved.
-          </CardContent>
-        </Card>
-      </div>
+      <Card className="mt-6">
+        <CardHeader>
+          <div className="flex items-center gap-3">
+            <ShoppingCart className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
+            <CardTitle>Items</CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {lists.items.length === 0 ? (
+            <p className="text-sm text-muted-foreground">No items yet.</p>
+          ) : (
+            <ul className="space-y-2">
+              {lists.items.map((item) => (
+                <li key={item.id} className="flex items-start justify-between gap-3 rounded-md border p-3">
+                  <div className="min-w-0">
+                    <p className={item.checked ? "text-sm font-medium line-through" : "text-sm font-medium"}>
+                      {item.label}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {item.listName}{item.detail ? ` - ${item.detail}` : ""}
+                    </p>
+                  </div>
+                  <form action={toggleShoppingItemAction}>
+                    <input type="hidden" name="itemId" value={item.id} />
+                    <input type="hidden" name="checked" value={String(!item.checked)} />
+                    <Button
+                      type="submit"
+                      variant="outline"
+                      className="h-10 w-10 shrink-0 p-0"
+                      title={item.checked ? "Reopen item" : "Check item"}
+                      aria-label={item.checked ? "Reopen item" : "Check item"}
+                    >
+                      {item.checked ? <Undo2 className="h-4 w-4" /> : <Check className="h-4 w-4" />}
+                    </Button>
+                  </form>
+                </li>
+              ))}
+            </ul>
+          )}
+        </CardContent>
+      </Card>
     </>
   );
 }

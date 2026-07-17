@@ -1,83 +1,82 @@
 import Link from "next/link";
-import { FileCheck2, Plus, ShieldCheck } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { buttonVariants } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Check, ExternalLink, FileCheck2, Plus, Undo2 } from "lucide-react";
+import { toggleBillOrRenewalCompletedAction } from "@/app/(workspace)/bills/actions";
+import { BillCapture } from "@/components/bill-capture";
 import { PageHeader } from "@/components/page-header";
 import { ReadModelSummary } from "@/components/read-model-summary";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { getBillsAndRenewalsReadModel } from "@/lib/server/module-read-models";
+import { getConfiguredPersistenceMode } from "@/lib/server/persistence";
 
-export default async function BillsPage() {
-  const bills = await getBillsAndRenewalsReadModel();
+type BillsPageProps = { searchParams: Promise<{ updated?: string }> };
+
+export default async function BillsPage({ searchParams }: BillsPageProps) {
+  const [bills, query] = await Promise.all([getBillsAndRenewalsReadModel(), searchParams]);
 
   return (
     <>
       <PageHeader
         title="Bills and renewals"
-        description={`Admin reminders for ${bills.household.name} due dates and renewals. Original sources stay the reference point.`}
+        description={`Due dates and renewals for ${bills.household.name}.`}
         action={
-          <Link href="/inbox" className={buttonVariants()}>
+          <a href="#bill-capture" className={buttonVariants()}>
             <Plus className="h-4 w-4" aria-hidden="true" />
-            Capture reminder
-          </Link>
+            Add
+          </a>
         }
       />
 
+      {query.updated === "true" ? (
+        <p className="mb-4 text-sm text-primary" role="status">Changes saved.</p>
+      ) : null}
+
       <ReadModelSummary
-        title="Reminder board"
-        description="Household-scoped bill and renewal reminders with source-first review."
+        title="Reminders"
+        description="Upcoming household admin."
         counts={bills.counts}
         rows={bills.rows}
-        emptyLabel="No bill or renewal reminders have been captured yet."
-        actionHref="/sources"
-        actionLabel="Open sources"
+        emptyLabel="No bills or renewals need attention."
+        allowEditing={getConfiguredPersistenceMode() === "prisma"}
+        renderAction={(row) => {
+          const completed = row.status === "Done";
+          return (
+            <>
+              {row.href.startsWith("https://") ? (
+                <Link
+                  href={row.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={buttonVariants({ variant: "outline" })}
+                  title="Open original source"
+                  aria-label="Open original source"
+                >
+                  <ExternalLink className="h-4 w-4" />
+                </Link>
+              ) : null}
+              <form action={toggleBillOrRenewalCompletedAction}>
+                <input type="hidden" name="itemId" value={row.id} />
+                <input type="hidden" name="completed" value={String(!completed)} />
+                <Button
+                  type="submit"
+                  variant="outline"
+                  className="h-10 w-10 p-0"
+                  title={completed ? "Reopen" : "Mark done"}
+                  aria-label={completed ? "Reopen" : "Mark done"}
+                >
+                  {completed ? <Undo2 className="h-4 w-4" /> : <Check className="h-4 w-4" />}
+                </Button>
+              </form>
+            </>
+          );
+        }}
       />
 
-      <Card className="mt-6">
-        <CardHeader>
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-            <div className="flex items-start gap-3">
-              <FileCheck2 className="mt-1 h-5 w-5 text-muted-foreground" aria-hidden="true" />
-              <div>
-                <CardTitle>Source-first review rules</CardTitle>
-                <CardDescription>Every reminder keeps the original source as the reference point before household action.</CardDescription>
-              </div>
-            </div>
-            <Badge>Source reference only</Badge>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-3 md:grid-cols-3">
-            <div className="rounded-md border p-3">
-              <p className="text-sm font-semibold leading-6">Record the obligation</p>
-              <p className="text-sm leading-5 text-muted-foreground">Keep provider, timing, owner, notes, status, and source reference only.</p>
-            </div>
-            <div className="rounded-md border p-3">
-              <p className="text-sm font-semibold leading-6">Open the source</p>
-              <p className="text-sm leading-5 text-muted-foreground">Use the original source document, link, image, or note before acting.</p>
-            </div>
-            <div className="rounded-md border p-3">
-              <p className="text-sm font-semibold leading-6">Leave a household trail</p>
-              <p className="text-sm leading-5 text-muted-foreground">Use comments and activity to show what changed without copying sensitive source contents.</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      <BillCapture sources={bills.sources} members={bills.members} />
 
-      <Card className="mt-6">
-        <CardHeader>
-          <div className="flex items-start gap-3">
-            <ShieldCheck className="mt-1 h-5 w-5 text-muted-foreground" aria-hidden="true" />
-            <div>
-              <CardTitle>Safety posture</CardTitle>
-              <CardDescription>Bill and renewal pages remain admin reminders, not financial analytics.</CardDescription>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent className="text-sm leading-6 text-muted-foreground">
-          Reminder details should point back to the confirmed source and avoid copying sensitive source contents into structured app fields.
-        </CardContent>
-      </Card>
+      <div className="mt-4 flex items-start gap-3 rounded-md border px-4 py-3 text-sm text-muted-foreground">
+        <FileCheck2 className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+        <p>Open the original source before paying or renewing.</p>
+      </div>
     </>
   );
 }

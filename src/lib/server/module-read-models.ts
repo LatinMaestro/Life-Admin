@@ -12,6 +12,7 @@ type ReadModelRow = {
   detail: string;
   status: string;
   href: string;
+  entityType?: "inbox_item" | "task" | "reminder" | "shopping_list" | "bill_or_renewal" | "source_reference";
 };
 
 type CountSummary = {
@@ -29,11 +30,57 @@ type ModuleReadModel = {
   rows: ReadModelRow[];
 };
 
+type InboxReadModel = ModuleReadModel & {
+  lists: Array<{ id: string; name: string }>;
+};
+
+type TasksReadModel = ModuleReadModel & {
+  members: Array<{ id: string; name: string }>;
+};
+
+type ActivityReadModel = ModuleReadModel & {
+  targets: Array<{ value: string; label: string }>;
+};
+
+type BillsReadModel = ModuleReadModel & {
+  members: Array<{ id: string; name: string }>;
+  sources: Array<{ id: string; title: string }>;
+};
+
+type ShoppingListsReadModel = ModuleReadModel & {
+  lists: Array<{ id: string; name: string }>;
+  items: Array<{
+    id: string;
+    shoppingListId: string;
+    listName: string;
+    label: string;
+    detail: string;
+    checked: boolean;
+  }>;
+};
+
 function formatStatus(status: string) {
   return status
     .split("_")
     .map((word) => `${word.charAt(0).toUpperCase()}${word.slice(1)}`)
     .join(" ");
+}
+
+function formatDate(value: Date | null | undefined) {
+  if (!value) return null;
+  return new Intl.DateTimeFormat("en-AU", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(value);
+}
+
+function isOverdue(value: Date | null | undefined, status: string) {
+  if (!value || status === "done" || status === "archived") return false;
+  const today = new Date();
+  const todayUtc = Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate());
+  return value.getTime() < todayUtc;
 }
 
 function getMemberName(members: MemberLookup, memberId: string | null | undefined) {
@@ -56,18 +103,27 @@ async function getBaseReadModel(context: HouseholdAccessContext) {
       timezone: household.timezone,
     },
     members: new Map(members.map((member) => [member.id, member.displayName])),
+    memberOptions: members
+      .filter((member) => member.status === "active" && member.id !== context.memberId)
+      .map((member) => ({ id: member.id, name: member.displayName })),
   };
 }
 
 export async function getInboxReadModel(
   context?: HouseholdAccessContext,
-): Promise<ModuleReadModel> {
+): Promise<InboxReadModel> {
   const accessContext = context ?? (await getRuntimeHouseholdAccessContext());
   const { adapter, household, members } = await getBaseReadModel(accessContext);
-  const inboxItems = await adapter.listInboxItems(accessContext);
+  const [inboxItems, shoppingLists] = await Promise.all([
+    adapter.listInboxItems(accessContext),
+    adapter.listShoppingLists(accessContext),
+  ]);
 
   return {
     household,
+    lists: shoppingLists
+      .filter((list) => list.status === "active")
+      .map((list) => ({ id: list.id, name: list.name })),
     counts: [
       { label: "New", value: inboxItems.filter((item) => item.status === "new").length },
       { label: "Needs review", value: inboxItems.filter((item) => item.status === "needs_review").length },
@@ -79,15 +135,16 @@ export async function getInboxReadModel(
       detail: `${item.description ?? "Manual household inbox item"} Assigned to ${getMemberName(members, item.assignedMemberId)}.`,
       status: formatStatus(item.status),
       href: "/inbox",
+      entityType: "inbox_item" as const,
     })),
   };
 }
 
 export async function getTasksReadModel(
   context?: HouseholdAccessContext,
-): Promise<ModuleReadModel> {
+): Promise<TasksReadModel> {
   const accessContext = context ?? (await getRuntimeHouseholdAccessContext());
-  const { adapter, household, members } = await getBaseReadModel(accessContext);
+  const { adapter, household, members, memberOptions } = await getBaseReadModel(accessContext);
   const [tasks, reminders] = await Promise.all([adapter.listTasks(accessContext), adapter.listReminders(accessContext)]);
 
   return {
@@ -97,20 +154,31 @@ export async function getTasksReadModel(
       { label: "Done tasks", value: tasks.filter((task) => task.status === "done").length },
       { label: "Scheduled reminders", value: reminders.filter((reminder) => reminder.status === "scheduled").length },
     ],
+    members: memberOptions,
     rows: [
       ...tasks.map((task) => ({
         id: task.id,
         title: task.title,
-        detail: `${task.notes ?? "Household task"} Assigned to ${getMemberName(members, task.assignedMemberId)}.`,
-        status: formatStatus(task.status),
+        detail: [
+          formatDate(task.dueAt) ? `Due ${formatDate(task.dueAt)}` : null,
+          `Assigned to ${getMemberName(members, task.assignedMemberId)}`,
+          task.notes,
+        ].filter(Boolean).join(" - "),
+        status: isOverdue(task.dueAt, task.status) ? "Overdue" : formatStatus(task.status),
         href: "/tasks",
+        entityType: "task" as const,
       })),
       ...reminders.map((reminder) => ({
         id: reminder.id,
         title: reminder.title,
-        detail: `${reminder.notes ?? "Household reminder"} Assigned to ${getMemberName(members, reminder.assignedMemberId)}.`,
-        status: formatStatus(reminder.status),
+        detail: [
+          formatDate(reminder.remindAt) ? `On ${formatDate(reminder.remindAt)}` : null,
+          `Assigned to ${getMemberName(members, reminder.assignedMemberId)}`,
+          reminder.notes,
+        ].filter(Boolean).join(" - "),
+        status: isOverdue(reminder.remindAt, reminder.status) ? "Overdue" : formatStatus(reminder.status),
         href: "/tasks",
+        entityType: "reminder" as const,
       })),
     ],
   };
@@ -118,17 +186,25 @@ export async function getTasksReadModel(
 
 export async function getShoppingListsReadModel(
   context?: HouseholdAccessContext,
-): Promise<ModuleReadModel> {
+): Promise<ShoppingListsReadModel> {
   const accessContext = context ?? (await getRuntimeHouseholdAccessContext());
   const { adapter, household, members } = await getBaseReadModel(accessContext);
-  const shoppingLists = await adapter.listShoppingLists(accessContext);
+  const [shoppingLists, shoppingItems] = await Promise.all([
+    adapter.listShoppingLists(accessContext),
+    adapter.listShoppingListItems(accessContext),
+  ]);
+  const listNames = new Map(shoppingLists.map((list) => [list.id, list.name]));
+  const activeListIds = new Set(
+    shoppingLists.filter((list) => list.status === "active").map((list) => list.id),
+  );
+  const activeItems = shoppingItems.filter((item) => activeListIds.has(item.shoppingListId));
 
   return {
     household,
     counts: [
       { label: "Active lists", value: shoppingLists.filter((list) => list.status === "active").length },
-      { label: "Open items", value: shoppingLists.reduce((total, list) => total + list.openItemCount, 0) },
-      { label: "Total items", value: shoppingLists.reduce((total, list) => total + list.totalItemCount, 0) },
+      { label: "Open items", value: activeItems.filter((item) => !item.checked).length },
+      { label: "Total items", value: activeItems.length },
     ],
     rows: shoppingLists.map((list) => ({
       id: list.id,
@@ -136,16 +212,33 @@ export async function getShoppingListsReadModel(
       detail: `${list.openItemCount} open of ${list.totalItemCount}. Created by ${getMemberName(members, list.createdByMemberId)}.`,
       status: formatStatus(list.status),
       href: "/lists",
+      entityType: "shopping_list" as const,
+    })),
+    lists: shoppingLists
+      .filter((list) => list.status === "active")
+      .map((list) => ({ id: list.id, name: list.name })),
+    items: activeItems.map((item) => ({
+      id: item.id,
+      shoppingListId: item.shoppingListId,
+      listName: listNames.get(item.shoppingListId) ?? "Shopping list",
+      label: item.label,
+      detail: [item.quantity, item.category, item.notes].filter(Boolean).join(" - "),
+      checked: item.checked,
     })),
   };
 }
 
 export async function getBillsAndRenewalsReadModel(
   context?: HouseholdAccessContext,
-): Promise<ModuleReadModel> {
+): Promise<BillsReadModel> {
   const accessContext = context ?? (await getRuntimeHouseholdAccessContext());
-  const { adapter, household, members } = await getBaseReadModel(accessContext);
-  const billsAndRenewals = await adapter.listBillsAndRenewals(accessContext);
+  const { adapter, household, members, memberOptions } = await getBaseReadModel(accessContext);
+  const [billsAndRenewals, sourceReferences] = await Promise.all([
+    adapter.listBillsAndRenewals(accessContext),
+    adapter.listSourceReferences(accessContext),
+  ]);
+
+  const sourceLinks = new Map(sourceReferences.map((source) => [source.id, source.url]));
 
   return {
     household,
@@ -157,10 +250,21 @@ export async function getBillsAndRenewalsReadModel(
     rows: billsAndRenewals.map((item) => ({
       id: item.id,
       title: item.title,
-      detail: `${item.provider ?? "Provider"}. Assigned to ${getMemberName(members, item.assignedMemberId)}. Open the original source before household action.`,
-      status: formatStatus(item.status),
-      href: "/bills",
+      detail: [
+        item.provider,
+        formatDate(item.dueAt ?? item.renewalAt)
+          ? `${item.type === "bill" ? "Due" : "Renews"} ${formatDate(item.dueAt ?? item.renewalAt)}`
+          : null,
+        `Assigned to ${getMemberName(members, item.assignedMemberId)}`,
+      ].filter(Boolean).join(" - "),
+      status: isOverdue(item.dueAt ?? item.renewalAt, item.status) ? "Overdue" : formatStatus(item.status),
+      href: item.sourceReferenceId ? (sourceLinks.get(item.sourceReferenceId) ?? "") : "",
+      entityType: "bill_or_renewal" as const,
     })),
+    members: memberOptions,
+    sources: sourceReferences
+      .filter((source) => source.reviewStatus !== "archived")
+      .map((source) => ({ id: source.id, title: source.title })),
   };
 }
 
@@ -183,24 +287,42 @@ export async function getSourceReferencesReadModel(
       title: source.title,
       detail: `${source.label}. Created by ${getMemberName(members, source.createdByMemberId)}.`,
       status: formatStatus(source.reviewStatus),
-      href: "/sources",
+      href: source.url ?? "",
+      entityType: "source_reference" as const,
     })),
   };
 }
 
 export async function getActivityReadModel(
   context?: HouseholdAccessContext,
-): Promise<ModuleReadModel> {
+): Promise<ActivityReadModel> {
   const accessContext = context ?? (await getRuntimeHouseholdAccessContext());
   const { adapter, household, members } = await getBaseReadModel(accessContext);
-  const [comments, activity] = await Promise.all([adapter.listComments(accessContext), adapter.listActivity(accessContext)]);
+  const [comments, activity, inbox, tasks, reminders, lists, bills, sources] = await Promise.all([
+    adapter.listComments(accessContext),
+    adapter.listActivity(accessContext),
+    adapter.listInboxItems(accessContext),
+    adapter.listTasks(accessContext),
+    adapter.listReminders(accessContext),
+    adapter.listShoppingLists(accessContext),
+    adapter.listBillsAndRenewals(accessContext),
+    adapter.listSourceReferences(accessContext),
+  ]);
+
+  const targets = [
+    ...inbox.map((item) => ({ value: `inbox_item:${item.id}`, label: `Inbox: ${item.title}` })),
+    ...tasks.map((item) => ({ value: `task:${item.id}`, label: `Task: ${item.title}` })),
+    ...reminders.map((item) => ({ value: `reminder:${item.id}`, label: `Reminder: ${item.title}` })),
+    ...lists.map((item) => ({ value: `shopping_list:${item.id}`, label: `List: ${item.name}` })),
+    ...bills.map((item) => ({ value: `bill_or_renewal:${item.id}`, label: `${item.type === "bill" ? "Bill" : "Renewal"}: ${item.title}` })),
+    ...sources.map((item) => ({ value: `source_reference:${item.id}`, label: `Source: ${item.title}` })),
+  ];
 
   return {
     household,
     counts: [
       { label: "Comments", value: comments.length },
       { label: "Activity", value: activity.length },
-      { label: "Household notes", value: comments.length + activity.length },
     ],
     rows: [
       ...comments.map((comment) => ({
@@ -218,5 +340,6 @@ export async function getActivityReadModel(
         href: "/activity",
       })),
     ],
+    targets,
   };
 }

@@ -2,7 +2,7 @@
 
 ## Current Objective
 
-Complete the controlled staging activation and verify the private household workspace end to end. The production Neon schema is migrated, Clerk and Neon are connected to Vercel, Prisma 7 uses the Neon runtime adapter, and the first provider-mapped internal user has one active household administrator membership. Vercel runtime modes are staged as Clerk and Prisma together, pending a deployment from the latest main commit and signed-out, signed-in, household-isolation, mobile, and privacy QA. Clerk development keys are intentionally used for this staging checkpoint; production Clerk keys remain blocked on an approved custom domain and DNS configuration. Uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, and finance features remain absent.
+Continue the production persistence path while Vercel activation review is deferred. Manual shared-inbox, task, reminder, shopping-list, and shopping-item workflows now use household-scoped writes and beginner-friendly mobile controls. Core pages have one primary action, shorter plain-language copy, compact summaries, and optional forms hidden until needed. The production Neon schema is migrated, Clerk and Neon are connected to Vercel, Prisma 7 uses the Neon runtime adapter, and the first provider-mapped internal user has one active household administrator membership. Vercel runtime modes are staged as Clerk and Prisma together, pending a deployment from the latest main commit and signed-out, signed-in, household-isolation, mobile, and privacy QA. Clerk development keys are intentionally used for this staging checkpoint; production Clerk keys remain blocked on an approved custom domain and DNS configuration. Uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, and finance features remain absent.
 
 ## Product Summary
 
@@ -91,19 +91,19 @@ Out of scope until separately approved:
 18. Inbox, tasks, lists, and bills page read-model migration. Done.
 19. Workspace read model and Dashboard, Family, Settings, and app shell migration. Done.
 20. Authentication provider and session strategy. Clerk provisioned and linked; SDK, session mapping, sign-in, and protected workspace checkpoints done.
-21. Household membership enforcement. Server read-model checkpoint done; live mutation enforcement pending.
+21. Household membership enforcement. Done for production reads, writes, target ownership, and optional assignee validation; invitation onboarding is implemented in the active branch using verified-email claim and transactional membership checks.
 22. Clerk signed-out and unmapped-account access states. Done; staging activation pending deployment QA.
 23. Audit remaining direct static dependencies and keep them behind approved demo boundaries. Done.
-24. Persist shared inbox writes.
-25. Persist tasks and reminders writes.
-26. Persist shopping list writes.
-27. Persist bills and renewals writes with source-of-truth guardrails.
-28. Persist source references as metadata/pointers.
-29. Persist comments and activity history.
-30. Production QA and privacy review.
+24. Persist shared inbox writes. Done for manual item creation, archiving, reopening, and transactional routing into tasks, reminders, shopping items, bills, and renewals.
+25. Persist tasks and reminders writes. Done for manual creation, completion, and reopening.
+26. Persist shopping list writes. Done for list/item creation and checked-state updates.
+27. Persist bills and renewals writes with source-of-truth guardrails. Done for manual source-first creation, completion, and reopening.
+28. Persist source references as metadata/pointers. Done for manual https links and original-location references.
+29. Persist comments and activity history. Done for item comments and automatic mutation activity.
+30. Production QA and privacy review. Code, scope, privacy, beginner usability, reversible completion/archive controls, and minimal correction workflows are implemented; authenticated Vercel browser QA remains pending.
 31. Controlled Clerk/Prisma staging activation. Environment and seed gates done; latest-main deployment and QA pending.
 32. Custom production domain, Clerk production keys, and controlled identity remap. Pending separate domain approval.
 
 ## Immediate Next Step
 
-Merge this control checkpoint to deploy the latest main commit once, then verify signed-out redirect, Clerk sign-in, mapped household access, database-backed reads, mobile layout, and payment-source guardrails. Keep this as a staging activation until a custom production domain and Clerk production keys are approved.
+Validate secure household onboarding, invitation/member recovery, household profile settings, reversible shopping-list and source-reference cleanup, inbox routing, and minimal item editing through authenticated browser QA. Then merge the completion branch and perform controlled production activation and household-isolation review.

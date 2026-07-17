@@ -56,7 +56,7 @@ Authentication rules:
 - Return no application session for signed-out or unmapped identities.
 - Resolve verified household membership before constructing a `HouseholdAccessContext`.
 - Keep application household roles in PostgreSQL rather than the identity provider.
-- Keep invite flow and additional sign-in methods separately gated.
+- Accept household invitations only for the signed-in Clerk user's verified primary email.\n- Recheck the inviting admin's active household membership inside the database transaction.\n- Do not expose whether another email or household has an invitation.\n- Do not use email alone to relink an existing internal identity to a different provider subject.\n- Additional sign-in methods remain separately gated.
 
 ## Storage And Uploads
 
