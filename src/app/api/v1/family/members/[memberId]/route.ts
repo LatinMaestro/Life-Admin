@@ -1,12 +1,12 @@
 import { readJsonObject, requireEnum, requireId } from "@/lib/api/v1/input";
 import { MobileApiRequestError, withHouseholdApi } from "@/lib/api/v1/response";
 import {
-
-export const dynamic = "force-dynamic";
   deactivateHouseholdMember,
   HouseholdInvitationError,
   updateHouseholdMemberRole,
 } from "@/lib/server/household-invitations";
+
+export const dynamic = "force-dynamic";
 
 const roles = ["household_admin", "household_member"] as const;
 
