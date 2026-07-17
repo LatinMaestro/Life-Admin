@@ -24,12 +24,14 @@ export function POST(request: Request) {
     const type = requireEnum(input, "type", ["bill", "renewal"] as const);
     const date = requireDate(input, "date");
     const sourceReferenceId = optionalId(input, "sourceReferenceId");
+    const assignedMemberId = optionalId(input, "assignedMemberId");
     return createMobileBillOrRenewal(context, {
       title,
       provider,
       type,
       date,
       sourceReferenceId,
+      assignedMemberId,
     });
   });
 }

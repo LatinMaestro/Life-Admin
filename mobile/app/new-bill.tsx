@@ -4,15 +4,17 @@ import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { DateField } from "@/components/date-field";
+import { MemberField } from "@/components/member-field";
 import { PrimaryButton } from "@/components/primary-button";
 import { StatusView } from "@/components/ui";
 import { useApiResource, useHouseholdMutation } from "@/lib/api";
-import type { BillsResponse } from "@/lib/contracts";
+import type { BillsResponse, BootstrapResponse } from "@/lib/contracts";
 import { colors } from "@/lib/theme";
 
 export default function NewBillScreen() {
   const router = useRouter();
-  const state = useApiResource<BillsResponse>("/api/v1/bills");
+  const bills = useApiResource<BillsResponse>("/api/v1/bills");
+  const household = useApiResource<BootstrapResponse>("/api/v1/bootstrap");
   const mutate = useHouseholdMutation();
   const [type, setType] = useState<"bill" | "renewal">("bill");
   const [title, setTitle] = useState("");
@@ -23,6 +25,7 @@ export default function NewBillScreen() {
     return value;
   });
   const [sourceReferenceId, setSourceReferenceId] = useState("");
+  const [assignedMemberId, setAssignedMemberId] = useState("");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
@@ -38,6 +41,7 @@ export default function NewBillScreen() {
           type,
           date: date.toISOString().slice(0, 10),
           sourceReferenceId,
+          assignedMemberId: assignedMemberId || household.data?.currentMember.id,
         },
         "POST",
       );
@@ -49,10 +53,11 @@ export default function NewBillScreen() {
     }
   };
 
-  if (!state.data) {
+  if (!bills.data || !household.data) {
+    const pending = !bills.data ? bills : household;
     return (
       <SafeAreaView edges={["bottom"]} style={styles.safeArea}>
-        <StatusView {...state} onRetry={() => void state.refresh()} />
+        <StatusView {...pending} onRetry={() => void pending.refresh()} />
       </SafeAreaView>
     );
   }
@@ -104,7 +109,7 @@ export default function NewBillScreen() {
           onChange={setDate}
           value={date}
         />
-        {state.data.sources.length > 0 ? (
+        {bills.data.sources.length > 0 ? (
           <>
             <Text style={styles.label}>Original source (optional)</Text>
             <View style={styles.sourceChoices}>
@@ -116,7 +121,7 @@ export default function NewBillScreen() {
               >
                 <Text style={styles.sourceText}>None</Text>
               </Pressable>
-              {state.data.sources.map((source) => (
+              {bills.data.sources.map((source) => (
                 <Pressable
                   accessibilityRole="radio"
                   accessibilityState={{ checked: sourceReferenceId === source.id }}
@@ -130,6 +135,11 @@ export default function NewBillScreen() {
             </View>
           </>
         ) : null}
+        <MemberField
+          members={household.data.members}
+          onChange={setAssignedMemberId}
+          value={assignedMemberId || household.data.currentMember.id}
+        />
         <Text style={styles.safety}>
           Payment details are never copied into the app. Open the original source when it is time to pay.
         </Text>

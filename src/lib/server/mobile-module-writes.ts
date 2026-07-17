@@ -87,14 +87,16 @@ export async function createMobileTask(
   context: HouseholdAccessContext,
   title: string,
   notes: string | null,
+  dueAt: Date,
+  assignedMemberId: string | null,
 ) {
   const adapter = await getHouseholdPersistenceAdapter();
   await adapter.createTask(context, {
     title,
     notes,
     priority: "normal",
-    dueAt: null,
-    assignedMemberId: context.memberId,
+    dueAt,
+    assignedMemberId: assignedMemberId ?? context.memberId,
   });
   return success();
 }
@@ -121,6 +123,7 @@ export async function createMobileReminder(
   title: string,
   notes: string | null,
   remindAt: Date,
+  assignedMemberId: string | null,
 ) {
   const adapter = await getHouseholdPersistenceAdapter();
   await adapter.createReminder(context, {
@@ -128,7 +131,7 @@ export async function createMobileReminder(
     notes,
     cadence: "once",
     remindAt,
-    assignedMemberId: context.memberId,
+    assignedMemberId: assignedMemberId ?? context.memberId,
   });
   return success();
 }
@@ -141,6 +144,7 @@ export async function createMobileBillOrRenewal(
     type: "bill" | "renewal";
     date: Date;
     sourceReferenceId: string | null;
+    assignedMemberId: string | null;
   },
 ) {
   const adapter = await getHouseholdPersistenceAdapter();
@@ -152,7 +156,7 @@ export async function createMobileBillOrRenewal(
     renewalAt: input.type === "renewal" ? input.date : null,
     notes: null,
     sourceReferenceId: input.sourceReferenceId,
-    assignedMemberId: context.memberId,
+    assignedMemberId: input.assignedMemberId ?? context.memberId,
   });
   return success();
 }
