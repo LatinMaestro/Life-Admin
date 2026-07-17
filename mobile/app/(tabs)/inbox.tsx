@@ -1,4 +1,4 @@
-import { Alert } from "react-native";
+import { Alert, StyleSheet, View } from "react-native";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 
@@ -41,16 +41,15 @@ export default function InboxScreen() {
               detail={item.description}
               meta={item.category.replaceAll("_", " ")}
               trailing={
-                item.priority === "high" ? (
-                  <Pill>High</Pill>
-                ) : (
+                <View style={styles.actions}>
+                  {item.priority === "high" ? <Pill>High</Pill> : null}
                   <ActionButton
                     busy={busyId === item.id}
                     icon="checkmark"
                     label={`Mark ${item.title} as sorted`}
                     onPress={() => void archive(item.id)}
                   />
-                )
+                </View>
               }
             />
           ))}
@@ -59,3 +58,7 @@ export default function InboxScreen() {
     </Screen>
   );
 }
+
+const styles = StyleSheet.create({
+  actions: { alignItems: "center", flexDirection: "row", gap: 8 },
+});
