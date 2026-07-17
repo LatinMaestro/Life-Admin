@@ -1,7 +1,15 @@
-import { optionalText, readJsonObject, requireText } from "@/lib/api/v1/input";
-import { withHouseholdApi } from "@/lib/api/v1/response";
+import {
+  optionalText,
+  readJsonObject,
+  requireDate,
+  requireText,
+} from "@/lib/api/v1/input";
+import { MobileApiRequestError, withHouseholdApi } from "@/lib/api/v1/response";
 import { getMobileTasks } from "@/lib/server/mobile-module-reads";
-import { createMobileTask } from "@/lib/server/mobile-module-writes";
+import {
+  createMobileReminder,
+  createMobileTask,
+} from "@/lib/server/mobile-module-writes";
 
 export const dynamic = "force-dynamic";
 
@@ -14,6 +22,15 @@ export function POST(request: Request) {
     const input = await readJsonObject(request);
     const title = requireText(input, "title", 2, 120);
     const notes = optionalText(input, "notes", 1_000);
-    return createMobileTask(context, title, notes);
+    const kind = input.kind ?? "task";
+
+    if (kind === "task") {
+      return createMobileTask(context, title, notes);
+    }
+    if (kind === "reminder") {
+      const remindAt = requireDate(input, "remindAt");
+      return createMobileReminder(context, title, notes, remindAt);
+    }
+    throw new MobileApiRequestError("Choose task or reminder.");
   });
 }

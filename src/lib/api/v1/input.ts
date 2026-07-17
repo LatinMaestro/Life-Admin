@@ -69,3 +69,39 @@ export function optionalText(
   }
   return value.trim() || null;
 }
+
+export function requireDate(input: Record<string, unknown>, field: string) {
+  const value = input[field];
+  if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    throw new MobileApiRequestError(`${field} must be a valid date.`);
+  }
+  const date = new Date(`${value}T00:00:00.000Z`);
+  if (Number.isNaN(date.getTime())) {
+    throw new MobileApiRequestError(`${field} must be a valid date.`);
+  }
+  return date;
+}
+
+export function optionalId(input: Record<string, unknown>, field: string) {
+  const value = input[field];
+  if (value === undefined || value === null || value === "") return null;
+  if (typeof value !== "string") {
+    throw new MobileApiRequestError(`${field} must be a valid household item.`);
+  }
+  return requireId(value);
+}
+
+export function optionalHttpsUrl(input: Record<string, unknown>, field: string) {
+  const value = input[field];
+  if (value === undefined || value === null || value === "") return null;
+  if (typeof value !== "string" || value.length > 2_000) {
+    throw new MobileApiRequestError(`${field} must be a valid HTTPS link.`);
+  }
+  try {
+    const url = new URL(value.trim());
+    if (url.protocol !== "https:") throw new Error("HTTPS required");
+    return url.toString();
+  } catch {
+    throw new MobileApiRequestError(`${field} must be a valid HTTPS link.`);
+  }
+}
