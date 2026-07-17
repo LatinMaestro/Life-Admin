@@ -63,7 +63,13 @@ export default function InviteMemberScreen() {
         </View>
         <Text style={styles.help}>The invitation lasts 14 days and can be cancelled from Family.</Text>
         {message ? <Text accessibilityLiveRegion="polite" style={styles.error}>{message}</Text> : null}
-        <PrimaryButton busy={busy} icon="checkmark" label="Create invitation" onPress={() => void submit()} />
+        <PrimaryButton
+          busy={busy}
+          disabled={!email.trim()}
+          icon="checkmark"
+          label="Create invitation"
+          onPress={() => void submit()}
+        />
       </ScrollView>
     </SafeAreaView>
   );

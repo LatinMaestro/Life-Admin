@@ -7,7 +7,7 @@ import { DateField } from "@/components/date-field";
 import { MemberField } from "@/components/member-field";
 import { PrimaryButton } from "@/components/primary-button";
 import { StatusView } from "@/components/ui";
-import { useApiResource, useHouseholdMutation } from "@/lib/api";
+import { toCalendarDateValue, useApiResource, useHouseholdMutation } from "@/lib/api";
 import type { BootstrapResponse } from "@/lib/contracts";
 import { colors } from "@/lib/theme";
 
@@ -31,7 +31,7 @@ export default function NewWorkScreen() {
     setBusy(true);
     setMessage(null);
     try {
-      const dateValue = date.toISOString().slice(0, 10);
+      const dateValue = toCalendarDateValue(date);
       await mutate(
         "/api/v1/tasks",
         {
@@ -117,6 +117,7 @@ export default function NewWorkScreen() {
         {message ? <Text accessibilityLiveRegion="polite" style={styles.error}>{message}</Text> : null}
         <PrimaryButton
           busy={busy}
+          disabled={!title.trim()}
           icon="checkmark"
           label={kind === "task" ? "Add task" : "Add reminder"}
           onPress={() => void submit()}

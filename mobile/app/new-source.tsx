@@ -69,6 +69,7 @@ export default function NewSourceScreen() {
         {message ? <Text accessibilityLiveRegion="polite" style={styles.error}>{message}</Text> : null}
         <PrimaryButton
           busy={busy}
+          disabled={!title.trim() || !label.trim()}
           icon="checkmark"
           label="Add source"
           onPress={() => void submit()}

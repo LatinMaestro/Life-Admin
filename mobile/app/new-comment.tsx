@@ -96,7 +96,13 @@ export default function NewCommentScreen() {
           value={body}
         />
         {message ? <Text accessibilityLiveRegion="polite" style={styles.error}>{message}</Text> : null}
-        <PrimaryButton busy={busy} icon="checkmark" label="Add comment" onPress={() => void submit()} />
+        <PrimaryButton
+          busy={busy}
+          disabled={!selected || !body.trim()}
+          icon="checkmark"
+          label="Add comment"
+          onPress={() => void submit()}
+        />
       </ScrollView>
     </SafeAreaView>
   );

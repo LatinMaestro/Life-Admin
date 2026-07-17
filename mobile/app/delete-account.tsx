@@ -53,6 +53,7 @@ export default function DeleteAccountScreen() {
         {message ? <Text accessibilityLiveRegion="polite" style={styles.error}>{message}</Text> : null}
         <PrimaryButton
           busy={busy}
+          disabled={confirmation !== "DELETE"}
           icon="checkmark"
           label="Permanently delete account"
           onPress={() => void remove()}

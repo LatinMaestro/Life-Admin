@@ -5,11 +5,13 @@ import { colors } from "@/lib/theme";
 
 export function PrimaryButton({
   busy = false,
+  disabled = false,
   icon = "add",
   label,
   onPress,
 }: {
   busy?: boolean;
+  disabled?: boolean;
   icon?: "add" | "checkmark";
   label: string;
   onPress: () => void;
@@ -17,12 +19,13 @@ export function PrimaryButton({
   return (
     <Pressable
       accessibilityRole="button"
-      disabled={busy}
+      accessibilityState={{ busy, disabled: busy || disabled }}
+      disabled={busy || disabled}
       onPress={onPress}
       style={({ pressed }) => [
         styles.button,
         pressed && styles.pressed,
-        busy && styles.disabled,
+        (busy || disabled) && styles.disabled,
       ]}
     >
       {busy ? (
