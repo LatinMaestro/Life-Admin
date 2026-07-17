@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { ChevronRight, FileText, History, Pencil, Users } from "lucide-react";
-import { updateHouseholdProfileAction } from "@/app/(workspace)/settings/actions";
+import { ChevronRight, FileText, History, Pencil, Trash2, Users } from "lucide-react";
+import { deleteAccountAction, updateHouseholdProfileAction } from "@/app/(workspace)/settings/actions";
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,7 +16,7 @@ const links = [
 ];
 
 type SettingsPageProps = {
-  searchParams: Promise<{ profile?: string }>;
+  searchParams: Promise<{ profile?: string; account?: string }>;
 };
 
 export default async function SettingsPage({ searchParams }: SettingsPageProps) {
@@ -93,6 +93,42 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
           </form>
         </details>
       ) : null}
+
+      <details id="delete-account" className="mt-6 scroll-mt-24 rounded-md border border-destructive/40">
+        <summary className="flex cursor-pointer list-none items-center gap-2 p-4 text-sm font-medium text-destructive">
+          <Trash2 className="h-4 w-4" aria-hidden="true" />
+          Delete account
+        </summary>
+        <form action={deleteAccountAction} className="space-y-4 border-t p-4">
+          <p className="text-sm text-muted-foreground">
+            This permanently removes your sign-in and anonymizes your personal household profile.
+            Shared household history may remain under a former-member label.
+          </p>
+          <p className="text-sm text-muted-foreground">
+            A sole household admin must appoint another admin first.
+          </p>
+          {query.account === "confirmation" ? (
+            <p className="text-sm text-destructive" role="alert">Type DELETE exactly to confirm.</p>
+          ) : null}
+          {query.account === "blocked" ? (
+            <p className="text-sm text-destructive" role="alert">
+              The account could not be deleted. Check that every household has another admin, then try again.
+            </p>
+          ) : null}
+          <div className="space-y-1.5">
+            <label htmlFor="delete-confirmation" className="text-sm font-medium">
+              Type DELETE
+            </label>
+            <Input
+              id="delete-confirmation"
+              name="confirmation"
+              autoComplete="off"
+              required
+            />
+          </div>
+          <Button type="submit" className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Delete my account</Button>
+        </form>
+      </details>
 
       <nav aria-label="More sections" className="mt-4 space-y-2">
         {links.map((item) => {

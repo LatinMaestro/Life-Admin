@@ -10,6 +10,12 @@ enum AuthProvider {
   clerk
 }
 
+enum AccountDeletionStatus {
+  pending
+  completed
+  failed
+}
+
 enum HouseholdRole {
   household_admin
   household_member
@@ -515,4 +521,18 @@ model HouseholdSettings {
   updatedAt            DateTime @updatedAt
 
   household Household @relation(fields: [householdId], references: [id], onDelete: Cascade)
+}
+
+model AccountDeletionRequest {
+  id            String                @id @default(cuid())
+  userId        String
+  authSubject   String
+  status        AccountDeletionStatus @default(pending)
+  failureReason String?
+  requestedAt   DateTime              @default(now())
+  completedAt   DateTime?
+  updatedAt     DateTime              @updatedAt
+
+  @@index([userId, status])
+  @@index([authSubject, status])
 }

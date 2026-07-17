@@ -28,9 +28,9 @@ export function useHouseholdMutation() {
 
   return useCallback(
     async (
-      path: `/api/v1/${string}`,
+      path: `/api/${string}`,
       body: Record<string, unknown>,
-      method: "PATCH" | "POST" = "PATCH",
+      method: "PATCH" | "POST" | "DELETE" = "PATCH",
     ) => {
       if (!apiUrl) throw new Error("The app service has not been configured.");
       const token = await getToken();
