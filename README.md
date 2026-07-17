@@ -18,7 +18,7 @@ This project is separate from SpendGrove. It does not include budgeting, bank im
 
 The web app now includes live Clerk authentication, Neon/PostgreSQL persistence, household membership enforcement, invitation acceptance, household settings, dashboard, inbox routing, tasks and reminders, shopping lists, bills and renewals, source references, comments, and activity history.
 
-The next delivery path prepares the product for the Apple App Store and Google Play using a genuine Expo/React Native client backed by versioned household APIs. A thin WebView wrapper is not the approved architecture.
+The `mobile/` project is now a genuine Expo/React Native client for iOS and Android. It uses Clerk secure sessions and the authenticated household API. It is not a WebView wrapper; native write workflows and store release work remain in progress.
 
 ## Technology
 
@@ -52,7 +52,7 @@ The next delivery path prepares the product for the Apple App Store and Google P
 
 ## Quality Checks
 
-GitHub Actions runs dependency installation, lint, payment-source and data-boundary guardrails, migration checks, Prisma validation/generation, typecheck, and production build.
+GitHub Actions validates the web app and native app independently. The web job runs all existing privacy, migration, typecheck, and build gates; the mobile job installs the Expo project and runs its strict TypeScript check.
 
 ```bash
 pnpm install
