@@ -1,12 +1,12 @@
 import { readJsonObject, requireEnum, requireText } from "@/lib/api/v1/input";
 import { MobileApiRequestError, withHouseholdApi } from "@/lib/api/v1/response";
 import {
-
-export const dynamic = "force-dynamic";
   householdTimezones,
   HouseholdSettingsError,
   updateHouseholdProfile,
 } from "@/lib/server/household-settings";
+
+export const dynamic = "force-dynamic";
 
 export function PATCH(request: Request) {
   return withHouseholdApi(async (context) => {
