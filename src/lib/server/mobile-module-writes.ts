@@ -115,3 +115,58 @@ export async function createMobileShoppingItem(
   });
   return success();
 }
+
+export async function createMobileReminder(
+  context: HouseholdAccessContext,
+  title: string,
+  notes: string | null,
+  remindAt: Date,
+) {
+  const adapter = await getHouseholdPersistenceAdapter();
+  await adapter.createReminder(context, {
+    title,
+    notes,
+    cadence: "once",
+    remindAt,
+    assignedMemberId: context.memberId,
+  });
+  return success();
+}
+
+export async function createMobileBillOrRenewal(
+  context: HouseholdAccessContext,
+  input: {
+    title: string;
+    provider: string | null;
+    type: "bill" | "renewal";
+    date: Date;
+    sourceReferenceId: string | null;
+  },
+) {
+  const adapter = await getHouseholdPersistenceAdapter();
+  await adapter.createBillOrRenewal(context, {
+    title: input.title,
+    provider: input.provider,
+    type: input.type,
+    dueAt: input.type === "bill" ? input.date : null,
+    renewalAt: input.type === "renewal" ? input.date : null,
+    notes: null,
+    sourceReferenceId: input.sourceReferenceId,
+    assignedMemberId: context.memberId,
+  });
+  return success();
+}
+
+export async function createMobileSourceReference(
+  context: HouseholdAccessContext,
+  input: { title: string; label: string; url: string | null },
+) {
+  const adapter = await getHouseholdPersistenceAdapter();
+  await adapter.createSourceReference(context, {
+    title: input.title,
+    label: input.label,
+    kind: input.url ? "source_link" : "source_document_reference",
+    url: input.url,
+  });
+  return success();
+}
