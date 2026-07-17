@@ -24,7 +24,7 @@ This checklist separates completed repository work from release-owner steps that
 - [ ] Configure Clerk production keys and allowed origins/redirects.
 - [ ] Configure the mobile production API URL and Clerk publishable key in EAS.
 - [ ] Run `npm run release:check:live` from `mobile/` with production environment values.
-- [ ] Confirm Neon backups, retention, and production access ownership.
+- [ ] Baseline and verify Prisma migration history in the production database.\n- [ ] Confirm Neon backups, retention, and production access ownership.
 - [ ] Complete a production web smoke test after the final main deployment.
 
 ## Developer Accounts And Signing
