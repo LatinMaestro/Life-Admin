@@ -126,7 +126,7 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
               required
             />
           </div>
-          <Button type="submit" variant="destructive">Delete my account</Button>
+          <Button type="submit" className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Delete my account</Button>
         </form>
       </details>
 
