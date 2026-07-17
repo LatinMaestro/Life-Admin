@@ -297,6 +297,12 @@ export const staticHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
     );
   },
 
+  async setSourceReferenceReviewStatus(): Promise<SourceReferenceSummary> {
+    throw new HouseholdAccessError(
+      "Source reference updates are available when the private household workspace is connected.",
+    );
+  },
+
   async listComments(context): Promise<CommentSummary[]> {
     const { householdId } = requireStaticHousehold(context);
 

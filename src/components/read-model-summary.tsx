@@ -16,7 +16,7 @@ export type ReadModelRow = {
   detail: string;
   status: string;
   href: string;
-  entityType?: "inbox_item" | "task" | "reminder" | "shopping_list" | "bill_or_renewal";
+  entityType?: "inbox_item" | "task" | "reminder" | "shopping_list" | "bill_or_renewal" | "source_reference";
 };
 
 interface ReadModelSummaryProps {
@@ -67,7 +67,7 @@ export function ReadModelSummary({
                 status={row.status}
                 href={row.href.startsWith("https://") ? row.href : undefined}
                 action={
-                  allowEditing && row.entityType && row.entityType !== "shopping_list" ? (
+                  allowEditing && row.entityType && row.entityType !== "shopping_list" && row.entityType !== "source_reference" ? (
                     <div className="flex items-center gap-2">
                       <Link
                         href={`/edit/${row.entityType}/${row.id}`}

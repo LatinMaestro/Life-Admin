@@ -12,7 +12,7 @@ type ReadModelRow = {
   detail: string;
   status: string;
   href: string;
-  entityType?: "inbox_item" | "task" | "reminder" | "shopping_list" | "bill_or_renewal";
+  entityType?: "inbox_item" | "task" | "reminder" | "shopping_list" | "bill_or_renewal" | "source_reference";
 };
 
 type CountSummary = {
@@ -262,7 +262,9 @@ export async function getBillsAndRenewalsReadModel(
       entityType: "bill_or_renewal" as const,
     })),
     members: memberOptions,
-    sources: sourceReferences.map((source) => ({ id: source.id, title: source.title })),
+    sources: sourceReferences
+      .filter((source) => source.reviewStatus !== "archived")
+      .map((source) => ({ id: source.id, title: source.title })),
   };
 }
 
@@ -286,6 +288,7 @@ export async function getSourceReferencesReadModel(
       detail: `${source.label}. Created by ${getMemberName(members, source.createdByMemberId)}.`,
       status: formatStatus(source.reviewStatus),
       href: source.url ?? "",
+      entityType: "source_reference" as const,
     })),
   };
 }

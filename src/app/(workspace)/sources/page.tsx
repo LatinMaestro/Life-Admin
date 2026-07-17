@@ -1,8 +1,10 @@
-import { Plus, ShieldCheck } from "lucide-react";
+import Link from "next/link";
+import { Archive, Check, ExternalLink, Plus, ShieldCheck, Undo2 } from "lucide-react";
+import { setSourceReferenceStatusAction } from "@/app/(workspace)/sources/actions";
 import { PageHeader } from "@/components/page-header";
 import { ReadModelSummary } from "@/components/read-model-summary";
 import { SourceCapture } from "@/components/source-capture";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { getSourceReferencesReadModel } from "@/lib/server/module-read-models";
 
 export default async function SourcesPage() {
@@ -27,6 +29,50 @@ export default async function SourcesPage() {
         counts={sources.counts}
         rows={sources.rows}
         emptyLabel="No sources saved yet."
+        renderAction={(row) => {
+          if (row.entityType !== "source_reference") return null;
+          const archived = row.status === "Archived";
+          const confirmed = row.status === "Confirmed";
+
+          return (
+            <>
+              {row.href.startsWith("https://") ? (
+                <Link
+                  href={row.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={buttonVariants({ variant: "outline", size: "icon" })}
+                  title="Open original source"
+                  aria-label={`Open original source for ${row.title}`}
+                >
+                  <ExternalLink className="h-4 w-4" aria-hidden="true" />
+                </Link>
+              ) : null}
+              {!archived && !confirmed ? (
+                <form action={setSourceReferenceStatusAction}>
+                  <input type="hidden" name="sourceId" value={row.id} />
+                  <input type="hidden" name="status" value="confirmed" />
+                  <Button type="submit" variant="outline" size="icon" title="Confirm source" aria-label={`Confirm ${row.title}`}>
+                    <Check className="h-4 w-4" aria-hidden="true" />
+                  </Button>
+                </form>
+              ) : null}
+              <form action={setSourceReferenceStatusAction}>
+                <input type="hidden" name="sourceId" value={row.id} />
+                <input type="hidden" name="status" value={archived ? "needs_review" : "archived"} />
+                <Button
+                  type="submit"
+                  variant="outline"
+                  size="icon"
+                  title={archived ? "Reopen source" : "Archive source"}
+                  aria-label={archived ? `Reopen ${row.title}` : `Archive ${row.title}`}
+                >
+                  {archived ? <Undo2 className="h-4 w-4" /> : <Archive className="h-4 w-4" />}
+                </Button>
+              </form>
+            </>
+          );
+        }}
       />
 
       <SourceCapture />

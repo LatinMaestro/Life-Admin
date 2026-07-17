@@ -984,6 +984,70 @@ export const prismaHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
     });
   },
 
+  async setSourceReferenceReviewStatus(
+    context,
+    sourceId,
+    status,
+  ): Promise<SourceReferenceSummary> {
+    requireHouseholdPermission(context, "manage_shared_items");
+    requireHouseholdPermission(context, "view_source_references");
+    const prisma = getPrismaClient();
+
+    return prisma.$transaction(async (transaction) => {
+      const [member, existing] = await Promise.all([
+        transaction.householdMember.findFirst({
+          where: {
+            id: context.memberId,
+            householdId: context.householdId,
+            userId: context.userId,
+            status: "active",
+          },
+          select: { id: true },
+        }),
+        transaction.sourceReference.findFirst({
+          where: { id: sourceId, householdId: context.householdId },
+          select: { id: true },
+        }),
+      ]);
+
+      if (!member || !existing) {
+        throw new Error("The source reference is not available to this household member.");
+      }
+
+      const source = await transaction.sourceReference.update({
+        where: { id: existing.id },
+        data: { reviewStatus: status },
+        select: {
+          id: true,
+          householdId: true,
+          title: true,
+          kind: true,
+          label: true,
+          url: true,
+          reviewStatus: true,
+          sensitivity: true,
+          createdByMemberId: true,
+        },
+      });
+
+      const action =
+        status === "confirmed" ? "Confirmed" : status === "archived" ? "Archived" : "Reopened";
+      await transaction.activityEvent.create({
+        data: {
+          householdId: context.householdId,
+          actorUserId: context.userId,
+          actorMemberId: context.memberId,
+          entityType: "source_reference",
+          entityId: source.id,
+          eventType: status === "archived" ? "archived" : status === "needs_review" ? "reopened" : "changed_status",
+          summary: `${action} source reference: ${source.title}`,
+        },
+      });
+
+      return source;
+    });
+  },
+
   async listComments(context): Promise<CommentSummary[]> {
     const where = requireReadableHousehold(context);
 

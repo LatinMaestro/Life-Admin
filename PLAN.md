@@ -106,4 +106,4 @@ Out of scope until separately approved:
 
 ## Immediate Next Step
 
-Validate secure household onboarding, invitation/member recovery, household profile settings, reversible shopping-list cleanup, inbox routing, and minimal item editing through authenticated browser QA. Then merge the completion branch and perform controlled production activation and household-isolation review.
+Validate secure household onboarding, invitation/member recovery, household profile settings, reversible shopping-list and source-reference cleanup, inbox routing, and minimal item editing through authenticated browser QA. Then merge the completion branch and perform controlled production activation and household-isolation review.

@@ -68,6 +68,26 @@ export async function createSourceReferenceAction(
   }
 }
 
+export async function setSourceReferenceStatusAction(formData: FormData) {
+  const sourceId = readText(formData, "sourceId");
+  const status = readText(formData, "status");
+  const allowedStatuses = new Set(["needs_review", "confirmed", "archived"]);
+
+  if (!sourceId || !allowedStatuses.has(status)) return;
+
+  const context = await getRuntimeHouseholdAccessContext();
+  const adapter = await getHouseholdPersistenceAdapter();
+  await adapter.setSourceReferenceReviewStatus(
+    context,
+    sourceId,
+    status as "needs_review" | "confirmed" | "archived",
+  );
+  revalidatePath("/");
+  revalidatePath("/sources");
+  revalidatePath("/bills");
+  revalidatePath("/activity");
+}
+
 function readText(formData: FormData, field: string) {
   const value = formData.get(field);
   return typeof value === "string" ? value.trim() : "";

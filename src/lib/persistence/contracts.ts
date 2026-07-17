@@ -248,6 +248,11 @@ export interface HouseholdDashboardRepository {
     context: HouseholdAccessContext,
     input: CreateSourceReferenceInput,
   ): Promise<SourceReferenceSummary>;
+  setSourceReferenceReviewStatus(
+    context: HouseholdAccessContext,
+    sourceId: string,
+    status: "needs_review" | "confirmed" | "archived",
+  ): Promise<SourceReferenceSummary>;
   listComments(context: HouseholdAccessContext): Promise<CommentSummary[]>;
   createComment(
     context: HouseholdAccessContext,
