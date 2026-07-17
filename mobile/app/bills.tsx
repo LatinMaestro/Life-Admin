@@ -1,4 +1,5 @@
-import { Alert, Linking, Pressable, StyleSheet, Text } from "react-native";
+import { Alert, Linking, Pressable, StyleSheet, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 
 import { ActionButton } from "@/components/action-button";
@@ -49,16 +50,17 @@ export default function BillsScreen() {
                   source?.label,
                 ].filter(Boolean).join(" - ")}
                 trailing={
-                  source?.url && !completed ? (
-                    <Pressable
-                      accessibilityLabel={`Open original source for ${item.title}`}
-                      accessibilityRole="link"
-                      onPress={() => void Linking.openURL(source.url!)}
-                      style={styles.openButton}
-                    >
-                      <Text style={styles.openText}>Open source</Text>
-                    </Pressable>
-                  ) : (
+                  <View style={styles.actions}>
+                    {source?.url ? (
+                      <Pressable
+                        accessibilityLabel={`Open original source for ${item.title}`}
+                        accessibilityRole="link"
+                        onPress={() => void Linking.openURL(source.url!)}
+                        style={styles.openButton}
+                      >
+                        <Ionicons color={colors.primary} name="open-outline" size={21} />
+                      </Pressable>
+                    ) : null}
                     <ActionButton
                       busy={busyId === item.id}
                       icon={completed ? "arrow-undo" : "checkmark"}
@@ -66,7 +68,7 @@ export default function BillsScreen() {
                       onPress={() => void toggle(item.id, !completed)}
                       selected={completed}
                     />
-                  )
+                  </View>
                 }
               />
             );
@@ -78,6 +80,14 @@ export default function BillsScreen() {
 }
 
 const styles = StyleSheet.create({
-  openButton: { paddingHorizontal: 8, paddingVertical: 10 },
-  openText: { color: colors.primary, fontSize: 14, fontWeight: "700" },
+  actions: { alignItems: "center", flexDirection: "row", gap: 8 },
+  openButton: {
+    alignItems: "center",
+    borderColor: colors.border,
+    borderRadius: 8,
+    borderWidth: 1,
+    height: 44,
+    justifyContent: "center",
+    width: 44,
+  },
 });
