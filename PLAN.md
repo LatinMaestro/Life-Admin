@@ -32,6 +32,7 @@ Family Life Admin is private household administration, not personal finance. Bil
 18. Native household comments, activity, invitations, roles, settings, assignments, and task dates.
 19. EAS build configuration, stable app identifiers, deterministic icons and splash artwork.
 20. App Store and Google Play listing copy, review notes, and submission checklist.
+21. Native email-code password recovery with secure session finalization.
 
 ## Remaining Delivery Plan
 

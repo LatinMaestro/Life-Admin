@@ -12,6 +12,7 @@ This checklist separates completed repository work from release-owner steps that
 - [x] Native typecheck and structural release checks run in CI.
 - [x] Privacy, support, and account-deletion pages exist in the web app.
 - [x] Account deletion has last-admin and household ownership safeguards.
+- [x] Native password recovery uses Clerk's email-code flow.
 - [x] Store listing copy and reviewer guidance are documented.
 - [x] Bill/payment source-of-truth guardrails remain enforced.
 
@@ -41,7 +42,7 @@ This checklist separates completed repository work from release-owner steps that
 - [ ] Produce an EAS preview build for iOS and Android.
 - [ ] Test on at least one physical iPhone and one physical Android phone.
 - [ ] Test a representative tablet layout or emulator for each supported platform.
-- [ ] Verify sign-in, sign-out, session recovery, and expired-session handling.
+- [ ] Verify sign-in, sign-out, forgotten-password recovery, session recovery, and expired-session handling.
 - [ ] Verify household isolation with two households and two member roles.
 - [ ] Verify invitations, role changes, member removal safeguards, and last-admin recovery.
 - [ ] Verify task, reminder, shopping, bill, source, comment, and activity workflows.
