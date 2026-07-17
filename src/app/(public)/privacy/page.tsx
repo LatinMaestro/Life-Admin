@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { PolicySection, PublicPolicyPage } from "@/components/public-policy-page";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/privacy" },
   title: "Privacy",
   description: "How Family Life Admin handles private household information.",
 };
