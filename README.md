@@ -16,9 +16,9 @@ This project is separate from SpendGrove. It does not include budgeting, bank im
 
 ## Current Product
 
-The web app now includes live Clerk authentication, Neon/PostgreSQL persistence, household membership enforcement, invitation acceptance, household settings, dashboard, inbox routing, tasks and reminders, shopping lists, bills and renewals, source references, comments, and activity history.
+The web app includes live Clerk authentication, Neon/PostgreSQL persistence, household membership enforcement, invitation acceptance, household settings, dashboard, inbox routing, tasks and reminders, shopping lists, bills and renewals, source references, comments, and activity history.
 
-The `mobile/` project is now a genuine Expo/React Native client for iOS and Android. It uses Clerk secure sessions and the authenticated household API. It is not a WebView wrapper; native write workflows and store release work remain in progress.
+The `mobile/` project is a genuine Expo/React Native client for iOS and Android. It uses Clerk secure sessions and the authenticated household API. Core native read and write workflows, release configuration, app artwork, and store copy are implemented. Signed builds and store submission remain controlled external release steps.
 
 ## Technology
 
@@ -39,6 +39,8 @@ The `mobile/` project is now a genuine Expo/React Native client for iOS and Andr
 - `docs/SPECIFICATION_SOURCE_OF_TRUTH.md` - canonical product specification
 - `docs/MVP_SCOPE.md` - original web MVP boundaries
 - `docs/MOBILE_APP_STORE_ROADMAP.md` - iOS, Android, API, testing, and store-release plan
+- `docs/STORE_LISTING.md` - approved App Store and Google Play listing copy
+- `docs/STORE_SUBMISSION_CHECKLIST.md` - release-owner checklist for signed builds and submission
 - `docs/REVIEW_GATES.md` - required release gates
 - `docs/DEFINITION_OF_DONE.md` - completion criteria
 - `docs/DESIGN_SYSTEM.md` - simple mobile-first design direction
@@ -52,7 +54,7 @@ The `mobile/` project is now a genuine Expo/React Native client for iOS and Andr
 
 ## Quality Checks
 
-GitHub Actions validates the web app and native app independently. The web job runs all existing privacy, migration, typecheck, and build gates; the mobile job installs the Expo project and runs its strict TypeScript check.
+GitHub Actions validates the web app and native app independently. The web job runs all existing privacy, migration, typecheck, and build gates; the mobile job installs the Expo project and runs its strict TypeScript and store-structure checks.
 
 ```bash
 pnpm install
@@ -63,4 +65,8 @@ pnpm guardrails:migration
 pnpm db:validate
 pnpm typecheck
 pnpm build
+cd mobile
+npm install
+npm run typecheck
+npm run release:check
 ```
