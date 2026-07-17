@@ -178,3 +178,12 @@ export type MobileActivityResponse = MobileApiEnvelope & {
   }>;
   targets: MobileCommentTarget[];
 };
+
+export type MobileFamilyResponse = MobileApiEnvelope & {
+  invitations: Array<{
+    id: string;
+    invitedEmail: string;
+    role: HouseholdRole;
+    expiresAt: string | null;
+  }>;
+};

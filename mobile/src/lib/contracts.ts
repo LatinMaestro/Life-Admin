@@ -149,3 +149,12 @@ export type ActivityResponse = Envelope & {
   }>;
   targets: CommentTarget[];
 };
+
+export type FamilyResponse = Envelope & {
+  invitations: Array<{
+    id: string;
+    invitedEmail: string;
+    role: HouseholdRole;
+    expiresAt: string | null;
+  }>;
+};
