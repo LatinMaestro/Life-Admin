@@ -1,7 +1,7 @@
-import { Alert } from "react-native";
+import { Alert } from "react-native";\nimport { useRouter } from "expo-router";
 import { useState } from "react";
 
-import { ActionButton } from "@/components/action-button";
+import { ActionButton } from "@/components/action-button";\nimport { PrimaryButton } from "@/components/primary-button";
 import { PageTitle, Pill, Row, Screen, Section, StatusView } from "@/components/ui";
 import { useApiResource, useHouseholdMutation } from "@/lib/api";
 import type { InboxResponse } from "@/lib/contracts";
@@ -26,7 +26,7 @@ export default function InboxScreen() {
 
   return (
     <Screen refreshing={state.loading} onRefresh={() => void state.refresh()}>
-      <PageTitle title="Inbox" subtitle="Things the household still needs to sort." />
+      <PageTitle title="Inbox" subtitle="Things the household still needs to sort." />\n      <PrimaryButton label="Add to inbox" onPress={() => router.push("/new-inbox")} />
       <StatusView {...state} empty={Boolean(state.data) && items.length === 0} onRetry={() => void state.refresh()} />
       {items.length > 0 ? (
         <Section title="Waiting">
