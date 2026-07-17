@@ -122,6 +122,13 @@ export type BillsResponse = Envelope & {
 
 export type SourcesResponse = Envelope & { sources: SourceReference[] };
 
+export type CommentTarget = {
+  entityType: "inbox_item" | "task" | "reminder" | "shopping_list" | "bill_or_renewal" | "source_reference";
+  entityId: string;
+  label: string;
+  group: string;
+};
+
 export type ActivityResponse = Envelope & {
   comments: Array<{
     id: string;
@@ -139,5 +146,6 @@ export type ActivityResponse = Envelope & {
     summary: string;
     actorMemberId: string | null;
     createdAt: string;
-  }>;
+  }>;  }>;
+  targets: CommentTarget[];
 };
