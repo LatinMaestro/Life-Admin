@@ -19,8 +19,8 @@ This checklist separates completed repository work from release-owner steps that
 
 ## Production Services
 
-- [ ] Approve and connect a custom production domain.
-- [ ] Confirm the privacy, support, and account-deletion URLs on that domain.
+- [x] Approve and connect `lifeadmin.grovekind.com` as the custom production domain.
+- [x] Confirm the privacy, support, and account-deletion URLs on `lifeadmin.grovekind.com`.
 - [ ] Configure Clerk production keys and allowed origins/redirects.
 - [ ] Configure the mobile production API URL and Clerk publishable key in EAS.
 - [ ] Run `npm run release:check:live` from `mobile/` with production environment values.
