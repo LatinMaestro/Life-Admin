@@ -5,7 +5,7 @@ import { StatusBar } from "expo-status-bar";
 
 import { colors } from "@/lib/theme";
 
-const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
+const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY ?? "";
 if (!publishableKey) throw new Error("EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY is required.");
 
 export default function RootLayout() {
