@@ -1,14 +1,17 @@
 import { Alert, Linking, Pressable, StyleSheet, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
+import { useRouter } from "expo-router";
 
 import { ActionButton } from "@/components/action-button";
+import { PrimaryButton } from "@/components/primary-button";
 import { PageTitle, Row, Screen, Section, StatusView } from "@/components/ui";
 import { formatDate, useApiResource, useHouseholdMutation } from "@/lib/api";
 import type { BillsResponse } from "@/lib/contracts";
 import { colors } from "@/lib/theme";
 
 export default function BillsScreen() {
+  const router = useRouter();
   const state = useApiResource<BillsResponse>("/api/v1/bills");
   const mutate = useHouseholdMutation();
   const [busyId, setBusyId] = useState<string | null>(null);
@@ -33,6 +36,7 @@ export default function BillsScreen() {
         title="Bills & renewals"
         subtitle="Due-date reminders only. Payment details stay in the original source."
       />
+      <PrimaryButton label="Add reminder" onPress={() => router.push("/new-bill")} />
       <StatusView {...state} empty={Boolean(state.data) && items.length === 0} onRetry={() => void state.refresh()} />
       {items.length > 0 ? (
         <Section title="Upcoming">
