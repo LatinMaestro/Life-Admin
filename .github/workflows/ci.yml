@@ -41,6 +41,9 @@ jobs:
       - name: Check static data boundaries
         run: pnpm guardrails:static-data-boundary
 
+      - name: Check mobile API boundaries
+        run: pnpm guardrails:mobile-api
+
       - name: Check initial migration
         run: pnpm guardrails:migration
 
