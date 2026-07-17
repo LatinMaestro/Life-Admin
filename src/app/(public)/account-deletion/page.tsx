@@ -3,6 +3,7 @@ import Link from "next/link";
 import { PolicySection, PublicPolicyPage } from "@/components/public-policy-page";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/account-deletion" },
   title: "Delete account",
   description: "Delete a Family Life Admin account and associated personal information.",
 };

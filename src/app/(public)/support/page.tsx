@@ -3,6 +3,7 @@ import Link from "next/link";
 import { PolicySection, PublicPolicyPage } from "@/components/public-policy-page";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/support" },
   title: "Support",
   description: "Help and support for Family Life Admin.",
 };
