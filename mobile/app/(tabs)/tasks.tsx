@@ -1,7 +1,7 @@
-import { Alert } from "react-native";
+import { Alert } from "react-native";\nimport { useRouter } from "expo-router";
 import { useState } from "react";
 
-import { ActionButton } from "@/components/action-button";
+import { ActionButton } from "@/components/action-button";\nimport { PrimaryButton } from "@/components/primary-button";
 import { PageTitle, Row, Screen, Section, StatusView } from "@/components/ui";
 import { formatDate, useApiResource, useHouseholdMutation } from "@/lib/api";
 import type { TasksResponse } from "@/lib/contracts";
@@ -32,7 +32,7 @@ export default function TasksScreen() {
 
   return (
     <Screen refreshing={state.loading} onRefresh={() => void state.refresh()}>
-      <PageTitle title="Tasks" subtitle="Shared jobs and reminders." />
+      <PageTitle title="Tasks" subtitle="Shared jobs and reminders." />\n      <PrimaryButton label="Add task" onPress={() => router.push("/new-task")} />
       <StatusView {...state} empty={empty} onRetry={() => void state.refresh()} />
       {tasks.length > 0 ? (
         <Section title="Tasks">
