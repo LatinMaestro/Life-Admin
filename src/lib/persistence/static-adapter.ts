@@ -228,6 +228,12 @@ export const staticHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
     );
   },
 
+  async setShoppingListArchived(): Promise<ShoppingListSummary> {
+    throw new HouseholdAccessError(
+      "Shopping list updates are available when the private household workspace is connected.",
+    );
+  },
+
   async createShoppingListItem(): Promise<ShoppingListItemSummary> {
     throw new HouseholdAccessError(
       "Manual shopping item saving is available when the private household workspace is connected.",

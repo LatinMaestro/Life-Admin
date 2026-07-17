@@ -556,6 +556,72 @@ export const prismaHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
     });
   },
 
+  async setShoppingListArchived(
+    context,
+    listId,
+    archived,
+  ): Promise<ShoppingListSummary> {
+    requireHouseholdPermission(context, "manage_shared_items");
+    const prisma = getPrismaClient();
+
+    return prisma.$transaction(async (transaction) => {
+      const [member, existing] = await Promise.all([
+        transaction.householdMember.findFirst({
+          where: {
+            id: context.memberId,
+            householdId: context.householdId,
+            userId: context.userId,
+            status: "active",
+          },
+          select: { id: true },
+        }),
+        transaction.shoppingList.findFirst({
+          where: { id: listId, householdId: context.householdId },
+          select: { id: true, name: true },
+        }),
+      ]);
+
+      if (!member || !existing) {
+        throw new Error("The shopping list is not available to this household member.");
+      }
+
+      const list = await transaction.shoppingList.update({
+        where: { id: existing.id },
+        data: { status: archived ? "archived" : "active" },
+        select: {
+          id: true,
+          householdId: true,
+          name: true,
+          status: true,
+          createdByMemberId: true,
+          items: { select: { checked: true } },
+        },
+      });
+
+      await transaction.activityEvent.create({
+        data: {
+          householdId: context.householdId,
+          actorUserId: context.userId,
+          actorMemberId: context.memberId,
+          entityType: "shopping_list",
+          entityId: list.id,
+          eventType: archived ? "archived" : "reopened",
+          summary: `${archived ? "Archived" : "Reopened"} shopping list: ${list.name}`,
+        },
+      });
+
+      return {
+        id: list.id,
+        householdId: list.householdId,
+        name: list.name,
+        status: list.status,
+        createdByMemberId: list.createdByMemberId,
+        openItemCount: list.items.filter((item) => !item.checked).length,
+        totalItemCount: list.items.length,
+      };
+    });
+  },
+
   async createShoppingListItem(
     context,
     input: CreateShoppingListItemInput,

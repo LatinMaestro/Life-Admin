@@ -12,7 +12,7 @@ type ReadModelRow = {
   detail: string;
   status: string;
   href: string;
-  entityType?: "inbox_item" | "task" | "reminder" | "bill_or_renewal";
+  entityType?: "inbox_item" | "task" | "reminder" | "shopping_list" | "bill_or_renewal";
 };
 
 type CountSummary = {
@@ -194,13 +194,17 @@ export async function getShoppingListsReadModel(
     adapter.listShoppingListItems(accessContext),
   ]);
   const listNames = new Map(shoppingLists.map((list) => [list.id, list.name]));
+  const activeListIds = new Set(
+    shoppingLists.filter((list) => list.status === "active").map((list) => list.id),
+  );
+  const activeItems = shoppingItems.filter((item) => activeListIds.has(item.shoppingListId));
 
   return {
     household,
     counts: [
       { label: "Active lists", value: shoppingLists.filter((list) => list.status === "active").length },
-      { label: "Open items", value: shoppingItems.filter((item) => !item.checked).length },
-      { label: "Total items", value: shoppingItems.length },
+      { label: "Open items", value: activeItems.filter((item) => !item.checked).length },
+      { label: "Total items", value: activeItems.length },
     ],
     rows: shoppingLists.map((list) => ({
       id: list.id,
@@ -208,11 +212,12 @@ export async function getShoppingListsReadModel(
       detail: `${list.openItemCount} open of ${list.totalItemCount}. Created by ${getMemberName(members, list.createdByMemberId)}.`,
       status: formatStatus(list.status),
       href: "/lists",
+      entityType: "shopping_list" as const,
     })),
     lists: shoppingLists
       .filter((list) => list.status === "active")
       .map((list) => ({ id: list.id, name: list.name })),
-    items: shoppingItems.map((item) => ({
+    items: activeItems.map((item) => ({
       id: item.id,
       shoppingListId: item.shoppingListId,
       listName: listNames.get(item.shoppingListId) ?? "Shopping list",

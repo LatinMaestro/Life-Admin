@@ -219,6 +219,11 @@ export interface HouseholdDashboardRepository {
     context: HouseholdAccessContext,
     input: CreateShoppingListInput,
   ): Promise<ShoppingListSummary>;
+  setShoppingListArchived(
+    context: HouseholdAccessContext,
+    listId: string,
+    archived: boolean,
+  ): Promise<ShoppingListSummary>;
   createShoppingListItem(
     context: HouseholdAccessContext,
     input: CreateShoppingListItemInput,

@@ -1,5 +1,8 @@
-import { Check, Plus, ShoppingCart, Undo2 } from "lucide-react";
-import { toggleShoppingItemAction } from "@/app/(workspace)/lists/actions";
+import { Archive, Check, Plus, ShoppingCart, Undo2 } from "lucide-react";
+import {
+  toggleShoppingItemAction,
+  toggleShoppingListArchivedAction,
+} from "@/app/(workspace)/lists/actions";
 import { PageHeader } from "@/components/page-header";
 import { ReadModelSummary } from "@/components/read-model-summary";
 import { ShoppingCapture } from "@/components/shopping-capture";
@@ -29,6 +32,25 @@ export default async function ListsPage() {
         counts={lists.counts}
         rows={lists.rows}
         emptyLabel="No shopping lists yet."
+        renderAction={(row) => {
+          if (row.entityType !== "shopping_list") return null;
+          const archived = row.status === "Archived";
+          return (
+            <form action={toggleShoppingListArchivedAction}>
+              <input type="hidden" name="listId" value={row.id} />
+              <input type="hidden" name="archived" value={String(!archived)} />
+              <Button
+                type="submit"
+                variant="outline"
+                size="icon"
+                title={archived ? "Reopen list" : "Archive list"}
+                aria-label={archived ? `Reopen ${row.title}` : `Archive ${row.title}`}
+              >
+                {archived ? <Undo2 className="h-4 w-4" /> : <Archive className="h-4 w-4" />}
+              </Button>
+            </form>
+          );
+        }}
       />
 
       <ShoppingCapture lists={lists.lists} />

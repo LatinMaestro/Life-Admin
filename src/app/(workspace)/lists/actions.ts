@@ -70,6 +70,18 @@ export async function createShoppingItemAction(
   }
 }
 
+export async function toggleShoppingListArchivedAction(formData: FormData) {
+  const listId = readText(formData, "listId");
+  const archived = readText(formData, "archived") === "true";
+
+  if (!listId) return;
+
+  const context = await getRuntimeHouseholdAccessContext();
+  const adapter = await getHouseholdPersistenceAdapter();
+  await adapter.setShoppingListArchived(context, listId, archived);
+  revalidateShoppingPages();
+}
+
 export async function toggleShoppingItemAction(formData: FormData) {
   const itemId = readText(formData, "itemId");
   const checked = readText(formData, "checked") === "true";
