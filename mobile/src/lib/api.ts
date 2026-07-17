@@ -27,7 +27,11 @@ export function useHouseholdMutation() {
   const { getToken } = useAuth();
 
   return useCallback(
-    async (\n      path: `/api/v1/${string}`,\n      body: Record<string, unknown>,\n      method: "PATCH" | "POST" = "PATCH",\n    ) => {
+    async (
+      path: `/api/v1/${string}`,
+      body: Record<string, unknown>,
+      method: "PATCH" | "POST" = "PATCH",
+    ) => {
       if (!apiUrl) throw new Error("The app service has not been configured.");
       const token = await getToken();
       if (!token) throw new Error("Your session could not be verified. Please sign in again.");
