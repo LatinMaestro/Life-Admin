@@ -15,7 +15,8 @@ Reviewed the manual household workflow batch for scope, household isolation, pri
 - Bill forms contain no payment-detail fields.
 - Source references store approved metadata and optional HTTPS pointers only.
 - Comments attach only to existing household items.
-- Uploads, automated intake, AI, OCR, voice, notifications, native iOS, invites, and finance features remain absent.
+- Secure invitation acceptance requires the signed-in user's verified primary email, and administrator membership changes are rechecked transactionally.
+- Uploads, automated email intake or delivery, AI, OCR, voice, notifications, native iOS, and finance features remain absent.
 
 ## Beginner Usability Changes
 
@@ -32,6 +33,8 @@ Reviewed the manual household workflow batch for scope, household isolation, pri
 
 GitHub CI covers lint, typecheck, production build, Prisma validation/generation, static-data boundaries, migration checks, and payment-source guardrails.
 
-## Deferred Visual Gate
+A read-only production data audit on 17 July 2026 confirmed that the household retains an active administrator, stored source URLs are HTTPS, and task, reminder, bill, shopping, and source relationships do not cross household boundaries.
 
-Authenticated browser QA and Vercel production promotion remain deferred until Vercel review access resumes. The branch must not be merged to production before that gate is completed.
+## Deployment Gate
+
+The protected preview reached the expected Clerk sign-in boundary and the exact preview commit deployed without runtime errors. Authenticated workflow and mobile click-through QA remains a post-deployment release check because no test user session was available to the automated review. Production activation may proceed as a controlled, access-protected deployment; public launch still requires authenticated QA and the separately approved production-domain and Clerk-key transition.
