@@ -20,7 +20,8 @@
     "check:activation": "node scripts/check-production-activation.mjs",
     "check:activation:live": "node scripts/check-production-activation.mjs --require-live",
     "db:seed:initial": "node scripts/seed-initial-household.mjs",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "db:baseline:production": "node scripts/baseline-production-migrations.mjs"
   },
   "dependencies": {
     "@clerk/nextjs": "7.5.16",
