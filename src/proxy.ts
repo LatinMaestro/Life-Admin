@@ -7,7 +7,11 @@ const clerkProxy =
     ? clerkMiddleware(async (auth, request) => {
         const pathname = request.nextUrl.pathname;
         const isPublic =
-          pathname.startsWith("/sign-in") || pathname.startsWith("/__clerk");
+          pathname.startsWith("/sign-in") ||
+          pathname.startsWith("/privacy") ||
+          pathname.startsWith("/support") ||
+          pathname.startsWith("/account-deletion") ||
+          pathname.startsWith("/__clerk");
 
         if (isPublic) {
           return NextResponse.next();
