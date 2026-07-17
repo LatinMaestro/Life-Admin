@@ -1,8 +1,9 @@
-import { Linking } from "react-native";
+import { Linking, Pressable, StyleSheet, Text } from "react-native";
 
 import { PageTitle, Pill, Row, Screen, Section, StatusView } from "@/components/ui";
 import { formatDate, useApiResource } from "@/lib/api";
 import type { BillsResponse } from "@/lib/contracts";
+import { colors } from "@/lib/theme";
 
 export default function BillsScreen() {
   const state = useApiResource<BillsResponse>("/api/v1/bills");
@@ -28,9 +29,22 @@ export default function BillsScreen() {
                 detail={item.provider}
                 meta={[
                   date ? `${item.type === "bill" ? "Due" : "Renews"} ${date}` : null,
-                  source?.url ? "Open original source" : source?.label,
-                ].filter(Boolean).join(" · ")}
-                trailing={<Pill>{item.type === "bill" ? "Bill" : "Renewal"}</Pill>}
+                  source?.label,
+                ].filter(Boolean).join(" - ")}
+                trailing={
+                  source?.url ? (
+                    <Pressable
+                      accessibilityLabel={`Open original source for ${item.title}`}
+                      accessibilityRole="link"
+                      onPress={() => void Linking.openURL(source.url!)}
+                      style={styles.openButton}
+                    >
+                      <Text style={styles.openText}>Open source</Text>
+                    </Pressable>
+                  ) : (
+                    <Pill>{item.type === "bill" ? "Bill" : "Renewal"}</Pill>
+                  )
+                }
               />
             );
           })}
@@ -39,3 +53,8 @@ export default function BillsScreen() {
     </Screen>
   );
 }
+
+const styles = StyleSheet.create({
+  openButton: { paddingHorizontal: 8, paddingVertical: 10 },
+  openText: { color: colors.primary, fontSize: 14, fontWeight: "700" },
+});
