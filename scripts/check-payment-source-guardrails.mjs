@@ -1,7 +1,7 @@
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 
-const rootsToScan = ["src", "prisma"];
+const rootsToScan = ["src", "mobile", "prisma"];
 const extensionsToScan = new Set([".ts", ".tsx", ".js", ".jsx", ".prisma", ".sql"]);
 
 const forbiddenPatterns = [
