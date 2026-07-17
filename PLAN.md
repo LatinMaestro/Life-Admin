@@ -26,7 +26,7 @@ Family Life Admin is private household administration, not personal finance. Bil
 12. Household invitations and member administration.
 13. Live household-scoped create, update, complete, reopen, archive, and routing workflows.
 14. Beginner usability and production code/privacy review.
-15. Release candidate merged to `main`.
+15. Release candidate merged to `main`.\n16. Authenticated, household-scoped mobile read API.\n17. Expo iOS and Android foundation with secure Clerk sessions and core read screens.
 
 ## Remaining Delivery Plan
 
