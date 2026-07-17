@@ -17,15 +17,16 @@ Family Life Admin is not a personal finance product. Do not add budgeting, bank 
    - `docs/BILL_PAYMENT_SOURCE_OF_TRUTH_RULES.md`
    - `docs/SECURITY_AND_PRIVACY.md`
    - `docs/DATA_MODEL.md`
+   - `docs/MOBILE_APP_STORE_ROADMAP.md`
 2. Propose the intended change before coding unless the user explicitly approves implementation.
-3. Work in small, scoped changes that can be reviewed independently.
-4. Preserve review gates and update documentation when product behavior changes.
-5. Avoid scope creep. If a request introduces finance analytics, AI extraction, email forwarding, OCR, voice capture, native iOS, notifications, or file upload behavior before its approved phase, pause and ask for approval.
-6. Preserve privacy rules for household data and source documents.
-7. Keep every user-facing feature household-scoped.
-8. Prefer mobile-first web workflows before desktop enhancements.
-9. Keep manual creation as the MVP default.
-10. Do not implement app code, packages, database schema, auth, uploads, integrations, or native app work unless the current task explicitly approves that phase.
+3. Work in scoped pull requests with clear review gates.
+4. Preserve privacy rules and update documentation when product behavior changes.
+5. Avoid scope creep. Email forwarding, AI extraction, OCR, voice capture, notifications, and file uploads still require separate approval.
+6. Keep every user-facing feature and API operation household-scoped.
+7. Prefer the simplest workflow that helps a beginner complete the current task.
+8. Keep manual creation as the default until an automation phase is approved.
+9. Native iOS and Android delivery is approved. Build a genuine Expo/React Native client against versioned household APIs; do not ship a thin WebView wrapper.
+10. Keep platform business logic in shared server services instead of duplicating authorization rules in web or mobile clients.
 
 ## Bill And Payment Rules
 
@@ -33,19 +34,19 @@ Bills and renewals are admin reminders only. They may store provider, due date, 
 
 They must not store generated or transcribed payment identifiers such as BPAY biller codes, BSBs, account numbers, customer reference numbers, or payment reference values. Payment reminders should point to the original source email/PDF/link or to a user-confirmed image/crop from the original source document.
 
-## Preferred Technical Direction
+These rules apply equally to web pages, APIs, native clients, logs, analytics, and store screenshots.
 
-- Next.js App Router
+## Technical Direction
+
+- Next.js App Router web app and versioned API
 - TypeScript
-- Tailwind CSS
-- shadcn/ui
-- Prisma
-- PostgreSQL
-- Auth-ready architecture
+- Tailwind CSS and shadcn/ui for web
+- Prisma and PostgreSQL
+- Clerk authentication
 - Vercel deployment target
-- Mobile-first web app first
-- Native iOS later
+- Expo/React Native with Expo Router for iOS and Android
+- Shared household-scoped server services and API contracts
 
 ## Definition Of A Good Change
 
-A good change is small, household-scoped, privacy-preserving, covered by the relevant review gate, and consistent with the MVP. It should not broaden the product into finance, AI intake, automated document extraction, or native mobile unless that phase has been approved.
+A good change is household-scoped, privacy-preserving, beginner-friendly, covered by the relevant review gate, and consistent across web and native clients. It should not broaden the product into finance or an unapproved automated intake channel.

@@ -2,108 +2,75 @@
 
 ## Current Objective
 
-Continue the production persistence path while Vercel activation review is deferred. Manual shared-inbox, task, reminder, shopping-list, and shopping-item workflows now use household-scoped writes and beginner-friendly mobile controls. Core pages have one primary action, shorter plain-language copy, compact summaries, and optional forms hidden until needed. The production Neon schema is migrated, Clerk and Neon are connected to Vercel, Prisma 7 uses the Neon runtime adapter, and the first provider-mapped internal user has one active household administrator membership. Vercel runtime modes are staged as Clerk and Prisma together, pending a deployment from the latest main commit and signed-out, signed-in, household-isolation, mobile, and privacy QA. Clerk development keys are intentionally used for this staging checkpoint; production Clerk keys remain blocked on an approved custom domain and DNS configuration. Uploads, email forwarding, AI, OCR, voice capture, notifications, native iOS, payment identifier storage, and finance features remain absent.
+Move the completed household web application through release hardening and into approved native iOS and Android delivery. The production data model, Clerk identity mapping, household access enforcement, live manual workflows, privacy guardrails, and beginner-friendly web interface are implemented.
 
-## Product Summary
+The immediate work is to establish a stable versioned mobile API and store-readiness controls before building the Expo client. Notifications, uploads, email forwarding, AI, OCR, and voice capture remain deferred.
 
-Family Life Admin is a private household admin app for shared household coordination. It focuses on manual creation and management of household tasks, reminders, shopping lists, bills and renewals as admin reminders, shared inbox items, source document/link references, members, comments, and activity history.
+## Product Boundary
 
-The MVP is a quick-rollout mobile-first web app. The schema should support future multi-household use, while the MVP UI may optimise for one primary household.
+Family Life Admin is private household administration, not personal finance. Bills and renewals are admin reminders that point to original sources. Web, API, iOS, and Android surfaces must never store, display, generate, or transcribe payment identifiers.
 
-Approved product, architecture, and scope decisions are recorded in `docs/PRODUCT_DECISIONS.md`. The current static MVP checkpoint is recorded in `docs/STATIC_MVP_COMPLETION_REVIEW.md`.
+## Completed
 
-## Scope Guardrails
+1. Documentation and control pack.
+2. Mobile-first web foundation.
+3. Household workspace, members, and roles.
+4. Dashboard and shared inbox.
+5. Tasks and reminders.
+6. Shopping lists.
+7. Bills and renewals with source-only rules.
+8. Source references.
+9. Comments and activity history.
+10. Prisma/PostgreSQL production schema and Neon migration.
+11. Clerk authentication and household membership enforcement.
+12. Household invitations and member administration.
+13. Live household-scoped create, update, complete, reopen, archive, and routing workflows.
+14. Beginner usability and production code/privacy review.
+15. Release candidate merged to `main`.
 
-In scope for the production foundation path:
+## Remaining Delivery Plan
 
-- Household-first Prisma/PostgreSQL schema
-- Future authentication-ready user and membership model
-- Household admin and household member roles
-- Household access-control helpers
-- Server-side household access resolver
-- Demo-only access context for static repository reads
-- Auth/session contracts and approved dormant Clerk provider foundation
-- Static and Prisma persistence adapters behind a shared contract
-- Static comments through the adapter contract
-- Server-only adapter selection that defaults to static mode
-- Dashboard, module, and workspace read-model foundations behind the adapter boundary
-- Shared read-model summary UI component
-- App shell and all current pages migrated to the read-model path
-- CI enforcement preventing direct raw demo-data imports in app pages and shared components
-- Static demo data to future seed snapshot mapping
-- Module-by-module persistence migration after schema validation
-- Source references as metadata/pointers only
-- Bills and renewals as admin reminders only
+### Phase A: Web Production Verification
 
-Out of scope until separately approved:
+- Complete a production deployment after Vercel build capacity is available.
+- Run authenticated desktop and mobile workflow QA.
+- Verify invitation, role recovery, multi-household isolation, source-link safety, and error states.
+- Move Clerk from development keys to production keys when the custom domain and DNS are approved.
 
-- Budgeting
-- Bank imports
-- Transaction tracking
-- Spend analytics
-- Cashflow forecasting
-- Tax reporting
-- Property or loan management
-- Payment instruction generation
-- Email forwarding implementation
-- AI extraction
-- OCR extraction
-- Voice capture
-- Native iOS implementation
-- Notification integrations
-- File uploads or source storage
-- Generated or transcribed payment identifiers
+### Phase B: Release And Store Compliance
 
-## Completed Static MVP Path
+- Publish privacy policy, support, and account-deletion web resources.
+- Add in-app account deletion with last-admin and household ownership safeguards.
+- Define data retention and deletion handling across Clerk and PostgreSQL.
+- Prepare Apple privacy details and Google Play Data safety declarations.
+- Prepare a stable reviewer demo account or approved full-feature demo mode.
+- Complete accessibility, empty/error state, and device QA.
 
-1. Documentation/control pack
-2. App foundation
-3. Household workspace
-4. Members and roles
-5. Dashboard
-6. Shared inbox
-7. Tasks and reminders
-8. Shopping lists
-9. Bills and renewals
-10. Source documents/links
-11. Comments and activity history
-12. QA and review
+### Phase C: Versioned Mobile API
 
-## Production Foundation Path
+- Add `/api/v1` authenticated household endpoints.
+- Reuse server authorization and persistence services.
+- Publish stable TypeScript contracts with ISO date serialization.
+- Add request validation, safe error envelopes, rate limits where justified, and API tests.
+- Keep source references metadata/link-only and fail closed outside live Clerk mode.
 
-1. Prisma/PostgreSQL schema and initial production migration. Done; applied to Neon on 10 July 2026.
-2. Household access-control foundation. Done.
-3. Persistence repository contracts. Done.
-4. Prisma package, lockfile, and schema validation setup. Done.
-5. Prisma client boundary and read-only adapter foundation. Done.
-6. Household access resolver. Done.
-7. Auth/session contract boundary. Done.
-8. Seed/demo migration bridge. Done.
-9. Static persistence adapter. Done.
-10. Server persistence adapter selector. Done.
-11. Demo access context for static repository reads. Done.
-12. Dashboard read-model foundation. Done.
-13. Module read-model foundations. Done.
-14. Shared read-model summary UI component. Done.
-15. Sources page read-model migration. Done.
-16. Static comments adapter support. Done.
-17. Activity page read-model migration. Done.
-18. Inbox, tasks, lists, and bills page read-model migration. Done.
-19. Workspace read model and Dashboard, Family, Settings, and app shell migration. Done.
-20. Authentication provider and session strategy. Clerk provisioned and linked; SDK, session mapping, sign-in, and protected workspace checkpoints done.
-21. Household membership enforcement. Done for production reads, writes, target ownership, and optional assignee validation; invitation onboarding is implemented in the active branch using verified-email claim and transactional membership checks.
-22. Clerk signed-out and unmapped-account access states. Done; staging activation pending deployment QA.
-23. Audit remaining direct static dependencies and keep them behind approved demo boundaries. Done.
-24. Persist shared inbox writes. Done for manual item creation, archiving, reopening, and transactional routing into tasks, reminders, shopping items, bills, and renewals.
-25. Persist tasks and reminders writes. Done for manual creation, completion, and reopening.
-26. Persist shopping list writes. Done for list/item creation and checked-state updates.
-27. Persist bills and renewals writes with source-of-truth guardrails. Done for manual source-first creation, completion, and reopening.
-28. Persist source references as metadata/pointers. Done for manual https links and original-location references.
-29. Persist comments and activity history. Done for item comments and automatic mutation activity.
-30. Production QA and privacy review. Code, scope, privacy, beginner usability, reversible completion/archive controls, and minimal correction workflows are implemented; authenticated Vercel browser QA remains pending.
-31. Controlled Clerk/Prisma staging activation. Environment and seed gates done; latest-main deployment and QA pending.
-32. Custom production domain, Clerk production keys, and controlled identity remap. Pending separate domain approval.
+### Phase D: Expo Native App
+
+- Add an Expo Router application for iOS and Android.
+- Use Clerk Expo with secure token storage.
+- Implement Home, Inbox, Tasks, Shopping, Bills/Renewals, Family, Sources, Activity, and Settings.
+- Match the web app's plain language and one-primary-action interaction model.
+- Add local loading/error states and safe retry behavior.
+- Do not add notifications, uploads, camera, OCR, AI, or voice capture in this phase.
+
+### Phase E: Store Testing And Submission
+
+- Configure bundle identifiers, signing, EAS Build, and environment separation.
+- Test physical iPhone/iPad and Android phone/tablet builds.
+- Distribute through TestFlight and Google Play internal testing.
+- Produce icons, screenshots using fictional data, descriptions, age ratings, support URL, and review notes.
+- Submit to the Apple App Store and Google Play only after privacy, deletion, authentication, and reviewer-access gates pass.
 
 ## Immediate Next Step
 
-Validate secure household onboarding, invitation/member recovery, household profile settings, reversible shopping-list and source-reference cleanup, inbox routing, and minimal item editing through authenticated browser QA. Then merge the completion branch and perform controlled production activation and household-isolation review.
+Complete the mobile-store foundation batch: reconcile product decisions, add installable web metadata, and establish the read-only authenticated `/api/v1/bootstrap` boundary. Follow with tested module endpoints and the Expo application scaffold.
