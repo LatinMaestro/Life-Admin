@@ -37,3 +37,35 @@ export function requireId(value: string | undefined) {
   }
   return id;
 }
+
+export function requireText(
+  input: Record<string, unknown>,
+  field: string,
+  minimum: number,
+  maximum: number,
+) {
+  const value = input[field];
+  if (typeof value !== "string") {
+    throw new MobileApiRequestError(`${field} is required.`);
+  }
+  const text = value.trim();
+  if (text.length < minimum || text.length > maximum) {
+    throw new MobileApiRequestError(
+      `${field} must be between ${minimum} and ${maximum} characters.`,
+    );
+  }
+  return text;
+}
+
+export function optionalText(
+  input: Record<string, unknown>,
+  field: string,
+  maximum: number,
+) {
+  const value = input[field];
+  if (value === undefined || value === null || value === "") return null;
+  if (typeof value !== "string" || value.trim().length > maximum) {
+    throw new MobileApiRequestError(`${field} must be ${maximum} characters or fewer.`);
+  }
+  return value.trim() || null;
+}
