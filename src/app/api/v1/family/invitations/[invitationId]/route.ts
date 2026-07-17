@@ -1,11 +1,11 @@
 import { requireId } from "@/lib/api/v1/input";
 import { MobileApiRequestError, withHouseholdApi } from "@/lib/api/v1/response";
 import {
-
-export const dynamic = "force-dynamic";
   HouseholdInvitationError,
   revokeHouseholdInvitation,
 } from "@/lib/server/household-invitations";
+
+export const dynamic = "force-dynamic";
 
 export function DELETE(
   _request: Request,
