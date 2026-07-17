@@ -1,13 +1,16 @@
 import { Alert, Linking, Pressable, StyleSheet, Text } from "react-native";
 import { useState } from "react";
+import { useRouter } from "expo-router";
 
 import { ActionButton } from "@/components/action-button";
+import { PrimaryButton } from "@/components/primary-button";
 import { PageTitle, Pill, Row, Screen, Section, StatusView } from "@/components/ui";
 import { useApiResource, useHouseholdMutation } from "@/lib/api";
 import type { SourcesResponse } from "@/lib/contracts";
 import { colors } from "@/lib/theme";
 
 export default function SourcesScreen() {
+  const router = useRouter();
   const state = useApiResource<SourcesResponse>("/api/v1/sources");
   const mutate = useHouseholdMutation();
   const [busyId, setBusyId] = useState<string | null>(null);
@@ -28,6 +31,7 @@ export default function SourcesScreen() {
   return (
     <Screen refreshing={state.loading} onRefresh={() => void state.refresh()}>
       <PageTitle title="Sources" subtitle="Original references used to check household admin." />
+      <PrimaryButton label="Add source" onPress={() => router.push("/new-source")} />
       <StatusView {...state} empty={Boolean(state.data) && sources.length === 0} onRetry={() => void state.refresh()} />
       {sources.length > 0 ? (
         <Section title="References">
