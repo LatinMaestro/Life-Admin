@@ -1,49 +1,47 @@
 # Future Phases
 
-Future phases should extend the household admin product without changing it into personal finance software.
+Future phases extend household administration without changing Family Life Admin into personal finance software.
 
-## Deferred From MVP
+## Approved Current Scale-Up
+
+Native iOS and Android delivery is approved after completion of the web workflow foundation. The cross-platform implementation plan is in `docs/MOBILE_APP_STORE_ROADMAP.md`.
+
+Store delivery includes native authentication, core household workflow parity, secure API access, device testing, and store compliance. It does not automatically approve device permissions or new intake channels.
+
+## Still Deferred
 
 - Email forwarding
 - AI intake and classification
 - OCR extraction
 - Voice capture
-- Native iOS
 - Push notifications
 - SMS reminders
-- Production file uploads, unless approved separately
+- Production file uploads
+- Camera/document capture
 - Advanced recurrence
 - Advanced permissions
-- Multi-household UI
+- Multi-household switching UI
 
 ## Email Forwarding
 
-Future email forwarding may allow household members to forward admin emails into the shared inbox. It should initially create source references and draft inbox items for review.
+A future forwarding phase may create source references and draft inbox items for review. It must not automatically transcribe payment identifiers.
 
-Email forwarding must not automatically transcribe payment identifiers. Payment-related emails should remain original source records or user-confirmed source references.
+## AI And OCR
 
-## AI
-
-AI may later help categorise inbox items, suggest due dates, or draft task titles. AI must not create final household records without clear review/confirmation rules.
-
-AI must not generate or transcribe payment identifiers from bills or renewals.
-
-## OCR
-
-OCR may later help users find dates, provider names, or document titles. OCR must not store payment identifiers unless the approved design stores only source pointers/crops/references and not extracted values.
+AI or OCR may later suggest categories, dates, providers, or titles. Suggestions require review and must never extract or persist payment identifiers.
 
 ## Voice Capture
 
-Voice capture may later allow quick task/reminder creation. Voice input should create reviewable drafts or simple manual-style records, not automated financial records.
+Voice capture may later create reviewable household drafts. It must not create automated financial records.
 
-## Native iOS
+## Notifications
 
-Native iOS is a later scale-up phase after the mobile web app proves the core household workflows. The web app should provide the product learning needed before native investment.
+Before implementation, approve channels, preferences, quiet hours, household visibility, privacy behavior, and platform permission timing. Store delivery alone is not notification approval.
 
-## Notification Integrations
+## Uploads And Camera
 
-Notifications are deferred. Before implementation, approve channels, user preferences, quiet hours, household visibility, and privacy rules.
+Before implementation, approve storage, retention, access control, malware handling, deletion, source review, and platform permission copy. Source links and references remain the current approach.
 
 ## Multi-Household UI
 
-The schema should support future multi-household membership from the beginning. The MVP UI may optimise for one primary household until multi-household navigation is needed.
+The schema supports multiple household memberships. The UI may continue to optimise for one primary household until switching behavior is explicitly designed.
