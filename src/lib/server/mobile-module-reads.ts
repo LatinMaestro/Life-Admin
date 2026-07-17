@@ -185,10 +185,37 @@ export async function getMobileActivity(
   context: HouseholdAccessContext,
 ): Promise<MobileActivityResponse> {
   const adapter = await getHouseholdPersistenceAdapter();
-  const [comments, events] = await Promise.all([
+  const [comments, events, inbox, tasks, reminders, lists, bills, sources] = await Promise.all([
     adapter.listComments(context),
     adapter.listActivity(context),
+    adapter.listInboxItems(context),
+    adapter.listTasks(context),
+    adapter.listReminders(context),
+    adapter.listShoppingLists(context),
+    adapter.listBillsAndRenewals(context),
+    adapter.listSourceReferences(context),
   ]);
+
+  const targets: MobileActivityResponse["targets"] = [
+    ...inbox.filter((item) => item.status !== "archived").map((item) => ({
+      entityType: "inbox_item" as const, entityId: item.id, label: item.title, group: "Inbox",
+    })),
+    ...tasks.filter((item) => item.status !== "done" && item.status !== "completed").map((item) => ({
+      entityType: "task" as const, entityId: item.id, label: item.title, group: "Tasks",
+    })),
+    ...reminders.filter((item) => item.status !== "done" && item.status !== "completed").map((item) => ({
+      entityType: "reminder" as const, entityId: item.id, label: item.title, group: "Reminders",
+    })),
+    ...lists.filter((item) => item.status === "active").map((item) => ({
+      entityType: "shopping_list" as const, entityId: item.id, label: item.name, group: "Shopping",
+    })),
+    ...bills.filter((item) => item.status !== "done" && item.status !== "completed").map((item) => ({
+      entityType: "bill_or_renewal" as const, entityId: item.id, label: item.title, group: "Bills & renewals",
+    })),
+    ...sources.filter((item) => item.reviewStatus !== "archived").map((item) => ({
+      entityType: "source_reference" as const, entityId: item.id, label: item.title, group: "Sources",
+    })),
+  ];
 
   return {
     ...envelope(),
@@ -209,5 +236,6 @@ export async function getMobileActivity(
       actorMemberId: event.actorMemberId ?? null,
       createdAt: event.createdAt.toISOString(),
     })),
+    targets,
   };
 }
