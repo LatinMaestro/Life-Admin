@@ -4,21 +4,24 @@ import { NextResponse } from "next/server";
 const demoProxy = () => NextResponse.next();
 const clerkProxy =
   process.env.FAMILY_LIFE_ADMIN_AUTH_MODE === "clerk"
-    ? clerkMiddleware(async (auth, request) => {
-        const pathname = request.nextUrl.pathname;
-        const isPublic =
-          pathname.startsWith("/sign-in") ||
-          pathname.startsWith("/privacy") ||
-          pathname.startsWith("/support") ||
-          pathname.startsWith("/account-deletion") ||
-          pathname.startsWith("/__clerk");
+    ? clerkMiddleware(
+        async (auth, request) => {
+          const pathname = request.nextUrl.pathname;
+          const isPublic =
+            pathname.startsWith("/sign-in") ||
+            pathname.startsWith("/privacy") ||
+            pathname.startsWith("/support") ||
+            pathname.startsWith("/account-deletion") ||
+            pathname.startsWith("/__clerk");
 
-        if (isPublic) {
-          return NextResponse.next();
-        }
+          if (isPublic) {
+            return NextResponse.next();
+          }
 
-        await auth.protect();
-      })
+          await auth.protect();
+        },
+        { signInUrl: "/sign-in" },
+      )
     : null;
 
 export default clerkProxy ?? demoProxy;
