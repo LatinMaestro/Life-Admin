@@ -48,7 +48,7 @@ function matchesMagicBytes(bytes: Uint8Array, mediaType: AllowedSourceMediaType)
   if (mediaType === "image/png") {
     return (
       bytes[0] === 0x89 &&
-      ascii(bytes, 1, 3) === "PNG" &&
+      ascii(bytes, 1, 4) === "PNG" &&
       bytes[4] === 0x0d &&
       bytes[5] === 0x0a &&
       bytes[6] === 0x1a &&
