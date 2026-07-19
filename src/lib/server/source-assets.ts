@@ -5,6 +5,7 @@ import { requireHouseholdPermission } from "@/lib/access-control";
 import type { HouseholdAccessContext } from "@/lib/access-control";
 import {
   allowedSourceMediaTypes,
+  MAX_VOICE_SOURCE_BYTES,
   safeOriginalName,
   validateSourceBytes,
   validateSourceDeclaration,
@@ -17,7 +18,11 @@ const uploadUrlLifetimeSeconds = 10 * 60;
 const readUrlLifetimeSeconds = 5 * 60;
 const unconfirmedRetentionDays = 30;
 
-export type SourceAssetPurpose = "direct_upload" | "camera_original" | "camera_crop";
+export type SourceAssetPurpose =
+  | "direct_upload"
+  | "camera_original"
+  | "camera_crop"
+  | "voice_audio";
 
 export async function createSourceAssetUpload(
   context: HouseholdAccessContext,
@@ -32,12 +37,19 @@ export async function createSourceAssetUpload(
   requireHouseholdPermission(context, "manage_shared_items");
   requireHouseholdPermission(context, "view_source_references");
   validateSourceDeclaration(input.mediaType, input.byteSize);
+  if (input.purpose === "voice_audio") {
+    if (input.mediaType !== "audio/mp4" || input.byteSize > MAX_VOICE_SOURCE_BYTES) {
+      throw new Error("Record a voice note shorter than three minutes.");
+    }
+  } else if (input.mediaType.startsWith("audio/")) {
+    throw new Error("Choose a PDF or image for this source.");
+  }
 
   const prisma = getPrismaClient();
   const objectKey = `assets/${randomUUID()}`;
   const originalName = safeOriginalName(input.originalName);
   const retentionUntil = new Date(
-    Date.now() + unconfirmedRetentionDays * 24 * 60 * 60 * 1000,
+    Date.now() + (input.purpose === "voice_audio" ? 1 : unconfirmedRetentionDays) * 24 * 60 * 60 * 1000,
   );
 
   const asset = await prisma.$transaction(async (transaction) => {
@@ -57,7 +69,11 @@ export async function createSourceAssetUpload(
         householdId: context.householdId,
         title: input.title,
         kind: sourceKind(input.mediaType, input.purpose),
-        label: input.purpose === "direct_upload" ? "Private uploaded file" : "Private camera capture",
+        label: input.purpose === "direct_upload"
+          ? "Private uploaded file"
+          : input.purpose === "voice_audio"
+            ? "Temporary private voice note"
+            : "Private camera capture",
         sensitivity: "sensitive",
         createdByMemberId: context.memberId,
       },
@@ -173,7 +189,9 @@ export async function finalizeSourceAsset(
         data: {
           state: "ready",
           sha256Digest: digest,
-          retentionUntil: null,
+          retentionUntil: asset.purpose === "voice_audio"
+            ? new Date(Date.now() + 24 * 60 * 60 * 1000)
+            : null,
         },
       });
       if (current.sourceReferenceId) {
@@ -357,6 +375,7 @@ async function rejectAndDeleteAsset(assetId: string, objectKey: string) {
 }
 
 function sourceKind(mediaType: string, purpose: SourceAssetPurpose) {
+  if (purpose === "voice_audio") return "source_document_reference" as const;
   if (purpose === "camera_crop") return "source_crop_reference" as const;
   return mediaType === "application/pdf"
     ? "source_document_reference" as const

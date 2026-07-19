@@ -1,4 +1,5 @@
 export const MAX_DIRECT_SOURCE_BYTES = 15 * 1024 * 1024;
+export const MAX_VOICE_SOURCE_BYTES = 5 * 1024 * 1024;
 
 export const allowedSourceMediaTypes = [
   "application/pdf",
@@ -6,6 +7,7 @@ export const allowedSourceMediaTypes = [
   "image/png",
   "image/heic",
   "image/heif",
+  "audio/mp4",
 ] as const;
 
 export type AllowedSourceMediaType = (typeof allowedSourceMediaTypes)[number];
@@ -39,6 +41,9 @@ export function safeOriginalName(value: string) {
 }
 
 function matchesMagicBytes(bytes: Uint8Array, mediaType: AllowedSourceMediaType) {
+  if (mediaType === "audio/mp4") {
+    return ascii(bytes, 4, 8) === "ftyp";
+  }
   if (mediaType === "application/pdf") {
     return ascii(bytes, 0, 5) === "%PDF-";
   }

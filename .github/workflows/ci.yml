@@ -71,6 +71,9 @@ jobs:
       - name: Test safe intake policy
         run: pnpm test:intake-policy
 
+      - name: Check voice migration
+        run: pnpm guardrails:voice-migration
+
       - name: Validate Prisma schema
         run: pnpm db:validate
         env:

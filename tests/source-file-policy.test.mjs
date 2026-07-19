@@ -23,6 +23,7 @@ test("checks PDF, JPEG, PNG, and HEIC signatures", () => {
     ["image/jpeg", Uint8Array.from([0xff, 0xd8, 0xff, 0xe0])],
     ["image/png", Uint8Array.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])],
     ["image/heic", Uint8Array.from([0, 0, 0, 0x18, ...Buffer.from("ftypheic")])],
+    ["audio/mp4", Uint8Array.from([0, 0, 0, 0x18, ...Buffer.from("ftypM4A ")])],
   ];
   for (const [type, bytes] of cases) {
     assert.doesNotThrow(() => validateSourceBytes(bytes, type, bytes.length));

@@ -239,3 +239,23 @@ export type FamilyResponse = Envelope & {
     expiresAt: string | null;
   }>;
 };
+
+export type IntakeDraftType = "inbox" | "task" | "reminder" | "bill" | "renewal" | "source_reference";
+
+export type IntakeDraftsResponse = Envelope & {
+  drafts: Array<{
+    id: string;
+    proposedType: IntakeDraftType;
+    title: string;
+    provider: string | null;
+    safeNotes: string | null;
+    dueAt: string | null;
+    renewalAt: string | null;
+    proposedAssignedMemberId: string | null;
+    sourcePageReference: string | null;
+    confidence: number | null;
+    warnings: string[];
+    channel: "upload" | "camera" | "email" | "voice";
+    sourceReference: { title: string };
+  }>;
+};
