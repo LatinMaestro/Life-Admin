@@ -1,4 +1,4 @@
-import { Alert } from "react-native";
+import { Alert, StyleSheet, View } from "react-native";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 
@@ -50,13 +50,23 @@ export default function TasksScreen() {
                 detail={task.notes}
                 meta={due ? `Due ${due}` : task.stage.replaceAll("_", " ")}
                 trailing={
-                  <ActionButton
-                    busy={busyId === task.id}
-                    icon={completed ? "arrow-undo" : "checkmark"}
-                    label={completed ? `Reopen ${task.title}` : `Complete ${task.title}`}
-                    onPress={() => void toggle(task.id, "task", !completed)}
-                    selected={completed}
-                  />
+                  <View style={styles.actions}>
+                    <ActionButton
+                      icon="chevron-forward"
+                      label={`Open ${task.title}`}
+                      onPress={() => router.push({
+                        pathname: "/item-detail",
+                        params: { entityType: "task", itemId: task.id },
+                      })}
+                    />
+                    <ActionButton
+                      busy={busyId === task.id}
+                      icon={completed ? "arrow-undo" : "checkmark"}
+                      label={completed ? `Reopen ${task.title}` : `Complete ${task.title}`}
+                      onPress={() => void toggle(task.id, "task", !completed)}
+                      selected={completed}
+                    />
+                  </View>
                 }
               />
             );
@@ -74,13 +84,23 @@ export default function TasksScreen() {
                 detail={reminder.notes}
                 meta={formatDate(reminder.remindAt)}
                 trailing={
-                  <ActionButton
-                    busy={busyId === reminder.id}
-                    icon={completed ? "arrow-undo" : "checkmark"}
-                    label={completed ? `Reopen ${reminder.title}` : `Complete ${reminder.title}`}
-                    onPress={() => void toggle(reminder.id, "reminder", !completed)}
-                    selected={completed}
-                  />
+                  <View style={styles.actions}>
+                    <ActionButton
+                      icon="chevron-forward"
+                      label={`Open ${reminder.title}`}
+                      onPress={() => router.push({
+                        pathname: "/item-detail",
+                        params: { entityType: "reminder", itemId: reminder.id },
+                      })}
+                    />
+                    <ActionButton
+                      busy={busyId === reminder.id}
+                      icon={completed ? "arrow-undo" : "checkmark"}
+                      label={completed ? `Reopen ${reminder.title}` : `Complete ${reminder.title}`}
+                      onPress={() => void toggle(reminder.id, "reminder", !completed)}
+                      selected={completed}
+                    />
+                  </View>
                 }
               />
             );
@@ -90,3 +110,7 @@ export default function TasksScreen() {
     </Screen>
   );
 }
+
+const styles = StyleSheet.create({
+  actions: { alignItems: "center", flexDirection: "row", gap: 8 },
+});

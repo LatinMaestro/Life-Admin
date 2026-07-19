@@ -1,5 +1,6 @@
 import { useRouter } from "expo-router";
 
+import { ActionButton } from "@/components/action-button";
 import { PrimaryButton } from "@/components/primary-button";
 import { PageTitle, Row, Screen, Section, StatusView } from "@/components/ui";
 import { formatDate, useApiResource } from "@/lib/api";
@@ -29,6 +30,19 @@ export default function ActivityScreen() {
                 title={comment.body}
                 detail={target?.label}
                 meta={formatDate(comment.createdAt)}
+                trailing={
+                  <ActionButton
+                    icon="chevron-forward"
+                    label={`Open ${target?.label ?? "commented item"}`}
+                    onPress={() => router.push({
+                      pathname: "/item-detail",
+                      params: {
+                        entityType: comment.entityType,
+                        itemId: comment.entityId,
+                      },
+                    })}
+                  />
+                }
               />
             );
           })}

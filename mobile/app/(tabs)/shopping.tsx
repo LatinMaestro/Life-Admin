@@ -50,7 +50,20 @@ export default function ShoppingScreen() {
       {lists.map((list) => {
         const listItems = items.filter((item) => item.shoppingListId === list.id);
         return (
-          <Section key={list.id} title={list.name}>
+          <Section
+            key={list.id}
+            title={list.name}
+            action={
+              <ActionButton
+                icon="chevron-forward"
+                label={`Open ${list.name}`}
+                onPress={() => router.push({
+                  pathname: "/item-detail",
+                  params: { entityType: "shopping_list", itemId: list.id },
+                })}
+              />
+            }
+          >
             {listItems.length === 0 ? <Row title="Nothing needed" /> : null}
             {listItems.map((item) => (
               <Row
