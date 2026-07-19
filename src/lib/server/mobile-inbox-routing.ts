@@ -57,7 +57,16 @@ export async function routeMobileInboxItem(
       throw new Error("The inbox item is not available.");
     }
 
-    const assignedMemberId = inboxItem.assignedMemberId ?? context.memberId;
+    const requestedAssigneeId = inboxItem.assignedMemberId ?? context.memberId;
+    const assignee = await tx.householdMember.findFirst({
+      where: {
+        id: requestedAssigneeId,
+        householdId: context.householdId,
+        status: "active",
+      },
+      select: { id: true },
+    });
+    const assignedMemberId = assignee?.id ?? context.memberId;
     let destinationId: string;
 
     switch (input.destination) {
