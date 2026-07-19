@@ -215,6 +215,7 @@ enum ExtractionJobState {
 enum ExtractionStrategy {
   embedded_text
   document_ocr
+  speech_transcription
 }
 
 enum IntakeDraftType {
