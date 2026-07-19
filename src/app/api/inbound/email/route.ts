@@ -24,11 +24,17 @@ export async function POST(request: Request) {
   const secret = process.env.EMAIL_WEBHOOK_SECRET ?? "";
   const sentAt = Number(timestamp);
 
-  if (
-    !Number.isSafeInteger(sentAt) ||
-    Math.abs(Date.now() - sentAt * 1000) > 5 * 60 * 1000 ||
-    !verifyEmailWebhookSignature(timestamp, recipient, eventId, signature, secret)
-  ) {
+  let verified = false;
+  try {
+    verified =
+      Number.isSafeInteger(sentAt) &&
+      Math.abs(Date.now() - sentAt * 1000) <= 5 * 60 * 1000 &&
+      verifyEmailWebhookSignature(timestamp, recipient, eventId, signature, secret);
+  } catch {
+    verified = false;
+  }
+
+  if (!verified) {
     return NextResponse.json({ accepted: false }, { status: 401, headers });
   }
 
