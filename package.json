@@ -29,7 +29,8 @@
     "guardrails:email-intake-migration": "node scripts/check-email-intake-migration.mjs",
     "test:email-intake": "node --test tests/email-intake-crypto.test.mjs",
     "guardrails:safe-intake-migration": "node scripts/check-safe-intake-migration.mjs",
-    "test:intake-policy": "node --test tests/intake-draft-policy.test.mjs"
+    "test:intake-policy": "node --test tests/intake-draft-policy.test.mjs",
+    "guardrails:voice-migration": "node scripts/check-voice-migration.mjs"
   },
   "dependencies": {
     "@clerk/nextjs": "7.5.16",
