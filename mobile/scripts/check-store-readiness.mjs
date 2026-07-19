@@ -57,7 +57,7 @@ const plugins = new Map(
     Array.isArray(plugin) ? plugin[1] : undefined,
   ]),
 );
-const forbiddenPlugins = ["expo-camera", "expo-notifications", "expo-av"];
+const forbiddenPlugins = ["expo-camera", "expo-av"];
 for (const name of plugins.keys()) {
   if (forbiddenPlugins.includes(name)) errors.push(`${name} is outside the approved first-store scope.`);
 }
@@ -77,8 +77,12 @@ if (!audio || audio.enableBackgroundRecording !== false || audio.recordAudioAndr
 if (blockedPermissions.has("android.permission.RECORD_AUDIO")) {
   errors.push("Microphone permission cannot be blocked after voice capture is enabled.");
 }
-if (!blockedPermissions.has("android.permission.POST_NOTIFICATIONS")) {
-  errors.push("Deferred notification permission must remain blocked.");
+const notifications = plugins.get("expo-notifications");
+if (!notifications || notifications.enableBackgroundRemoteNotifications !== false) {
+  errors.push("Push notifications must be configured without background remote execution.");
+}
+if (blockedPermissions.has("android.permission.POST_NOTIFICATIONS")) {
+  errors.push("Notification permission cannot be blocked after private opt-in notifications are enabled.");
 }
 
 const splash = plugins.get("expo-splash-screen");
