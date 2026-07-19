@@ -56,6 +56,10 @@ export function protectTextForDraft(input: string) {
   };
 }
 
+export function protectDraftField(input: string, maxLength: number) {
+  return protectTextForDraft(input).safeText.replace(/\s+/g, " ").trim().slice(0, maxLength);
+}
+
 export function projectSafeDraft(input: string): SafeDraftProjection {
   const protectedText = protectTextForDraft(input);
   const lines = protectedText.safeText.split("\n").map(cleanField).filter(Boolean);
