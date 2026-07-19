@@ -61,9 +61,9 @@ export async function processSourceAsset(
       householdId: context.householdId,
       channel: asset.mediaType.startsWith("image/") ? "camera" : "upload",
       providerEventKeyHash,
-      state: "processing",
+      state: "received",
       sourceReferenceId: sourceReferenceId,
-      attemptCount: 1,
+      attemptCount: 0,
       expiresAt,
     },
     select: { id: true, state: true },
@@ -526,6 +526,15 @@ export async function confirmIntakeDraft(
     await transaction.sourceReference.update({
       where: { id: draft.sourceReferenceId },
       data: { reviewStatus: proposedType === "source_reference" ? "confirmed" : "linked" },
+    });
+    await transaction.sourceAsset.updateMany({
+      where: {
+        householdId: context.householdId,
+        sourceReferenceId: draft.sourceReferenceId,
+        state: "ready",
+        purpose: { not: "voice_audio" },
+      },
+      data: { retentionUntil: null },
     });
     await transaction.inboxItem.updateMany({
       where: {
