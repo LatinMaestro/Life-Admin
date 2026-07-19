@@ -17,16 +17,19 @@ export function EmailForwardingSettings() {
   const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    void load();
+    let active = true;
+    void (async () => {
+      try {
+        const loaded = await read(await fetch("/api/v1/email-intake", { cache: "no-store" }));
+        if (active) setData(loaded);
+      } catch (error) {
+        if (active) setMessage(error instanceof Error ? error.message : "Forwarding is unavailable.");
+      }
+    })();
+    return () => {
+      active = false;
+    };
   }, []);
-
-  async function load() {
-    try {
-      setData(await read(await fetch("/api/v1/email-intake", { cache: "no-store" })));
-    } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Forwarding is unavailable.");
-    }
-  }
 
   async function createOrRotate(confirmRotation = false) {
     if (
