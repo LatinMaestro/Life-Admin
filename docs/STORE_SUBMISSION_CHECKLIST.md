@@ -13,7 +13,8 @@ This checklist separates completed repository work from release-owner steps that
 - [x] Privacy, support, and account-deletion pages exist in the web app.
 - [x] Account deletion has last-admin and household ownership safeguards.
 - [x] Native password recovery uses Clerk's email-code flow.
-- [x] Store listing copy and reviewer guidance are documented.\n- [x] Machine-readable Apple metadata is configured and checked in CI.
+- [x] Store listing copy and reviewer guidance are documented.
+- [x] Machine-readable Apple metadata is configured and checked in CI.
 - [x] Store privacy declarations are mapped to the current implementation.
 - [x] Bill/payment source-of-truth guardrails remain enforced.
 
@@ -24,7 +25,8 @@ This checklist separates completed repository work from release-owner steps that
 - [x] Configure Clerk production keys, custom domain, and Native API.
 - [ ] Configure the mobile production API URL and Clerk publishable key in EAS.
 - [ ] Run `npm run release:check:live` from `mobile/` with production environment values.
-- [x] Baseline and verify Prisma migration history in the production database.\n- [ ] Confirm Neon backups, retention, and production access ownership.
+- [x] Baseline and verify Prisma migration history in the production database.
+- [ ] Confirm Neon backups, retention, and production access ownership.
 - [ ] Complete a production web smoke test after the final main deployment.
 
 ## Developer Accounts And Signing
