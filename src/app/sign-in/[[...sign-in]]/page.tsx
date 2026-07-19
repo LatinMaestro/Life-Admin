@@ -25,8 +25,9 @@ export default function SignInPage() {
           <SignIn
             path="/sign-in"
             routing="path"
-            fallbackRedirectUrl="/"
-            withSignUp={false}
+            fallbackRedirectUrl="/onboarding"
+            signUpUrl="/sign-up"
+            withSignUp
           />
         ) : (
           <Card>
