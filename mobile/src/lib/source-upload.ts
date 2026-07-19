@@ -66,6 +66,17 @@ export function usePrivateSourceUpload() {
         },
       }),
     );
+    const processing = await fetch(
+      `${apiUrl}/api/v1/source-assets/${intent.assetId}/process`,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return { reviewReady: processing.ok };
   }, [getToken]);
 }
 
