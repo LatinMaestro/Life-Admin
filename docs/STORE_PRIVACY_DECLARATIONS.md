@@ -18,6 +18,7 @@ Version 1.0.0:
 
 - requires an authenticated account and active household membership;
 - sends account and household data to Clerk, the Family Life Admin API, and Neon-backed storage;
+- allows Clerk and Vercel to process request IP addresses, IP-derived coarse location, client details, and operational security or diagnostic records;
 - contains no advertising or marketing SDK;
 - performs no cross-app or cross-site tracking;
 - requests no camera, microphone, photo, contacts, calendar, location, or notification permission;
@@ -42,6 +43,8 @@ Version 1.0.0:
 | Source title, location label, sensitivity, and optional HTTPS URL | PostgreSQL | Yes | Return to the original household source |
 | Password and verification factors | Clerk | Yes | Authentication and security; the app does not store passwords |
 | Account deletion request status | PostgreSQL, Clerk | Yes until deletion completes | Account management and deletion operations |
+| Request IP address and IP-derived coarse location | Clerk, Vercel | Potentially | Security, fraud prevention, service operation |
+| Client, request, error, and performance details | Clerk, Vercel | Potentially | Security, reliability, troubleshooting |
 | Operational request/security logs | Vercel, Clerk, Neon as configured | Potentially | Security, reliability, abuse prevention |
 
 ## Apple App Privacy Draft
@@ -58,6 +61,8 @@ All listed data is used for **App Functionality** unless the final provider audi
 | User Content - Other User Content | User-entered tasks, notes, lists, comments, source labels, and household settings | Yes | No |
 | Usage Data - Product Interaction | Status changes and activity history are transmitted and retained to provide household activity features | Yes | No |
 | Financial Info - Other Financial Info | Conservative classification for user-entered bill/renewal provider and date reminders | Yes | No |
+| Location - Coarse Location | Service providers may derive city/country from request IP address | Potentially | No |
+| Diagnostics - Other Diagnostic Data | Operational request, error, and security records used to run and protect the service | Potentially | No |
 
 ### Do Not Declare For Current Features
 
@@ -68,7 +73,7 @@ All listed data is used for **App Functionality** unless the final provider audi
 - Photos or Videos
 - Audio Data
 - Contacts
-- Precise or Coarse Location
+- Precise Location
 - Browsing History
 - Search History
 - Advertising Data
@@ -78,12 +83,7 @@ Source URLs are user-provided references. The app does not record which external
 
 ### Verify Before Submission
 
-Confirm whether production Clerk, Vercel, Neon, Expo, or App Store build diagnostics require:
-
-- Crash Data;
-- Performance Data;
-- Other Diagnostic Data;
-- Device ID.
+The current source and provider audit found no client crash-reporting or analytics SDK and no advertising identifier access. Recheck Device ID only if authentication, analytics, notifications, updates, or diagnostics integrations change.
 
 Do not select Analytics unless production configuration actually uses data to measure user behaviour or product performance. Operational security and reliability processing may remain App Functionality under Apple's definitions.
 
@@ -103,12 +103,14 @@ Data is encrypted in transit through HTTPS. The app provides account deletion fr
 | App activity - Other user-generated content | Optional per item; central to app use | App functionality | No; service providers only |
 | App activity - App interactions | Required for household activity history when actions are taken | App functionality | No; service providers only |
 | Financial info - Other financial info | Optional | App functionality | No; service providers only |
+| Location - Approximate location | Collected automatically from request IP by service providers | Security, Fraud prevention, App functionality | No; service providers only |
+| App info and performance - Diagnostics | Collected automatically for operational request, error, and security records | Security, App functionality | No; service providers only |
 
 The conservative financial classification covers bill/renewal provider and date reminders only. Do not select User payment info, Purchase history, or Credit score.
 
 ### Do Not Declare For Current Features
 
-- Approximate or precise location
+- Precise location
 - Phone number
 - Address
 - Contacts
@@ -123,17 +125,17 @@ The conservative financial classification covers bill/renewal provider and date 
 
 Comments are household user-generated content, not public messaging. If Play Console guidance classifies household comments as **Other in-app messages** for the final build, add that data type with App functionality, optional collection, linked/account-scoped handling, and no advertising sharing.
 
-### Verify Before Submission
+### Provider Audit Evidence
 
-Review current disclosures from Clerk, Vercel, Neon, Expo, and any store build services for:
+Reviewed on 19 July 2026 against the signed Android candidate and current official provider information:
 
-- Device or other IDs;
-- Approximate location inferred or retained from IP addresses;
-- Crash logs;
-- Diagnostics;
-- Other app performance data.
+- [Clerk telemetry](https://clerk.com/docs/guides/how-clerk-works/security/clerk-telemetry) is development-instance SDK telemetry and does not collect production end-user data; Clerk still processes account, session, IP, and security data to provide authentication.
+- [Vercel's privacy notice](https://vercel.com/legal/privacy-notice) states that end-user IP addresses, IP-derived city/country, client details, logs, diagnostics, and performance information may be processed.
+- [Neon's security overview](https://neon.com/docs/security/security-overview) documents encryption, backup controls, and backup retention. The connected production main branch is currently healthy but unprotected.
+- [Expo's trust center](https://expo.dev/trust) states that EAS build workers are ephemeral and build logs/artifacts are retained for a limited period. This release does not include Expo Updates, Expo Observe, Expo notifications, analytics, or crash-reporting packages.
+- Repository search and the signed build dependency graph found no advertising, analytics, crash-reporting, notification, upload, or over-the-air update integration.
 
-Google states that approximate location inferred from IP address can require disclosure. Confirm whether any provider retains or uses IP-derived location rather than assuming it is absent.
+Re-audit Device or other IDs if the authentication implementation changes, and re-audit all declarations whenever another SDK or permission is added.
 
 ## Sharing And Tracking Position
 
@@ -165,12 +167,12 @@ Before store submission, confirm:
 
 Do not submit either store form until all boxes are checked:
 
-- [ ] Production provider settings match this inventory.
-- [ ] No analytics, crash reporting, social login, uploads, notifications, or other SDKs were added after this review.
-- [ ] Clerk's current privacy and Data safety guidance was reviewed.
-- [ ] Vercel's current privacy and logging configuration was reviewed.
-- [ ] Neon retention, backup, and operational access were reviewed.
-- [ ] Expo/EAS build and update telemetry was reviewed.
+- [x] Production provider settings match this inventory as reviewed on 19 July 2026.
+- [x] No analytics, crash reporting, social login, uploads, notifications, or other SDKs were present in the signed Android candidate.
+- [x] Clerk's current privacy and Data safety guidance was reviewed.
+- [x] Vercel's current privacy and logging configuration was reviewed.
+- [x] Neon retention, backup, and operational access were reviewed; the upgrade/protection decision remains open.
+- [x] Expo/EAS build and update telemetry was reviewed.
 - [ ] The conservative bill-reminder classification was confirmed in both store consoles.
 - [ ] Apple responses were previewed and checked against the privacy policy.
 - [ ] Google responses were previewed and checked against the privacy policy.
