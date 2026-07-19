@@ -1,5 +1,6 @@
 import "server-only";
 
+import type { Prisma } from "@prisma/client";
 import type { HouseholdAccessContext } from "@/lib/access-control";
 import type { MobileItemEntityType } from "@/lib/api/v1/contracts";
 import { getPrismaClient } from "@/lib/server/prisma";
@@ -247,9 +248,7 @@ export async function archiveMobileItem(
   });
 }
 
-type TransactionClient = Parameters<
-  Parameters<ReturnType<typeof getPrismaClient>["$transaction"]>[0]
->[0];
+type TransactionClient = Prisma.TransactionClient;
 
 async function requireActor(
   tx: TransactionClient,
