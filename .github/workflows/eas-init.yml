@@ -17,20 +17,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check Expo token
+        id: token
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
           if [ -z "$EXPO_TOKEN" ]; then
-            echo "EXPO_TOKEN is not configured in repository Actions secrets."
-            exit 1
+            echo "EXPO_TOKEN is not configured yet; Expo linking is deferred."
+            echo "available=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=true" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Checkout release branch
+        if: steps.token.outputs.available == 'true'
         uses: actions/checkout@v4
         with:
           ref: release/mobile-eas-link
 
       - name: Set up Node.js
+        if: steps.token.outputs.available == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: 24
@@ -38,16 +43,19 @@ jobs:
           cache-dependency-path: mobile/package-lock.json
 
       - name: Set up Expo and EAS
+        if: steps.token.outputs.available == 'true'
         uses: expo/expo-github-action@v8
         with:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Install mobile dependencies
+        if: steps.token.outputs.available == 'true'
         working-directory: mobile
         run: npm ci --no-audit --no-fund
 
       - name: Create or link EAS project
+        if: steps.token.outputs.available == 'true'
         working-directory: mobile
         run: |
           eas whoami
@@ -55,6 +63,7 @@ jobs:
           eas project:info
 
       - name: Commit generated project link
+        if: steps.token.outputs.available == 'true'
         run: |
           if git diff --quiet -- mobile/app.json; then
             echo "Expo project was already linked."
