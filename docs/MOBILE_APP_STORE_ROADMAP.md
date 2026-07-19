@@ -60,16 +60,19 @@ Each write must reuse the existing transactional household service. Native-suppl
 - Account deletion entry point.
 - Loading, empty, error, retry, and offline-read-error states.
 
-### Explicitly Excluded From First Store Build
+### Approved Pre-Store Expansion
 
-- Push notifications.
-- Uploads or camera capture.
-- Email forwarding.
-- AI or OCR.
-- Voice capture.
-- Background sync and offline writes.
-- Finance features.
-- Payment identifier fields or extraction.
+- Self-service onboarding and full native workflow completion.
+- Advanced recurrence.
+- Private uploads and user-initiated camera capture.
+- Household email forwarding.
+- Direct text extraction and OCR.
+- Bounded reviewable classification.
+- User-initiated voice capture and narrow speech-to-text.
+- Opt-in push notifications.
+- Automated security, end-to-end, emulator, final UI, and client acceptance gates.
+
+Still excluded: background sync/offline writes, general-purpose generative AI, finance features, payment execution, and structured payment identifier storage or transcription.
 
 ## Privacy And Store Compliance
 
@@ -99,11 +102,11 @@ References:
 3. Versioned mobile API with tests.
 4. Expo scaffold and authentication.
 5. Core module parity.
-6. Accessibility and physical-device QA.
-7. TestFlight and Google Play internal testing.
-8. Store assets, metadata, privacy declarations, and review notes.
-9. Controlled production submission.
-10. Post-launch monitoring and support.
+6. Complete Phases 1-15 in `docs/PHASES_1_TO_16.md`.
+7. Deploy the controlled client-test candidate and obtain client approval.
+8. Create paid store accounts and final signed builds only after approval.
+9. TestFlight and Google Play internal testing.
+10. Store assets, forms, controlled submission, and post-launch support.
 
 ## External Inputs Required Before Submission
 

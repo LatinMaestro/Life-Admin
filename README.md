@@ -8,15 +8,15 @@ This project is separate from SpendGrove. It does not include budgeting, bank im
 
 - Household-first data and authorization.
 - Simple, beginner-friendly workflows with one obvious action at a time.
-- Manual creation remains the default.
+- Manual creation remains available for every workflow; approved automated intake creates reviewable drafts only.
 - Mobile-first web plus approved native iOS and Android clients.
 - Bills and renewals track household admin dates and original source references, not financial analysis.
 - Payment reminders point back to original sources instead of storing generated or transcribed payment identifiers.
-- AI, email forwarding, OCR, voice capture, notifications, and file uploads remain separately controlled phases.
+- Email forwarding, secure uploads/camera, OCR, bounded classification, voice capture, advanced recurrence, and opt-in notifications are approved pre-store phases with strict privacy and confirmation gates.
 
 ## Current Product
 
-The web app includes live Clerk authentication, Neon/PostgreSQL persistence, household membership enforcement, invitation acceptance, household settings, dashboard, inbox routing, tasks and reminders, shopping lists, bills and renewals, source references, comments, and activity history.
+The web app includes live Clerk authentication, Neon/PostgreSQL persistence, household membership enforcement, invitation acceptance, household settings, dashboard, inbox routing, tasks and reminders, shopping lists, bills and renewals, source references, comments, and activity history. Development is now progressing through the approved Phases 1-16 before client acceptance testing.
 
 The `mobile/` project is a genuine Expo/React Native client for iOS and Android. It uses Clerk secure sessions and the authenticated household API. Core native read and write workflows, release configuration, app artwork, and store copy are implemented. Signed builds and store submission remain controlled external release steps.
 
@@ -39,6 +39,10 @@ The `mobile/` project is a genuine Expo/React Native client for iOS and Android.
 - `docs/SPECIFICATION_SOURCE_OF_TRUTH.md` - canonical product specification
 - `docs/MVP_SCOPE.md` - original web MVP boundaries
 - `docs/MOBILE_APP_STORE_ROADMAP.md` - iOS, Android, API, testing, and store-release plan
+- `docs/PHASES_1_TO_16.md` - approved pre-store development sequence and exit gates
+- `docs/AUTOMATED_INTAKE_ARCHITECTURE.md` - upload, email, OCR, classification, voice, retention, and redaction architecture
+- `docs/RECURRENCE_AND_NOTIFICATION_DESIGN.md` - recurrence, scheduling, preferences, and safe delivery rules
+- `docs/TEST_STRATEGY_PHASES_1_TO_16.md` - automated, integration, API, provider, end-to-end, and emulator test strategy
 - `docs/STORE_LISTING.md` - approved App Store and Google Play listing copy
 - `mobile/store.config.json` - machine-readable Apple App Store metadata
 - `docs/STORE_PRIVACY_DECLARATIONS.md` - current data inventory and draft store privacy answers
@@ -51,7 +55,7 @@ The `mobile/` project is a genuine Expo/React Native client for iOS and Android.
 - `docs/ACCESS_CONTROL.md` - membership and permission enforcement
 - `docs/DATA_MODEL.md` - household-scoped data model
 - `docs/PRODUCTION_ACTIVATION_RUNBOOK.md` - controlled web activation
-- `docs/FUTURE_PHASES.md` - capabilities that remain deferred
+- `docs/FUTURE_PHASES.md` - approved current scale-up and capabilities that remain deferred
 - `docs/BILL_PAYMENT_SOURCE_OF_TRUTH_RULES.md` - strict bill/payment rules
 - `docs/IOS_FUTURE_ROADMAP.md` - historical iOS roadmap and current cross-platform direction
 

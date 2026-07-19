@@ -22,7 +22,7 @@ The app may store:
 - Assigned household member
 - Source document reference
 - Source link reference
-- Source email reference in a future phase
+- Source email reference
 - Reminder date/time
 - Activity history
 - Comments
@@ -43,7 +43,7 @@ The app must not store generated or transcribed:
 
 ## User-Confirmed Source References
 
-A future phase may support user-confirmed image crops or source references. These may point to the original source location of payment information, but must not convert that information into generated/transcribed stored values.
+Approved upload and camera phases may support user-confirmed image crops or source references. These may point to the original source location of payment information, but must not convert that information into generated or transcribed stored values.
 
 Allowed:
 
@@ -72,9 +72,18 @@ Not allowed:
 
 The automation is a backstop, not a replacement for review. Reviewers should still check bill, renewal, source reference, AI, OCR, email forwarding, and upload changes manually.
 
-## AI/OCR Rules
+## Automated Intake, OCR, And Voice Rules
 
-AI and OCR are future phases. If approved later, they must not extract and store payment identifiers. Any payment-related detection must remain a pointer to a source document/crop/reference.
+Email forwarding, uploads, camera capture, OCR, bounded classification, and voice capture are approved review-first intake channels.
+
+- Original private sources may contain payment details because they remain the source of truth.
+- Raw extraction output is temporary and must not become a durable product record.
+- Forbidden payment values are discarded before persistence, classification, logs, search, notifications, drafts, or activity history.
+- Detection may record only a category and count, never the matched value.
+- Safe suggested fields are limited to title, provider, due date, renewal date, short notes, assignee, recurrence/reminder choices, and source pointers.
+- Users must confirm every suggested record before it becomes active.
+- Payment-related actions remain “Open source,” “View original document,” or equivalent source-navigation language.
+- General-purpose generative AI and autonomous action creation remain unapproved.
 
 ## Review Gate
 

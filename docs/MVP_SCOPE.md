@@ -95,3 +95,10 @@ Deliver a private mobile-first household admin web app where family members can 
 ## Scope Review Rule
 
 If a feature starts to look like personal finance, document automation, AI intake, payment instruction handling, or native mobile work, pause and require explicit approval before implementation.
+
+
+## Historical Scope Status
+
+This file preserves the original manual-first web MVP boundary. The MVP was later implemented and validated. The user subsequently approved the pre-store expansion in `docs/PHASES_1_TO_16.md`, including native delivery, onboarding, advanced recurrence, private uploads/camera, email forwarding, direct text extraction/OCR, bounded reviewable classification, voice capture, and opt-in push notifications.
+
+The expansion does not approve finance features, payment identifiers, payment execution, autonomous obligations, or general-purpose generative AI.

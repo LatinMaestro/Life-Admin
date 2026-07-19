@@ -39,7 +39,7 @@ The app should feel calm, practical, and private. It should support repeated dai
 
 Manual creation is the MVP default. Users manually create tasks, reminders, shopping lists, bills, renewals, inbox items, comments, and source references.
 
-Email forwarding, AI extraction, OCR, voice capture, and native iOS are future phases and must not be implemented during MVP without explicit approval.
+Email forwarding, secure uploads/camera, direct text extraction and OCR, bounded classification, voice capture, advanced recurrence, push notifications, and native distribution were later explicitly approved for Phases 1-16. These features remain review-first, household-scoped, and subordinate to manual creation. General-purpose generative AI remains deferred.
 
 ## Bills And Renewals
 
@@ -66,6 +66,11 @@ They must not include generated or transcribed payment identifiers such as BPAY 
 - Prisma
 - PostgreSQL
 - Vercel deployment target
-- Auth-ready architecture
-- Mobile-first web first
-- Native iOS later
+- Clerk-authenticated household architecture
+- Mobile-first web plus approved Expo/React Native iOS and Android clients
+- Versioned household APIs and shared server services
+
+
+## Approved Pre-Store Expansion
+
+The original MVP has been validated and expanded through the client-test plan in `docs/PHASES_1_TO_16.md`. Automated channels may prepare drafts only. An authorised household member confirms the record, recurrence, assignment, and notification settings. Original sources remain private and structured payment identifiers never become application data.

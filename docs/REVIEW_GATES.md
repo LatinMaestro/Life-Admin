@@ -81,3 +81,38 @@ Review gates protect the product boundary, household privacy, and implementation
 - Screenshots use fictional data.
 - Physical-device, accessibility, crash, and slow-network tests pass.
 - Production domain, signing, identifiers, and store metadata are approved.
+
+
+## Gate 12: Storage And Source Assets
+
+- Object keys and signed URLs are server-derived and household-scoped.
+- Size, type, magic-byte, digest, quarantine, malware, preview, retention, and deletion controls pass.
+- No stable public source URL exists.
+- Cross-household and expired-link tests pass.
+
+## Gate 13: Automated Intake And OCR
+
+- Inbound provider signatures, replay protection, rate limits, and idempotency pass.
+- Raw email, OCR, and speech text remains temporary and absent from logs/activity.
+- Output schemas allow only approved safe fields.
+- Every result remains a draft until confirmation.
+- Structured payment identifiers are discarded before persistence or classification output.
+
+## Gate 14: Recurrence And Notifications
+
+- Timezone, DST, month-end, one-occurrence, series-edit, pause, skip, and duplicate-run tests pass.
+- Notifications are opt-in, respect quiet hours, use safe previews, and recheck access before delivery.
+- Deep links fail safely after logout, access removal, or item deletion.
+
+## Gate 15: Device Permissions
+
+- Camera, microphone, and push permission prompts occur only after a clear user action.
+- Denial, restricted, revoked, and retry states remain usable.
+- No background recording or unrelated permission request exists.
+
+## Gate 16: Client Acceptance Before Paid Release
+
+- Final UI passes phone, tablet, desktop, accessibility, and beginner-usability review.
+- A fictional-data client candidate is available without paid store enrollment.
+- Client feedback is resolved and affected gates rerun.
+- Explicit client approval is recorded before store accounts, uploads, or submission.

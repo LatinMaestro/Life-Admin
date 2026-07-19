@@ -40,8 +40,8 @@ Important boundaries:
 
 - The initial migration has been generated, reviewed, rehearsed on isolated Neon branches, and applied to production.
 - The production schema is available, but application runtime access remains disabled until Clerk, secure environment values, and the initial household membership are ready.
-- The app still renders from typed static demo data until persistence is wired in a later approved batch.
-- The schema includes invitation-ready entities but does not implement invite flows.
+- Production runtime uses database-backed household persistence.
+- Invitation and membership administration are implemented; first-user self-service onboarding remains in Phase 2.
 - Source references are metadata/pointers only and do not implement uploads or document previews.
 - Bills and renewals do not include generated or transcribed payment identifier fields.
 
@@ -423,3 +423,231 @@ Access checks:
 - Never fetch core records by id alone without household membership validation.
 - Do not expose source references outside authorised household members.
 - Do not log sensitive source metadata or private household content.
+
+
+## Approved Expansion Entities
+
+These entities are architectural proposals for Phases 2-12. Prisma changes require scoped migrations and isolated-branch rehearsal.
+
+### SourceAsset
+
+Private object metadata for an uploaded document, camera image, original email, attachment, or temporary voice recording.
+
+Fields:
+
+- id
+- householdId
+- sourceReferenceId
+- provider
+- objectKey
+- originalName
+- mediaType
+- byteSize
+- sha256Digest
+- state: pending, quarantined, ready, rejected, deleting, deleted
+- purpose
+- retentionUntil
+- createdByMemberId
+- createdAt
+- updatedAt
+- deletedAt
+
+The objectKey is server-generated and provider-neutral. Public URLs, source contents, OCR text, and payment identifiers are not stored here.
+
+### IntakeAlias
+
+Revocable mapping for inbound household email.
+
+Fields:
+
+- id
+- householdId
+- aliasTokenHash
+- state
+- createdByMemberId
+- createdAt
+- revokedAt
+
+### IntakeEnvelope
+
+Metadata-only record for upload, email, camera, or voice processing.
+
+Fields:
+
+- id
+- householdId
+- channel
+- providerEventKeyHash
+- state
+- sourceAssetId
+- attemptCount
+- expiresAt
+- createdByMemberId
+- createdAt
+- updatedAt
+
+### ExtractionJob
+
+Tracks transient text/OCR/speech processing without storing raw extracted content.
+
+Fields:
+
+- id
+- householdId
+- intakeEnvelopeId
+- mode: embedded_text, ocr, speech
+- state
+- pageCount
+- confidenceBand
+- redactionCategoryCounts
+- startedAt
+- completedAt
+- expiresAt
+
+### IntakeDraft
+
+Reviewable safe-field projection.
+
+Fields:
+
+- id
+- householdId
+- intakeEnvelopeId
+- proposedType
+- title
+- provider
+- safeNotes
+- dueAt
+- renewalAt
+- proposedAssignedMemberId
+- sourceReferenceId
+- confidenceBand
+- warnings
+- state: ready, confirmed, rejected, expired
+- confirmedByMemberId
+- expiresAt
+- createdAt
+- updatedAt
+
+No raw transcript, OCR body, email body, or structured payment identifier is permitted.
+
+### RecurrenceSeries
+
+Household schedule template for confirmed tasks, reminders, bills, or renewals.
+
+Fields:
+
+- id
+- householdId
+- targetType
+- targetId
+- timezone
+- frequency
+- interval
+- byDay
+- dayOfMonth
+- localTime
+- startsOn
+- endsOn
+- occurrenceLimit
+- state
+- nextGenerationAt
+- createdByMemberId
+- createdAt
+- updatedAt
+
+### RecurrenceOccurrence
+
+Generated idempotent occurrence.
+
+Fields:
+
+- id
+- householdId
+- recurrenceSeriesId
+- scheduledFor
+- localDate
+- state
+- overrideMetadata
+- generatedAt
+- completedAt
+
+Unique constraint: recurrenceSeriesId plus scheduledFor.
+
+### NotificationPreference
+
+Per-member household notification choices.
+
+Fields:
+
+- id
+- householdId
+- memberId
+- enabled
+- allowedItemTypes
+- quietHoursStart
+- quietHoursEnd
+- timezone
+- previewMode
+- createdAt
+- updatedAt
+
+### DevicePushToken
+
+Private installation token mapping.
+
+Fields:
+
+- id
+- userId
+- provider
+- tokenCiphertext
+- tokenFingerprint
+- platform
+- state
+- lastSeenAt
+- revokedAt
+- createdAt
+- updatedAt
+
+Push tokens do not belong in household-visible data or activity history.
+
+### NotificationDelivery
+
+Idempotent delivery record.
+
+Fields:
+
+- id
+- householdId
+- memberId
+- eventKey
+- targetType
+- targetId
+- scheduledFor
+- state
+- attemptCount
+- providerResultCategory
+- deliveredAt
+- createdAt
+- updatedAt
+
+## Expansion Indexes And Constraints
+
+- householdId on every household-owned expansion entity
+- unique aliasTokenHash
+- unique provider plus providerEventKeyHash where present
+- unique recurrenceSeriesId plus scheduledFor
+- unique eventKey per notification delivery
+- expiry indexes for temporary assets, envelopes, jobs, and drafts
+- state plus nextGenerationAt for recurrence workers
+- state plus scheduledFor for notification workers
+- server-enforced foreign keys that cannot cross household ownership
+
+## Expansion Deletion Rules
+
+- deleting a source queues its assets and derived unconfirmed drafts for deletion;
+- deleting a household revokes aliases, tokens in that household context, pending jobs, deliveries, and storage objects;
+- raw extraction text and temporary audio are never durable database fields;
+- activity events retain only safe action metadata;
+- provider deletion is retried idempotently and reaches a terminal verified state.
