@@ -8,7 +8,7 @@ on:
       - .github/workflows/eas-init.yml
   workflow_dispatch:
 
-permissions:
+concurrency:\n  group: expo-project-link\n  cancel-in-progress: true\n\npermissions:
   contents: write
 
 jobs:
