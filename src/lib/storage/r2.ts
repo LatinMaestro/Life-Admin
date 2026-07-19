@@ -38,7 +38,7 @@ export class R2PrivateObjectStorage implements PrivateObjectStorage {
     const response = await fetch(await this.createUploadUrl(objectKey, 60), {
       method: "PUT",
       headers: { "Content-Type": contentType },
-      body: bytes,
+      body: Buffer.from(bytes),
       cache: "no-store",
     });
     if (!response.ok) {
