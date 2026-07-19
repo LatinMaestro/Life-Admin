@@ -196,3 +196,173 @@ function cadenceFor(frequency: CreateReminderSeriesInput["frequency"]) {
       ? "monthly" as const
       : "custom" as const;
 }
+
+
+export async function getReminderSeries(
+  context: HouseholdAccessContext,
+  reminderId: string,
+) {
+  const series = await getPrismaClient().recurrenceSeries.findFirst({
+    where: {
+      householdId: context.householdId,
+      targetType: "reminder",
+      targetId: reminderId,
+    },
+    orderBy: { createdAt: "desc" },
+    include: {
+      occurrences: {
+        orderBy: { scheduledFor: "asc" },
+        take: 100,
+      },
+    },
+  });
+
+  if (!series) return null;
+
+  return {
+    id: series.id,
+    state: series.state,
+    frequency: series.frequency,
+    interval: series.interval,
+    byDay: series.byDay,
+    dayOfMonth: series.dayOfMonth,
+    monthEndPolicy: series.monthEndPolicy,
+    localTime: series.localTime,
+    startsOn: series.startsOn.toISOString(),
+    endsOn: series.endsOn?.toISOString() ?? null,
+    occurrenceLimit: series.occurrenceLimit,
+    occurrences: series.occurrences.map((occurrence) => ({
+      id: occurrence.id,
+      localDate: occurrence.localDate,
+      scheduledFor: occurrence.scheduledFor.toISOString(),
+      state: occurrence.state,
+      generatedItemId: occurrence.generatedItemId,
+    })),
+  };
+}
+
+export async function skipReminderOccurrence(
+  context: HouseholdAccessContext,
+  occurrenceId: string,
+) {
+  return getPrismaClient().$transaction(async (tx) => {
+    const [actor, occurrence] = await Promise.all([
+      tx.householdMember.findFirst({
+        where: {
+          id: context.memberId,
+          userId: context.userId,
+          householdId: context.householdId,
+          status: "active",
+        },
+        select: { id: true },
+      }),
+      tx.recurrenceOccurrence.findFirst({
+        where: {
+          id: occurrenceId,
+          householdId: context.householdId,
+          state: "scheduled",
+        },
+        include: {
+          series: { select: { targetId: true } },
+        },
+      }),
+    ]);
+    if (!actor || !occurrence) {
+      throw new Error("The repeat occurrence is not available.");
+    }
+
+    await tx.recurrenceOccurrence.update({
+      where: { id: occurrence.id },
+      data: { state: "skipped" },
+    });
+    if (occurrence.generatedItemId) {
+      await tx.reminder.updateMany({
+        where: {
+          id: occurrence.generatedItemId,
+          householdId: context.householdId,
+          status: "scheduled",
+        },
+        data: { status: "archived" },
+      });
+    }
+    await tx.activityEvent.create({
+      data: {
+        householdId: context.householdId,
+        actorUserId: context.userId,
+        actorMemberId: context.memberId,
+        entityType: "reminder",
+        entityId: occurrence.series.targetId,
+        eventType: "changed_status",
+        summary: `Skipped repeat occurrence on ${occurrence.localDate}.`,
+      },
+    });
+  });
+}
+
+export async function rescheduleReminderOccurrence(
+  context: HouseholdAccessContext,
+  occurrenceId: string,
+  localDate: string,
+) {
+  const calendarDate = calendarDateFromIso(localDate);
+  return getPrismaClient().$transaction(async (tx) => {
+    const [actor, occurrence] = await Promise.all([
+      tx.householdMember.findFirst({
+        where: {
+          id: context.memberId,
+          userId: context.userId,
+          householdId: context.householdId,
+          status: "active",
+        },
+        select: { id: true },
+      }),
+      tx.recurrenceOccurrence.findFirst({
+        where: {
+          id: occurrenceId,
+          householdId: context.householdId,
+          state: "scheduled",
+        },
+        include: {
+          series: { select: { timezone: true, localTime: true, targetId: true } },
+        },
+      }),
+    ]);
+    if (!actor || !occurrence) {
+      throw new Error("The repeat occurrence is not available.");
+    }
+
+    const scheduledFor = toZonedInstant(
+      calendarDate,
+      occurrence.series.localTime,
+      occurrence.series.timezone,
+    );
+    await tx.recurrenceOccurrence.update({
+      where: { id: occurrence.id },
+      data: {
+        scheduledFor,
+        localDate: calendarDateToIso(calendarDate),
+        overrideData: { rescheduled: true },
+      },
+    });
+    if (occurrence.generatedItemId) {
+      await tx.reminder.updateMany({
+        where: {
+          id: occurrence.generatedItemId,
+          householdId: context.householdId,
+        },
+        data: { remindAt: scheduledFor },
+      });
+    }
+    await tx.activityEvent.create({
+      data: {
+        householdId: context.householdId,
+        actorUserId: context.userId,
+        actorMemberId: context.memberId,
+        entityType: "reminder",
+        entityId: occurrence.series.targetId,
+        eventType: "updated",
+        summary: `Moved one repeat occurrence to ${localDate}.`,
+      },
+    });
+  });
+}
