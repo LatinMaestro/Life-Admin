@@ -159,7 +159,7 @@ export default function NewSourceScreen() {
           <PrimaryButton
             busy={busy}
             disabled={title.trim().length < 2}
-            icon="cloud-upload-outline"
+            icon="checkmark"
             label="Upload privately"
             onPress={() => void upload()}
           />
