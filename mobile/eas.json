@@ -20,6 +20,9 @@
   },
   "submit": {
     "production": {
+      "ios": {
+        "metadataPath": "./store.config.json"
+      },
       "android": {
         "track": "internal",
         "releaseStatus": "draft"
