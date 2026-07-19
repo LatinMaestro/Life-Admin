@@ -1,8 +1,10 @@
-import { ClerkProvider } from "@clerk/expo";
+import { ClerkProvider, useAuth } from "@clerk/expo";
 import { tokenCache } from "@clerk/expo/token-cache";
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { useEffect } from "react";
 
+import { listenForNotificationResponses } from "@/lib/notifications";
 import { colors } from "@/lib/theme";
 
 const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY ?? "";
@@ -11,6 +13,7 @@ if (!publishableKey) throw new Error("EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY is requi
 export default function RootLayout() {
   return (
     <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
+      <NotificationNavigation />
       <StatusBar style="dark" />
       <Stack
         screenOptions={{
@@ -37,6 +40,7 @@ export default function RootLayout() {
         <Stack.Screen name="sources" options={{ title: "Sources" }} />
         <Stack.Screen name="activity" options={{ title: "Activity" }} />
         <Stack.Screen name="settings" options={{ title: "Settings" }} />
+        <Stack.Screen name="notification-settings" options={{ title: "Notifications" }} />
         <Stack.Screen name="new-inbox" options={{ title: "Add to inbox", presentation: "modal" }} />
         <Stack.Screen name="new-task" options={{ title: "Add task", presentation: "modal" }} />
         <Stack.Screen name="new-shopping-item" options={{ title: "Add shopping item", presentation: "modal" }} />
@@ -53,4 +57,19 @@ export default function RootLayout() {
       </Stack>
     </ClerkProvider>
   );
+}
+
+function NotificationNavigation() {
+  const { isSignedIn } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isSignedIn) return;
+    const subscription = listenForNotificationResponses((path) => {
+      router.push(path as never);
+    });
+    return () => subscription.remove();
+  }, [isSignedIn, router]);
+
+  return null;
 }
