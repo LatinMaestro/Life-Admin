@@ -78,6 +78,20 @@ export default function ItemDetailScreen() {
         ) : null}
       </Section>
 
+      <Pressable
+        accessibilityRole="button"
+        onPress={() =>
+          router.push({
+            pathname: "/edit-item",
+            params: { entityType: item.entityType, itemId: item.id },
+          })
+        }
+        style={styles.editButton}
+      >
+        <Ionicons color={colors.primary} name="create-outline" size={20} />
+        <Text style={styles.editText}>Edit item</Text>
+      </Pressable>
+
       <PrimaryButton
         icon="add"
         label="Add comment"
@@ -118,6 +132,17 @@ export default function ItemDetailScreen() {
 
 const styles = StyleSheet.create({
   heading: { alignItems: "flex-start", gap: 10 },
+  editButton: {
+    alignItems: "center",
+    borderColor: colors.border,
+    borderRadius: 8,
+    borderWidth: 1,
+    flexDirection: "row",
+    gap: 8,
+    justifyContent: "center",
+    minHeight: 48,
+  },
+  editText: { color: colors.primary, fontSize: 16, fontWeight: "700" },
   sourceButton: {
     alignItems: "center",
     borderColor: colors.border,

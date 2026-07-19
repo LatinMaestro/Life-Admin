@@ -13,8 +13,8 @@ export default function TasksScreen() {
   const state = useApiResource<TasksResponse>("/api/v1/tasks");
   const mutate = useHouseholdMutation();
   const [busyId, setBusyId] = useState<string | null>(null);
-  const tasks = state.data?.tasks ?? [];
-  const reminders = state.data?.reminders ?? [];
+  const tasks = (state.data?.tasks ?? []).filter((item) => item.status !== "archived");
+  const reminders = (state.data?.reminders ?? []).filter((item) => item.status !== "archived");
   const empty = Boolean(state.data) && tasks.length + reminders.length === 0;
 
   const toggle = async (

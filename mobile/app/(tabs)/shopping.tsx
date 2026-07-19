@@ -14,7 +14,7 @@ export default function ShoppingScreen() {
   const state = useApiResource<ShoppingResponse>("/api/v1/shopping");
   const mutate = useHouseholdMutation();
   const [busyId, setBusyId] = useState<string | null>(null);
-  const lists = state.data?.lists ?? [];
+  const lists = (state.data?.lists ?? []).filter((list) => list.status === "active");
   const items = state.data?.items ?? [];
   const hasLists = lists.length > 0;
 

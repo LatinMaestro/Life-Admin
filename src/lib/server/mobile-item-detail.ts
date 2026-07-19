@@ -20,6 +20,7 @@ export async function getMobileItemDetail(
   ]);
   const memberNames = new Map(members.map((member) => [member.id, member.displayName]));
   const item = await getItem(context, entityType, itemId);
+  const editableSources = await adapter.listSourceReferences(context);
 
   return {
     apiVersion: "1",
@@ -30,6 +31,12 @@ export async function getMobileItemDetail(
         ? memberNames.get(item.assignedMemberId) ?? null
         : null,
     },
+    members: members
+      .filter((member) => member.status === "active")
+      .map((member) => ({ id: member.id, displayName: member.displayName })),
+    sources: editableSources
+      .filter((source) => source.reviewStatus !== "archived")
+      .map((source) => ({ id: source.id, label: source.label })),
     comments: comments
       .filter(
         (comment) =>
@@ -75,6 +82,14 @@ export async function getMobileItemDetail(
             { label: "Priority", value: formatLabel(entry.priority) },
           ],
           source: await findSource(access, entry.sourceReferenceId),
+          edit: editable({
+            title: entry.title,
+            description: entry.description ?? null,
+            assignedMemberId: entry.assignedMemberId ?? null,
+            sourceReferenceId: entry.sourceReferenceId ?? null,
+            category: entry.category,
+            priority: entry.priority,
+          }),
         };
       }
       case "task": {
@@ -94,6 +109,14 @@ export async function getMobileItemDetail(
             { label: "Stage", value: formatLabel(entry.stage) },
           ],
           source: await findSource(access, entry.sourceReferenceId),
+          edit: editable({
+            title: entry.title,
+            description: entry.notes ?? null,
+            date: toIso(entry.dueAt),
+            assignedMemberId: entry.assignedMemberId ?? null,
+            sourceReferenceId: entry.sourceReferenceId ?? null,
+            priority: entry.priority,
+          }),
         };
       }
       case "reminder": {
@@ -112,6 +135,12 @@ export async function getMobileItemDetail(
             { label: "Repeats", value: formatLabel(entry.cadence) },
           ],
           source: null,
+          edit: editable({
+            title: entry.title,
+            description: entry.notes ?? null,
+            date: toIso(entry.remindAt),
+            assignedMemberId: entry.assignedMemberId ?? null,
+          }),
         };
       }
       case "shopping_list": {
@@ -130,6 +159,7 @@ export async function getMobileItemDetail(
             { label: "Items", value: String(entry.totalItemCount) },
           ],
           source: null,
+          edit: editable({ title: entry.name }),
         };
       }
       case "bill_or_renewal": {
@@ -151,6 +181,13 @@ export async function getMobileItemDetail(
             },
           ],
           source: await findSource(access, entry.sourceReferenceId),
+          edit: editable({
+            title: entry.title,
+            date: toIso(entry.type === "bill" ? entry.dueAt : entry.renewalAt),
+            assignedMemberId: entry.assignedMemberId ?? null,
+            sourceReferenceId: entry.sourceReferenceId ?? null,
+            provider: entry.provider ?? null,
+          }),
         };
       }
       case "source_reference": {
@@ -172,6 +209,11 @@ export async function getMobileItemDetail(
             label: entry.label,
             url: safeUrl(entry.url),
           },
+          edit: editable({
+            title: entry.title,
+            label: entry.label,
+            url: safeUrl(entry.url),
+          }),
         };
       }
     }
@@ -203,4 +245,22 @@ function formatLabel(value: string) {
   return value
     .replaceAll("_", " ")
     .replace(/^./, (character) => character.toUpperCase());
+}
+
+function editable(
+  values: Partial<MobileItemDetailResponse["item"]["edit"]>,
+): MobileItemDetailResponse["item"]["edit"] {
+  return {
+    title: values.title ?? "",
+    description: values.description ?? null,
+    date: values.date ?? null,
+    assignedMemberId: values.assignedMemberId ?? null,
+    sourceReferenceId: values.sourceReferenceId ?? null,
+    category: values.category ?? null,
+    priority: values.priority ?? null,
+    destination: values.destination ?? null,
+    provider: values.provider ?? null,
+    label: values.label ?? null,
+    url: values.url ?? null,
+  };
 }
