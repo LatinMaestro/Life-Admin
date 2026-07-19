@@ -70,8 +70,15 @@ const blockedPermissions = new Set(app.android?.blockedPermissions ?? []);
 if (blockedPermissions.has("android.permission.CAMERA")) {
   errors.push("Camera permission cannot be blocked after reviewed capture is enabled.");
 }
-if (!blockedPermissions.has("android.permission.RECORD_AUDIO") || !blockedPermissions.has("android.permission.POST_NOTIFICATIONS")) {
-  errors.push("Deferred microphone and notification permissions must remain blocked.");
+const audio = plugins.get("expo-audio");
+if (!audio || audio.enableBackgroundRecording !== false || audio.recordAudioAndroid !== true) {
+  errors.push("Voice capture must be foreground-only with explicit microphone permission.");
+}
+if (blockedPermissions.has("android.permission.RECORD_AUDIO")) {
+  errors.push("Microphone permission cannot be blocked after voice capture is enabled.");
+}
+if (!blockedPermissions.has("android.permission.POST_NOTIFICATIONS")) {
+  errors.push("Deferred notification permission must remain blocked.");
 }
 
 const splash = plugins.get("expo-splash-screen");
