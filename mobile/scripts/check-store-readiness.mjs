@@ -46,6 +46,9 @@ if (store.configVersion !== 0 || !appleInfo) {
   if (appleInfo.privacyPolicyUrl !== "https://lifeadmin.grovekind.com/privacy") {
     errors.push("The App Store privacy URL must use the production Grovekind page.");
   }
+  if (appleInfo.privacyChoicesUrl !== "https://lifeadmin.grovekind.com/account-deletion") {
+    errors.push("The App Store privacy choices URL must use the production account-deletion page.");
+  }
 }
 
 const plugins = new Map(
