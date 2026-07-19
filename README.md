@@ -42,6 +42,7 @@ The `mobile/` project is a genuine Expo/React Native client for iOS and Android.
 - `docs/PHASES_1_TO_16.md` - approved pre-store development sequence and exit gates
 - `docs/AUTOMATED_INTAKE_ARCHITECTURE.md` - upload, email, OCR, classification, voice, retention, and redaction architecture
 - `docs/RECURRENCE_AND_NOTIFICATION_DESIGN.md` - recurrence, scheduling, preferences, and safe delivery rules
+- `docs/TEST_STRATEGY_PHASES_1_TO_16.md` - automated, integration, API, provider, end-to-end, and emulator test strategy
 - `docs/STORE_LISTING.md` - approved App Store and Google Play listing copy
 - `mobile/store.config.json` - machine-readable Apple App Store metadata
 - `docs/STORE_PRIVACY_DECLARATIONS.md` - current data inventory and draft store privacy answers
