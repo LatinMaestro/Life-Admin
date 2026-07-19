@@ -19,7 +19,8 @@
         "releaseNotes": "First release of Family Life Admin for shared household tasks, reminders, shopping, bills and renewals.",
         "promoText": "Keep the household moving with shared tasks, reminders, shopping lists, bills and renewals in one private family workspace.",
         "supportUrl": "https://lifeadmin.grovekind.com/support",
-        "privacyPolicyUrl": "https://lifeadmin.grovekind.com/privacy"
+        "privacyPolicyUrl": "https://lifeadmin.grovekind.com/privacy",
+        "privacyChoicesUrl": "https://lifeadmin.grovekind.com/account-deletion"
       }
     }
   }
