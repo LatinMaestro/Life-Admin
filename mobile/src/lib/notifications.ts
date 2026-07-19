@@ -59,11 +59,15 @@ export async function enablePushNotifications(mutate: Mutate) {
   }, "POST");
 }
 
-export async function disablePushNotifications(mutate: Mutate) {
+export async function unregisterCurrentInstallation(mutate: Mutate) {
   const installationKey = await SecureStore.getItemAsync(INSTALLATION_KEY);
   if (installationKey) {
     await mutate("/api/v1/notifications/installations", { installationKey }, "DELETE");
   }
+}
+
+export async function disablePushNotifications(mutate: Mutate) {
+  await unregisterCurrentInstallation(mutate);
   await mutate("/api/v1/notifications/preferences", { enabled: false }, "PATCH");
 }
 
