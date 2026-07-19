@@ -80,6 +80,9 @@ jobs:
       - name: Test private notification policy
         run: pnpm test:notifications
 
+      - name: Test security boundaries
+        run: pnpm test:security-boundaries
+
       - name: Validate Prisma schema
         run: pnpm db:validate
         env:
