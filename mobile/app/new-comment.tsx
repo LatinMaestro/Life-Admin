@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
-import { useMemo, useState } from "react";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useEffect, useMemo, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -12,12 +12,23 @@ import { colors } from "@/lib/theme";
 
 export default function NewCommentScreen() {
   const router = useRouter();
+  const params = useLocalSearchParams<{ entityType?: string; entityId?: string }>();
   const state = useApiResource<ActivityResponse>("/api/v1/activity");
   const mutate = useHouseholdMutation();
   const [selected, setSelected] = useState<CommentTarget | null>(null);
   const [body, setBody] = useState("");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (selected || !params.entityType || !params.entityId) return;
+    const match = state.data?.targets.find(
+      (target) =>
+        target.entityType === params.entityType &&
+        target.entityId === params.entityId,
+    );
+    if (match) setSelected(match);
+  }, [params.entityId, params.entityType, selected, state.data?.targets]);
 
   const groups = useMemo(() => {
     const values = new Map<string, CommentTarget[]>();
