@@ -4,6 +4,7 @@ import {
   toggleInboxArchivedAction,
 } from "@/app/(workspace)/inbox/actions";
 import { InboxCaptureForm } from "@/components/inbox-capture-form";
+import { IntakeDraftReview } from "@/components/intake-draft-review";
 import { PageHeader } from "@/components/page-header";
 import { ReadModelSummary } from "@/components/read-model-summary";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -13,12 +14,12 @@ import { getInboxReadModel } from "@/lib/server/module-read-models";
 import { getConfiguredPersistenceMode } from "@/lib/server/persistence";
 
 type InboxPageProps = {
-  searchParams: Promise<{ route?: string; updated?: string }>;
+  searchParams: Promise<{ route?: string; updated?: string; draft?: string }>;
 };
 
 export default async function InboxPage({ searchParams }: InboxPageProps) {
   const inbox = await getInboxReadModel();
-  const { route, updated } = await searchParams;
+  const { route, updated, draft } = await searchParams;
   const openItems = inbox.rows.filter(
     (row) => row.status === "New" || row.status === "Needs Review",
   );
@@ -37,6 +38,18 @@ export default async function InboxPage({ searchParams }: InboxPageProps) {
           </a>
         }
       />
+
+      {draft === "confirmed" ? (
+        <p className="mb-4 text-sm text-primary" role="status">Household item confirmed.</p>
+      ) : null}
+      {draft === "dismissed" ? (
+        <p className="mb-4 text-sm text-muted-foreground" role="status">Suggestion dismissed.</p>
+      ) : null}
+      {draft === "error" ? (
+        <p className="mb-4 text-sm text-destructive" role="alert">Check the suggested details and try again.</p>
+      ) : null}
+
+      <IntakeDraftReview />
 
       {updated === "true" ? (
         <p className="mb-4 text-sm text-primary" role="status">

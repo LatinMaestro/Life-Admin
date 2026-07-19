@@ -65,6 +65,12 @@ jobs:
       - name: Test email intake signatures
         run: pnpm test:email-intake
 
+      - name: Check safe intake migration
+        run: pnpm guardrails:safe-intake-migration
+
+      - name: Test safe intake policy
+        run: pnpm test:intake-policy
+
       - name: Validate Prisma schema
         run: pnpm db:validate
         env:

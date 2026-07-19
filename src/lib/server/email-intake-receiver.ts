@@ -12,6 +12,7 @@ import {
   validateSourceDeclaration,
   type AllowedSourceMediaType,
 } from "@/lib/source-file-policy";
+import { createEmailIntakeDraft } from "@/lib/server/intake-drafts";
 import { getPrismaClient } from "@/lib/server/prisma";
 import { getPrivateObjectStorage } from "@/lib/storage";
 
@@ -112,7 +113,7 @@ export async function receiveForwardedEmail(input: {
     }
 
     const expiresAt = new Date(Date.now() + unconfirmedLifetimeMs);
-    await prisma.$transaction(async (transaction) => {
+    const intake = await prisma.$transaction(async (transaction) => {
       const member = await transaction.householdMember.findFirst({
         where: { householdId: alias.householdId, status: "active" },
         orderBy: [{ role: "asc" }, { joinedAt: "asc" }],
@@ -149,16 +150,17 @@ export async function receiveForwardedEmail(input: {
         })),
       });
 
-      await transaction.intakeEnvelope.create({
+      const envelope = await transaction.intakeEnvelope.create({
         data: {
           householdId: alias.householdId,
           channel: "email",
           providerEventKeyHash,
-          state: needsAttention ? "needs_attention" : "ready",
+          state: needsAttention ? "needs_attention" : "processing",
           sourceReferenceId: source.id,
           attemptCount: 1,
           expiresAt,
         },
+        select: { id: true },
       });
 
       await transaction.inboxItem.create({
@@ -184,7 +186,40 @@ export async function receiveForwardedEmail(input: {
           summary: "Received a forwarded email for review",
         },
       });
+      return { envelopeId: envelope.id, sourceReferenceId: source.id, expiresAt };
     }, { isolationLevel: "Serializable" });
+
+    if (!needsAttention) {
+      const transientText = [
+        parsed.subject ? `Subject: ${parsed.subject}` : "",
+        parsed.text ?? parsed.html ?? "",
+      ].filter(Boolean).join("\n");
+      if (transientText.trim()) {
+        try {
+          await createEmailIntakeDraft({
+            householdId: alias.householdId,
+            envelopeId: intake.envelopeId,
+            sourceReferenceId: intake.sourceReferenceId,
+            text: transientText,
+            expiresAt: intake.expiresAt,
+          });
+          await prisma.intakeEnvelope.update({
+            where: { id: intake.envelopeId },
+            data: { state: "ready" },
+          });
+        } catch {
+          await prisma.intakeEnvelope.update({
+            where: { id: intake.envelopeId },
+            data: { state: "needs_attention" },
+          });
+        }
+      } else {
+        await prisma.intakeEnvelope.update({
+          where: { id: intake.envelopeId },
+          data: { state: "needs_attention" },
+        });
+      }
+    }
   } catch (error) {
     await Promise.all(storedKeys.map((key) => storage.deleteObject(key).catch(() => undefined)));
     throw error;

@@ -55,10 +55,19 @@ export function SourceFileUpload() {
         }),
       );
 
+      setMessage("Reading document...");
+      const processing = await fetch(`/api/v1/source-assets/${intent.assetId}/process`, {
+        method: "POST",
+      });
+
       setTitle("");
       setFile(null);
       if (fileInput.current) fileInput.current.value = "";
-      setMessage("Private source added.");
+      setMessage(
+        processing.ok
+          ? "Ready to review in your inbox."
+          : "Private source added. Automatic reading needs attention.",
+      );
       router.refresh();
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "The source could not be added.");

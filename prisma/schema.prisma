@@ -203,6 +203,36 @@ enum IntakeEnvelopeState {
   expired
 }
 
+enum ExtractionJobState {
+  queued
+  processing
+  completed
+  needs_attention
+  failed
+  expired
+}
+
+enum ExtractionStrategy {
+  embedded_text
+  document_ocr
+}
+
+enum IntakeDraftType {
+  inbox
+  task
+  reminder
+  bill
+  renewal
+  source_reference
+}
+
+enum IntakeDraftState {
+  needs_review
+  confirmed
+  dismissed
+  expired
+}
+
 enum CommentEntityType {
   inbox_item
   task
@@ -280,6 +310,8 @@ model Household {
   sourceAssets     SourceAsset[]
   intakeAliases    IntakeAlias[]
   intakeEnvelopes  IntakeEnvelope[]
+  extractionJobs   ExtractionJob[]
+  intakeDrafts     IntakeDraft[]
   comments         Comment[]
   activityEvents   ActivityEvent[]
   settings         HouseholdSettings?
@@ -315,6 +347,8 @@ model HouseholdMember {
   createdSourceReferences  SourceReference[]  @relation("SourceCreatedByMember")
   createdSourceAssets      SourceAsset[]      @relation("SourceAssetCreatedByMember")
   createdIntakeAliases     IntakeAlias[]       @relation("IntakeAliasCreatedByMember")
+  proposedIntakeDrafts     IntakeDraft[]       @relation("IntakeDraftProposedAssignee")
+  confirmedIntakeDrafts    IntakeDraft[]       @relation("IntakeDraftConfirmedBy")
   comments                 Comment[]          @relation("CommentCreatedByMember")
   activityEvents           ActivityEvent[]    @relation("ActivityActorMember")
   createdRecurrenceSeries   RecurrenceSeries[] @relation("RecurrenceSeriesCreatedBy")
@@ -602,6 +636,8 @@ model SourceReference {
   createdByMember HouseholdMember  @relation("SourceCreatedByMember", fields: [createdByMemberId], references: [id], onDelete: Restrict)
   assets          SourceAsset[]
   intakeEnvelopes IntakeEnvelope[]
+  extractionJobs  ExtractionJob[]
+  intakeDrafts    IntakeDraft[]
   inboxItems      InboxItem[]
   tasks           Task[]
   billsRenewals   BillOrRenewal[]
@@ -631,6 +667,7 @@ model SourceAsset {
   household       Household        @relation(fields: [householdId], references: [id], onDelete: Cascade)
   sourceReference SourceReference? @relation(fields: [sourceReferenceId], references: [id], onDelete: SetNull)
   createdByMember HouseholdMember  @relation("SourceAssetCreatedByMember", fields: [createdByMemberId], references: [id], onDelete: Restrict)
+  extractionJobs  ExtractionJob[]
 
   @@index([householdId, state])
   @@index([householdId, sourceReferenceId])
@@ -666,6 +703,68 @@ model IntakeEnvelope {
 
   household       Household        @relation(fields: [householdId], references: [id], onDelete: Cascade)
   sourceReference SourceReference? @relation(fields: [sourceReferenceId], references: [id], onDelete: SetNull)
+  extractionJobs  ExtractionJob[]
+  draft           IntakeDraft?
+
+  @@index([householdId, state])
+  @@index([state, expiresAt])
+}
+
+
+model ExtractionJob {
+  id               String              @id @default(cuid())
+  householdId      String
+  intakeEnvelopeId String
+  sourceAssetId    String?
+  strategy         ExtractionStrategy
+  state            ExtractionJobState  @default(queued)
+  pageCount        Int?
+  confidence       Float?
+  redactionSummary Json?
+  expiresAt        DateTime
+  completedAt      DateTime?
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+
+  household      Household      @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  intakeEnvelope IntakeEnvelope @relation(fields: [intakeEnvelopeId], references: [id], onDelete: Cascade)
+  sourceAsset    SourceAsset?   @relation(fields: [sourceAssetId], references: [id], onDelete: SetNull)
+  sourceReference SourceReference? @relation(fields: [sourceReferenceId], references: [id], onDelete: SetNull)
+  sourceReferenceId String?
+
+  @@index([householdId, state])
+  @@index([intakeEnvelopeId])
+  @@index([state, expiresAt])
+}
+
+model IntakeDraft {
+  id                       String           @id @default(cuid())
+  householdId              String
+  intakeEnvelopeId         String           @unique
+  sourceReferenceId        String
+  proposedType             IntakeDraftType
+  state                    IntakeDraftState @default(needs_review)
+  title                    String
+  provider                 String?
+  safeNotes                String?
+  dueAt                    DateTime?
+  renewalAt                DateTime?
+  proposedAssignedMemberId String?
+  sourcePageReference      String?
+  confidence               Float?
+  warnings                 String[]         @default([])
+  redactionSummary         Json?
+  expiresAt                DateTime
+  confirmedByMemberId      String?
+  confirmedAt              DateTime?
+  createdAt                DateTime         @default(now())
+  updatedAt                DateTime         @updatedAt
+
+  household              Household        @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  intakeEnvelope         IntakeEnvelope   @relation(fields: [intakeEnvelopeId], references: [id], onDelete: Cascade)
+  sourceReference        SourceReference  @relation(fields: [sourceReferenceId], references: [id], onDelete: Cascade)
+  proposedAssignedMember HouseholdMember? @relation("IntakeDraftProposedAssignee", fields: [proposedAssignedMemberId], references: [id], onDelete: SetNull)
+  confirmedByMember      HouseholdMember? @relation("IntakeDraftConfirmedBy", fields: [confirmedByMemberId], references: [id], onDelete: SetNull)
 
   @@index([householdId, state])
   @@index([state, expiresAt])
