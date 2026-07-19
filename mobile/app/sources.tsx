@@ -14,7 +14,7 @@ export default function SourcesScreen() {
   const state = useApiResource<SourcesResponse>("/api/v1/sources");
   const mutate = useHouseholdMutation();
   const [busyId, setBusyId] = useState<string | null>(null);
-  const sources = state.data?.sources ?? [];
+  const sources = (state.data?.sources ?? []).filter((source) => source.reviewStatus !== "archived");
 
   const confirm = async (id: string) => {
     setBusyId(id);
