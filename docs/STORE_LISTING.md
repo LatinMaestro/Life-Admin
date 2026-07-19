@@ -1,11 +1,11 @@
 # Store Listing
 
-This is the canonical listing copy for Family Life Admin version 1.0.0. Store fields may be shortened only to meet platform limits without changing product meaning or privacy claims.
+This is the canonical listing copy for Family Life Admin version 1.0.0. Store fields may be shortened only to meet platform limits without changing product meaning or privacy claims. The machine-readable Apple metadata is kept in `mobile/store.config.json`.
 
 ## Identity
 
 - **App name:** Family Life Admin
-- **Apple subtitle:** Shared household tasks and lists
+- **Apple subtitle:** Household tasks and lists
 - **Google Play short description:** Shared tasks, lists and household admin for your family.
 - **Primary category:** Productivity
 - **Secondary Apple category:** Lifestyle

@@ -14,6 +14,7 @@ This checklist separates completed repository work from release-owner steps that
 - [x] Account deletion has last-admin and household ownership safeguards.
 - [x] Native password recovery uses Clerk's email-code flow.
 - [x] Store listing copy and reviewer guidance are documented.
+- [x] Machine-readable Apple metadata is configured and checked in CI.
 - [x] Store privacy declarations are mapped to the current implementation.
 - [x] Bill/payment source-of-truth guardrails remain enforced.
 
@@ -21,16 +22,17 @@ This checklist separates completed repository work from release-owner steps that
 
 - [x] Approve and connect `lifeadmin.grovekind.com` as the custom production domain.
 - [x] Confirm the privacy, support, and account-deletion URLs on `lifeadmin.grovekind.com`.
-- [ ] Configure Clerk production keys and allowed origins/redirects.
-- [ ] Configure the mobile production API URL and Clerk publishable key in EAS.
-- [ ] Run `npm run release:check:live` from `mobile/` with production environment values.
-- [ ] Baseline and verify Prisma migration history in the production database.\n- [ ] Confirm Neon backups, retention, and production access ownership.
+- [x] Configure Clerk production keys, custom domain, and Native API.
+- [x] Configure the mobile production API URL and Clerk publishable key in EAS.
+- [x] Run `npm run release:check:live` from `mobile/` with production environment values.
+- [x] Baseline and verify Prisma migration history in the production database.
+- [ ] Confirm Neon backups, retention, and production access ownership.
 - [ ] Complete a production web smoke test after the final main deployment.
 
 ## Developer Accounts And Signing
 
-- [ ] Confirm organisation ownership of the Expo account and EAS project.
-- [ ] Add `extra.eas.projectId` to `mobile/app.json` after the EAS project is created.
+- [x] Confirm the Expo account and EAS project are owned by `latinmaestro`.
+- [x] Add `extra.eas.projectId` to `mobile/app.json` after the EAS project is created.
 - [ ] Enrol in and verify the Apple Developer Program account.
 - [ ] Create the App Store Connect app record for `com.latinmaestro.familylifeadmin`.
 - [ ] Create the Google Play Console app record with the same package identifier.
@@ -57,7 +59,7 @@ This checklist separates completed repository work from release-owner steps that
 
 - [ ] Capture screenshots with fictional Rivera Household data.
 - [ ] Create a support email address owned by the product operator.
-- [ ] Replace every placeholder URL in `docs/STORE_LISTING.md`.
+- [x] Confirm every store URL in `docs/STORE_LISTING.md` uses the production Grovekind domain.
 - [ ] Reconcile `docs/STORE_PRIVACY_DECLARATIONS.md` against production Clerk, Vercel, Neon, and Expo settings.
 - [ ] Complete Apple privacy details from the reconciled inventory.
 - [ ] Complete Google Play Data safety from the reconciled inventory.

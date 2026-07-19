@@ -1,0 +1,27 @@
+{
+  "configVersion": 0,
+  "apple": {
+    "info": {
+      "en-AU": {
+        "title": "Family Life Admin",
+        "subtitle": "Household tasks and lists",
+        "description": "Family Life Admin gives your household one simple place to keep everyday admin organised.\n\nUse it together to:\n\n- see what needs attention today;\n- create and assign household tasks and reminders;\n- share shopping lists;\n- keep bills and renewals visible as due-date reminders;\n- collect inbox items and route them to the right place;\n- link back to original source documents and websites;\n- add comments and review household activity;\n- manage household members and roles.\n\nThe app is designed for families and shared households, with clear screens and only the actions you need. Information is kept within your household workspace.\n\nBills and renewals are reminders, not financial tracking. Family Life Admin does not provide budgets, bank connections, transaction tracking, cashflow analysis, tax reporting, or payment details. Payment-related reminders point back to the original source selected by the household.\n\nA Family Life Admin account and internet connection are required.",
+        "keywords": [
+          "family",
+          "household",
+          "tasks",
+          "reminders",
+          "shopping",
+          "lists",
+          "renewals",
+          "organiser"
+        ],
+        "releaseNotes": "First release of Family Life Admin for shared household tasks, reminders, shopping, bills and renewals.",
+        "promoText": "Keep the household moving with shared tasks, reminders, shopping lists, bills and renewals in one private family workspace.",
+        "supportUrl": "https://lifeadmin.grovekind.com/support",
+        "privacyPolicyUrl": "https://lifeadmin.grovekind.com/privacy",
+        "privacyChoicesUrl": "https://lifeadmin.grovekind.com/account-deletion"
+      }
+    }
+  }
+}

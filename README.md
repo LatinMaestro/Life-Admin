@@ -40,8 +40,10 @@ The `mobile/` project is a genuine Expo/React Native client for iOS and Android.
 - `docs/MVP_SCOPE.md` - original web MVP boundaries
 - `docs/MOBILE_APP_STORE_ROADMAP.md` - iOS, Android, API, testing, and store-release plan
 - `docs/STORE_LISTING.md` - approved App Store and Google Play listing copy
+- `mobile/store.config.json` - machine-readable Apple App Store metadata
 - `docs/STORE_PRIVACY_DECLARATIONS.md` - current data inventory and draft store privacy answers
 - `docs/STORE_SUBMISSION_CHECKLIST.md` - release-owner checklist for signed builds and submission
+- `docs/STORE_CONSOLE_HANDOFF.md` - client-only Apple, Google Play, Expo, review, and final-approval steps
 - `docs/REVIEW_GATES.md` - required release gates
 - `docs/DEFINITION_OF_DONE.md` - completion criteria
 - `docs/DESIGN_SYSTEM.md` - simple mobile-first design direction
