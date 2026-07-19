@@ -160,10 +160,11 @@ export async function updateMobileItem(
   });
 }
 
-export async function archiveMobileItem(
+export async function setMobileItemArchived(
   context: HouseholdAccessContext,
   entityType: MobileItemEntityType,
   itemId: string,
+  archived: boolean,
 ) {
   const prisma = getPrismaClient();
 
@@ -179,7 +180,7 @@ export async function archiveMobileItem(
         });
         if (!item) throw new Error("The inbox item is not available.");
         title = item.title;
-        await tx.inboxItem.update({ where: { id: item.id }, data: { status: "archived" } });
+        await tx.inboxItem.update({ where: { id: item.id }, data: { status: archived ? "archived" : "new" } });
         break;
       }
       case "task": {
@@ -189,7 +190,7 @@ export async function archiveMobileItem(
         });
         if (!item) throw new Error("The task is not available.");
         title = item.title;
-        await tx.task.update({ where: { id: item.id }, data: { status: "archived" } });
+        await tx.task.update({ where: { id: item.id }, data: { status: archived ? "archived" : "open" } });
         break;
       }
       case "reminder": {
@@ -199,7 +200,7 @@ export async function archiveMobileItem(
         });
         if (!item) throw new Error("The reminder is not available.");
         title = item.title;
-        await tx.reminder.update({ where: { id: item.id }, data: { status: "archived" } });
+        await tx.reminder.update({ where: { id: item.id }, data: { status: archived ? "archived" : "scheduled" } });
         break;
       }
       case "shopping_list": {
@@ -209,7 +210,7 @@ export async function archiveMobileItem(
         });
         if (!item) throw new Error("The shopping list is not available.");
         title = item.name;
-        await tx.shoppingList.update({ where: { id: item.id }, data: { status: "archived" } });
+        await tx.shoppingList.update({ where: { id: item.id }, data: { status: archived ? "archived" : "active" } });
         break;
       }
       case "bill_or_renewal": {
@@ -219,7 +220,7 @@ export async function archiveMobileItem(
         });
         if (!item) throw new Error("The bill or renewal is not available.");
         title = item.title;
-        await tx.billOrRenewal.update({ where: { id: item.id }, data: { status: "archived" } });
+        await tx.billOrRenewal.update({ where: { id: item.id }, data: { status: archived ? "archived" : "upcoming" } });
         break;
       }
       case "source_reference": {
@@ -229,7 +230,7 @@ export async function archiveMobileItem(
         });
         if (!item) throw new Error("The source reference is not available.");
         title = item.title;
-        await tx.sourceReference.update({ where: { id: item.id }, data: { reviewStatus: "archived" } });
+        await tx.sourceReference.update({ where: { id: item.id }, data: { reviewStatus: archived ? "archived" : "needs_review" } });
         break;
       }
     }
@@ -241,8 +242,8 @@ export async function archiveMobileItem(
         actorMemberId: context.memberId,
         entityType,
         entityId: itemId,
-        eventType: "archived",
-        summary: `Archived ${entityLabel(entityType)}: ${title}`,
+        eventType: archived ? "archived" : "reopened",
+        summary: `${archived ? "Archived" : "Restored"} ${entityLabel(entityType)}: ${title}`,
       },
     });
   });
@@ -298,4 +299,67 @@ async function resolveSource(
 
 function entityLabel(entityType: MobileItemEntityType) {
   return entityType.replaceAll("_", " ");
+}
+
+export async function updateMobileShoppingItem(
+  context: HouseholdAccessContext,
+  itemId: string,
+  input: {
+    label: string;
+    notes: string | null;
+    quantity: string | null;
+    category: string | null;
+  },
+) {
+  const prisma = getPrismaClient();
+  await prisma.$transaction(async (tx) => {
+    await requireActor(tx, context);
+    const item = await tx.shoppingListItem.findFirst({
+      where: { id: itemId, householdId: context.householdId },
+      select: { id: true },
+    });
+    if (!item) throw new Error("The shopping item is not available.");
+    await tx.shoppingListItem.update({
+      where: { id: item.id },
+      data: input,
+    });
+    await tx.activityEvent.create({
+      data: {
+        householdId: context.householdId,
+        actorUserId: context.userId,
+        actorMemberId: context.memberId,
+        entityType: "shopping_list_item",
+        entityId: item.id,
+        eventType: "updated",
+        summary: `Updated shopping item: ${input.label}`,
+      },
+    });
+  });
+}
+
+export async function deleteMobileShoppingItem(
+  context: HouseholdAccessContext,
+  itemId: string,
+) {
+  const prisma = getPrismaClient();
+  await prisma.$transaction(async (tx) => {
+    await requireActor(tx, context);
+    const item = await tx.shoppingListItem.findFirst({
+      where: { id: itemId, householdId: context.householdId },
+      select: { id: true, label: true },
+    });
+    if (!item) throw new Error("The shopping item is not available.");
+    await tx.activityEvent.create({
+      data: {
+        householdId: context.householdId,
+        actorUserId: context.userId,
+        actorMemberId: context.memberId,
+        entityType: "shopping_list_item",
+        entityId: item.id,
+        eventType: "archived",
+        summary: `Removed shopping item: ${item.label}`,
+      },
+    });
+    await tx.shoppingListItem.delete({ where: { id: item.id } });
+  });
 }

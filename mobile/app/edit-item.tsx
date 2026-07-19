@@ -116,7 +116,7 @@ export default function EditItemScreen() {
               try {
                 await mutate(
                   `/api/v1/items/${entityType}/${itemId}`,
-                  { archive: true },
+                  { archived: true },
                 );
                 router.dismissTo("/");
               } catch (error) {
