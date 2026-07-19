@@ -122,7 +122,7 @@ export default function NewVoiceScreen() {
       </View>
 
       {recorderState.isRecording ? (
-        <PrimaryButton icon="stop" label="Stop recording" onPress={() => void stop()} />
+        <PrimaryButton label="Stop recording" onPress={() => void stop()} />
       ) : recordingUri ? (
         <>
           <PrimaryButton
@@ -141,7 +141,7 @@ export default function NewVoiceScreen() {
           </Pressable>
         </>
       ) : (
-        <PrimaryButton icon="mic" label="Start recording" onPress={() => void start()} />
+        <PrimaryButton label="Start recording" onPress={() => void start()} />
       )}
 
       {message ? (
