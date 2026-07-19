@@ -62,6 +62,21 @@ jobs:
           eas project:init --non-interactive --force
           eas project:info
 
+      - name: Configure EAS release environments
+        if: steps.token.outputs.available == 'true'
+        working-directory: mobile
+        run: |
+          for environment in preview production; do
+            eas env:create --name EXPO_PUBLIC_API_URL --value https://lifeadmin.grovekind.com --environment "$environment" --visibility plaintext --force --non-interactive
+            eas env:create --name EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY --value pk_live_Y2xlcmsubGlmZWFkbWluLmdyb3Zla2luZC5jb20k --environment "$environment" --visibility plaintext --force --non-interactive
+          done
+          eas env:list --environment production
+
+      - name: Run live mobile release gate
+        if: steps.token.outputs.available == 'true'
+        working-directory: mobile
+        run: eas env:exec production "npm run release:check:live" --non-interactive
+
       - name: Commit generated project link
         if: steps.token.outputs.available == 'true'
         run: |
