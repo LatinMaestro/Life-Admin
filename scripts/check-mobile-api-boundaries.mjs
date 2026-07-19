@@ -27,8 +27,15 @@ const findings = [];
 for (const routeFile of routeFiles) {
   const content = await readFile(routeFile, "utf8");
 
-  if (!content.includes("withHouseholdApi")) {
-    findings.push(`${routeFile} does not use the household API boundary`);
+  const isOnboardingRoute = routeFile === path.join(routesRoot, "onboarding", "route.ts");
+  const hasExpectedBoundary = isOnboardingRoute
+    ? content.includes("withAuthenticatedApi")
+    : content.includes("withHouseholdApi");
+
+  if (!hasExpectedBoundary) {
+    findings.push(
+      `${routeFile} does not use the expected private API boundary`,
+    );
   }
 
   if (!content.includes('dynamic = "force-dynamic"')) {
@@ -41,6 +48,7 @@ const requiredBoundarySignals = [
   "isClerkAuthenticationEnabled",
   "await auth()",
   "getCurrentHouseholdAccessContext",
+  "withAuthenticatedApi",
   "private, no-store",
 ];
 

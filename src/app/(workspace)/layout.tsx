@@ -35,7 +35,7 @@ async function getVerifiedClerkHouseholdAccess() {
   const accessContext = await getCurrentHouseholdAccessContext();
 
   if (!accessContext) {
-    redirect("/access-pending");
+    redirect("/onboarding");
   }
 
   return accessContext;

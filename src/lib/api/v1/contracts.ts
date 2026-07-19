@@ -19,6 +19,15 @@ type MobileApiEnvelope = {
   generatedAt: string;
 };
 
+export type MobileOnboardingResponse = MobileApiEnvelope & {
+  status: "ready" | "invited" | "needs_household";
+  displayName: string;
+  invitation?: {
+    householdName: string;
+    role: HouseholdRole;
+  };
+};
+
 export type MobileMutationResponse = MobileApiEnvelope & {
   success: true;
 };

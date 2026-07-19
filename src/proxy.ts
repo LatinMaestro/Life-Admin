@@ -9,6 +9,7 @@ const clerkProxy =
           const pathname = request.nextUrl.pathname;
           const isPublic =
             pathname.startsWith("/sign-in") ||
+            pathname.startsWith("/sign-up") ||
             pathname.startsWith("/privacy") ||
             pathname.startsWith("/support") ||
             pathname.startsWith("/account-deletion") ||

@@ -29,7 +29,7 @@ export default function SignInScreen() {
         if (session?.currentTask) {
           setMessage("Please finish the security step for this account in the web app.");
         } else {
-          router.replace("/(tabs)");
+          router.replace("/onboarding");
         }
       },
     });
@@ -146,7 +146,15 @@ export default function SignInScreen() {
             <Pressable accessibilityRole="button" onPress={() => signIn.reset()} style={styles.textButton}>
               <Text style={styles.textButtonLabel}>Start again</Text>
             </Pressable>
-          ) : null}
+          ) : (
+            <Pressable
+              accessibilityRole="button"
+              onPress={() => router.push("/(auth)/sign-up")}
+              style={styles.textButton}
+            >
+              <Text style={styles.textButtonLabel}>New here? Create an account</Text>
+            </Pressable>
+          )}
           {message ? <Text accessibilityLiveRegion="polite" style={styles.error}>{message}</Text> : null}
         </View>
       </KeyboardAvoidingView>
