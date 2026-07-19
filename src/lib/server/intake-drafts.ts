@@ -11,6 +11,7 @@ import {
 import { getDocumentExtractor } from "@/lib/extraction";
 import { getPrismaClient } from "@/lib/server/prisma";
 import { getPrivateObjectStorage } from "@/lib/storage";
+import { getSpeechTranscriber } from "@/lib/speech";
 
 const draftLifetimeMs = 30 * 24 * 60 * 60 * 1000;
 
@@ -171,6 +172,155 @@ export async function processSourceAsset(
   }
 }
 
+
+export async function processVoiceAsset(
+  context: HouseholdAccessContext,
+  assetId: string,
+) {
+  requireHouseholdPermission(context, "manage_shared_items");
+  const prisma = getPrismaClient();
+  const asset = await prisma.sourceAsset.findFirst({
+    where: {
+      id: assetId,
+      householdId: context.householdId,
+      purpose: "voice_audio",
+      mediaType: "audio/mp4",
+      state: "ready",
+      sourceReferenceId: { not: null },
+    },
+    select: {
+      id: true,
+      objectKey: true,
+      mediaType: true,
+      sourceReferenceId: true,
+    },
+  });
+  if (!asset?.sourceReferenceId) throw new Error("This voice note is not ready.");
+  const sourceReferenceId = asset.sourceReferenceId;
+  const providerEventKeyHash = createHash("sha256")
+    .update(`voice-asset:${asset.id}`)
+    .digest("hex");
+  const expiresAt = new Date(Date.now() + draftLifetimeMs);
+  const envelope = await prisma.intakeEnvelope.upsert({
+    where: { providerEventKeyHash },
+    update: {},
+    create: {
+      householdId: context.householdId,
+      channel: "voice",
+      providerEventKeyHash,
+      state: "received",
+      sourceReferenceId,
+      attemptCount: 0,
+      expiresAt,
+    },
+    select: { id: true },
+  });
+  const existing = await prisma.intakeDraft.findUnique({
+    where: { intakeEnvelopeId: envelope.id },
+    select: { id: true },
+  });
+  if (existing) return response(existing.id);
+
+  const claimed = await prisma.intakeEnvelope.updateMany({
+    where: {
+      id: envelope.id,
+      householdId: context.householdId,
+      state: { in: ["received", "needs_attention"] },
+    },
+    data: { state: "processing", attemptCount: { increment: 1 } },
+  });
+  if (!claimed.count) return processingResponse();
+
+  const job = await prisma.extractionJob.create({
+    data: {
+      householdId: context.householdId,
+      intakeEnvelopeId: envelope.id,
+      sourceAssetId: asset.id,
+      sourceReferenceId,
+      strategy: "speech_transcription",
+      state: "processing",
+      expiresAt,
+    },
+    select: { id: true },
+  });
+
+  try {
+    const storage = await getPrivateObjectStorage();
+    const stored = await storage.readObject(asset.objectKey);
+    const transcriber = await getSpeechTranscriber();
+    const transcription = await transcriber.transcribe({
+      bytes: stored.bytes,
+      mediaType: asset.mediaType,
+    });
+    const projection = projectSafeDraft(transcription.text);
+    const draft = await prisma.$transaction(async (transaction) => {
+      await transaction.extractionJob.update({
+        where: { id: job.id },
+        data: {
+          state: "completed",
+          confidence: transcription.confidence,
+          redactionSummary: projection.redactionSummary,
+          completedAt: new Date(),
+        },
+      });
+      const created = await transaction.intakeDraft.create({
+        data: {
+          householdId: context.householdId,
+          intakeEnvelopeId: envelope.id,
+          sourceReferenceId,
+          proposedType: projection.proposedType,
+          title: projection.title,
+          provider: projection.provider,
+          safeNotes: projection.safeNotes,
+          dueAt: projection.dueAt,
+          renewalAt: projection.renewalAt,
+          confidence: projection.confidence,
+          warnings: projection.warnings,
+          redactionSummary: projection.redactionSummary,
+          expiresAt,
+        },
+        select: { id: true },
+      });
+      await transaction.intakeEnvelope.update({
+        where: { id: envelope.id },
+        data: { state: "ready" },
+      });
+      await transaction.inboxItem.create({
+        data: {
+          householdId: context.householdId,
+          title: "Voice note ready to review",
+          description: "Check the suggested household item before saving it.",
+          status: "needs_review",
+          category: "other",
+          suggestedDestination: "none",
+          sourceReferenceId,
+          createdByMemberId: context.memberId,
+        },
+      });
+      return created;
+    });
+
+    await storage.deleteObject(asset.objectKey);
+    await prisma.sourceAsset.update({
+      where: { id: asset.id },
+      data: { state: "deleted", deletedAt: new Date(), retentionUntil: null },
+    });
+    return response(draft.id);
+  } catch (error) {
+    await prisma.$transaction([
+      prisma.extractionJob.update({
+        where: { id: job.id },
+        data: { state: "failed", completedAt: new Date() },
+      }),
+      prisma.intakeEnvelope.update({
+        where: { id: envelope.id },
+        data: { state: "needs_attention" },
+      }),
+    ]);
+    throw error;
+  }
+}
+
 export async function createEmailIntakeDraft(input: {
   householdId: string;
   envelopeId: string;
@@ -236,6 +386,7 @@ export async function listIntakeDrafts(context: HouseholdAccessContext) {
       sourcePageReference: true,
       confidence: true,
       warnings: true,
+      intakeEnvelope: { select: { channel: true } },
       sourceReference: { select: { title: true } },
     },
   });
@@ -244,6 +395,8 @@ export async function listIntakeDrafts(context: HouseholdAccessContext) {
     generatedAt: new Date().toISOString(),
     drafts: drafts.map((draft) => ({
       ...draft,
+      channel: draft.intakeEnvelope.channel,
+      intakeEnvelope: undefined,
       dueAt: draft.dueAt?.toISOString() ?? null,
       renewalAt: draft.renewalAt?.toISOString() ?? null,
     })),
