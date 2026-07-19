@@ -79,7 +79,7 @@ export default function ItemDetailScreen() {
       </Section>
 
       <PrimaryButton
-        icon="chatbubble-outline"
+        icon="add"
         label="Add comment"
         onPress={() =>
           router.push({
