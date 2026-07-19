@@ -47,6 +47,12 @@ jobs:
       - name: Check initial migration
         run: pnpm guardrails:migration
 
+      - name: Check recurrence migration
+        run: pnpm guardrails:recurrence-migration
+
+      - name: Test recurrence engine
+        run: pnpm test:recurrence
+
       - name: Validate Prisma schema
         run: pnpm db:validate
         env:
