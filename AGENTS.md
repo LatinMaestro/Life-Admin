@@ -21,6 +21,7 @@ Family Life Admin is not a personal finance product. Do not add budgeting, bank 
    - `docs/PHASES_1_TO_16.md`
    - `docs/AUTOMATED_INTAKE_ARCHITECTURE.md`
    - `docs/RECURRENCE_AND_NOTIFICATION_DESIGN.md`
+   - `docs/TEST_STRATEGY_PHASES_1_TO_16.md`
 2. Propose the intended change before coding unless the user explicitly approves implementation.
 3. Work in scoped pull requests with clear review gates.
 4. Preserve privacy rules and update documentation when product behavior changes.
