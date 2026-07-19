@@ -47,6 +47,7 @@ export async function processSourceAsset(
     },
   });
   if (!asset?.sourceReferenceId) throw new Error("This private source is not ready.");
+  const sourceReferenceId = sourceReferenceId;
 
   const providerEventKeyHash = createHash("sha256")
     .update(`source-asset:${asset.id}`)
@@ -60,7 +61,7 @@ export async function processSourceAsset(
       channel: asset.mediaType.startsWith("image/") ? "camera" : "upload",
       providerEventKeyHash,
       state: "processing",
-      sourceReferenceId: asset.sourceReferenceId,
+      sourceReferenceId: sourceReferenceId,
       attemptCount: 1,
       expiresAt,
     },
@@ -77,7 +78,7 @@ export async function processSourceAsset(
       householdId: context.householdId,
       intakeEnvelopeId: envelope.id,
       sourceAssetId: asset.id,
-      sourceReferenceId: asset.sourceReferenceId,
+      sourceReferenceId: sourceReferenceId,
       strategy: asset.mediaType.startsWith("image/") ? "document_ocr" : "embedded_text",
       state: "processing",
       expiresAt,
@@ -112,7 +113,7 @@ export async function processSourceAsset(
         data: {
           householdId: context.householdId,
           intakeEnvelopeId: envelope.id,
-          sourceReferenceId: asset.sourceReferenceId,
+          sourceReferenceId: sourceReferenceId,
           proposedType: projection.proposedType,
           title: projection.title,
           provider: projection.provider,
@@ -138,7 +139,7 @@ export async function processSourceAsset(
           status: "needs_review",
           category: "other",
           suggestedDestination: "none",
-          sourceReferenceId: asset.sourceReferenceId,
+          sourceReferenceId: sourceReferenceId,
           createdByMemberId: context.memberId,
         },
       });
@@ -399,6 +400,7 @@ function nullableProtected(value: string | null | undefined, maxLength: number) 
 
 function entityType(type: SafeDraftProjection["proposedType"]) {
   if (type === "bill" || type === "renewal") return "bill_or_renewal" as const;
+  if (type === "inbox") return "inbox_item" as const;
   return type;
 }
 
