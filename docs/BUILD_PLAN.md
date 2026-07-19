@@ -208,3 +208,27 @@ Exit criteria:
 - Bill/payment source-of-truth review passes.
 - Mobile usability review passes.
 - Documentation remains current.
+
+
+## Approved Phases 12-27: Pre-Store Client Candidate
+
+The original phases above describe the static MVP history. Current implementation follows the sixteen-phase sequence in `docs/PHASES_1_TO_16.md`:
+
+12. Architecture and control pack.
+13. First-user onboarding.
+14. Core workflow completion.
+15. Advanced recurrence.
+16. Secure file storage.
+17. Camera/document capture.
+18. Email forwarding.
+19. Text extraction and OCR.
+20. Controlled classification.
+21. Payment-data protection.
+22. Voice capture.
+23. Push notifications.
+24. Automated quality and security.
+25. End-to-end and emulator QA.
+26. Final UI and accessibility.
+27. Client app testing.
+
+Paid store setup begins only after Phase 27 client approval. Automatic Vercel Git deployments remain disabled until the controlled client-test candidate.
