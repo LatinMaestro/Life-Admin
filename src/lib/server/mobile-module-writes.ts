@@ -101,6 +101,15 @@ export async function createMobileTask(
   return success();
 }
 
+export async function createMobileShoppingList(
+  context: HouseholdAccessContext,
+  name: string,
+) {
+  const adapter = await getHouseholdPersistenceAdapter();
+  await adapter.createShoppingList(context, { name });
+  return success();
+}
+
 export async function createMobileShoppingItem(
   context: HouseholdAccessContext,
   shoppingListId: string,
