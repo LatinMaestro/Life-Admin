@@ -10,6 +10,15 @@
     "plugins": [
       "expo-router",
       [
+        "expo-audio",
+        {
+          "microphonePermission": "Record a household note to create a private review draft.",
+          "recordAudioAndroid": true,
+          "enableBackgroundRecording": false,
+          "enableBackgroundPlayback": false
+        }
+      ],
+      [
         "expo-image-picker",
         {
           "photosPermission": "Choose a household document image to store privately.",
@@ -49,7 +58,6 @@
         "backgroundColor": "#28745F"
       },
       "blockedPermissions": [
-        "android.permission.RECORD_AUDIO",
         "android.permission.POST_NOTIFICATIONS"
       ]
     },
