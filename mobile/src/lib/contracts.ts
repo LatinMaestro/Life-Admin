@@ -33,7 +33,22 @@ export type ItemDetailResponse = Envelope & {
     assignedTo: string | null;
     details: Array<{ label: string; value: string | null }>;
     source: { label: string; url: string | null } | null;
+    edit: {
+      title: string;
+      description: string | null;
+      date: string | null;
+      assignedMemberId: string | null;
+      sourceReferenceId: string | null;
+      category: string | null;
+      priority: string | null;
+      destination: string | null;
+      provider: string | null;
+      label: string | null;
+      url: string | null;
+    };
   };
+  members: Array<{ id: string; displayName: string }>;
+  sources: Array<{ id: string; label: string }>;
   comments: Array<{
     id: string;
     body: string;
