@@ -1,6 +1,9 @@
 name: Update mobile lockfile
 
 on:
+  pull_request:
+    branches:
+      - main
   push:
     branches:
       - phase-11/voice-capture
