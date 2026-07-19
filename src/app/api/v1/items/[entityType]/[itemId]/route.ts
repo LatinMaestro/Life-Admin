@@ -11,7 +11,7 @@ import {
 import { withHouseholdApi } from "@/lib/api/v1/response";
 import { getMobileItemDetail } from "@/lib/server/mobile-item-detail";
 import {
-  archiveMobileItem,
+  setMobileItemArchived,
   updateMobileItem,
   type MobileItemUpdate,
 } from "@/lib/server/mobile-item-management";
@@ -43,8 +43,13 @@ export function PATCH(request: Request, { params }: RouteParams) {
     const values = await readJsonObject(request);
     const { entityType, itemId } = await readParams(params);
 
-    if (values.archive === true) {
-      await archiveMobileItem(context, entityType, itemId);
+    if (typeof values.archived === "boolean") {
+      await setMobileItemArchived(
+        context,
+        entityType,
+        itemId,
+        values.archived,
+      );
     } else {
       await updateMobileItem(
         context,
