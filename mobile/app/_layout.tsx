@@ -30,6 +30,8 @@ export default function RootLayout() {
         <Stack.Screen name="edit-item" options={{ title: "Edit item", presentation: "modal" }} />
         <Stack.Screen name="edit-shopping-item" options={{ title: "Edit shopping item", presentation: "modal" }} />
         <Stack.Screen name="route-inbox" options={{ title: "Sort inbox item", presentation: "modal" }} />
+        <Stack.Screen name="repeat-reminder" options={{ title: "Repeat reminder" }} />
+        <Stack.Screen name="edit-occurrence" options={{ title: "Move occurrence", presentation: "modal" }} />
         <Stack.Screen name="bills" options={{ title: "Bills & renewals" }} />
         <Stack.Screen name="family" options={{ title: "Family" }} />
         <Stack.Screen name="sources" options={{ title: "Sources" }} />

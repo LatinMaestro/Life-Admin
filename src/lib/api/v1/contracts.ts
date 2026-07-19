@@ -76,6 +76,30 @@ export type MobileItemDetailResponse = MobileApiEnvelope & {
   }>;
 };
 
+
+export type MobileRecurrenceResponse = MobileApiEnvelope & {
+  series: null | {
+    id: string;
+    state: "active" | "paused" | "ended";
+    frequency: "daily" | "weekly" | "monthly" | "yearly" | "custom";
+    interval: number;
+    byDay: string[];
+    dayOfMonth: number | null;
+    monthEndPolicy: "clamp" | "skip" | "last_day";
+    localTime: string;
+    startsOn: string;
+    endsOn: string | null;
+    occurrenceLimit: number | null;
+    occurrences: Array<{
+      id: string;
+      localDate: string;
+      scheduledFor: string;
+      state: "scheduled" | "completed" | "skipped" | "cancelled";
+      generatedItemId: string | null;
+    }>;
+  };
+};
+
 export type MobileMutationResponse = MobileApiEnvelope & {
   success: true;
 };
