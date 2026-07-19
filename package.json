@@ -23,7 +23,9 @@
     "postinstall": "prisma generate",
     "db:baseline:production": "node scripts/baseline-production-migrations.mjs",
     "guardrails:recurrence-migration": "node scripts/check-recurrence-migration.mjs",
-    "test:recurrence": "node --test tests/recurrence-engine.test.mjs"
+    "test:recurrence": "node --test tests/recurrence-engine.test.mjs",
+    "guardrails:source-asset-migration": "node scripts/check-source-asset-migration.mjs",
+    "test:source-files": "node --test tests/source-file-policy.test.mjs"
   },
   "dependencies": {
     "@clerk/nextjs": "7.5.16",

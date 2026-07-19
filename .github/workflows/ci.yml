@@ -53,6 +53,12 @@ jobs:
       - name: Test recurrence engine
         run: pnpm test:recurrence
 
+      - name: Check source asset migration
+        run: pnpm guardrails:source-asset-migration
+
+      - name: Test source file policy
+        run: pnpm test:source-files
+
       - name: Validate Prisma schema
         run: pnpm db:validate
         env:

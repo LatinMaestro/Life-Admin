@@ -4,6 +4,7 @@ import { setSourceReferenceStatusAction } from "@/app/(workspace)/sources/action
 import { PageHeader } from "@/components/page-header";
 import { ReadModelSummary } from "@/components/read-model-summary";
 import { SourceCapture } from "@/components/source-capture";
+import { SourceFileUpload } from "@/components/source-file-upload";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { getSourceReferencesReadModel } from "@/lib/server/module-read-models";
 
@@ -75,11 +76,12 @@ export default async function SourcesPage() {
         }}
       />
 
+      <SourceFileUpload />
       <SourceCapture />
 
       <div className="mt-4 flex items-start gap-3 rounded-md border px-4 py-3 text-sm text-muted-foreground">
         <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
-        <p>Save where to find the original. Do not copy private document contents into notes.</p>
+        <p>Uploaded files stay private to your household. Source links remain available for originals kept elsewhere.</p>
       </div>
     </>
   );
