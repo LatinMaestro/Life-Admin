@@ -5,6 +5,15 @@ type Envelope = {
   generatedAt: string;
 };
 
+export type OnboardingResponse = Envelope & {
+  status: "ready" | "invited" | "needs_household";
+  displayName: string;
+  invitation?: {
+    householdName: string;
+    role: HouseholdRole;
+  };
+};
+
 export type Member = {
   id: string;
   displayName: string;
