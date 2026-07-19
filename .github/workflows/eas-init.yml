@@ -52,7 +52,7 @@ jobs:
       - name: Install mobile dependencies
         if: steps.token.outputs.available == 'true'
         working-directory: mobile
-        run: npm ci --no-audit --no-fund
+        run: npm install --no-audit --no-fund
 
       - name: Create or link EAS project
         if: steps.token.outputs.available == 'true'
