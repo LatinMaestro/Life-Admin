@@ -3,6 +3,7 @@ import { MobileApiRequestError, withHouseholdApi } from "@/lib/api/v1/response";
 import {
   getNotificationPreferences,
   updateNotificationPreferences,
+  type PreferenceInput,
 } from "@/lib/server/notifications";
 
 export const dynamic = "force-dynamic";
@@ -14,7 +15,7 @@ export function GET() {
 export function PATCH(request: Request) {
   return withHouseholdApi(async (context) => {
     const body = await readJsonObject(request);
-    const input: Record<string, boolean | string> = {};
+    const input = {} as Record<string, boolean | string>;
     for (const field of [
       "enabled",
       "tasksEnabled",
@@ -35,6 +36,6 @@ export function PATCH(request: Request) {
         input[field] = body[field];
       }
     }
-    return updateNotificationPreferences(context, input);
+    return updateNotificationPreferences(context, input as PreferenceInput);
   });
 }
