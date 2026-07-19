@@ -1,0 +1,33 @@
+name: Refresh mobile lockfile
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  lockfile:
+    name: Generate mobile package lock
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Generate lockfile
+        working-directory: mobile
+        run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+
+      - name: Publish lockfile branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B automation/mobile-lockfile
+          git add mobile/package-lock.json
+          git commit -m "chore: lock mobile dependencies"
+          git push --force origin HEAD:refs/heads/automation/mobile-lockfile
