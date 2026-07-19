@@ -27,8 +27,16 @@ Client-only setup:
 - [x] Save an Expo personal access token as the GitHub repository Actions secret `EXPO_TOKEN`.
 - [x] Confirm EAS project `d112a576-6adf-4452-b434-4b3cdba7ab0d` is owned by the `latinmaestro` Expo account.
 - [ ] Keep account recovery and billing access outside the repository.
+- [x] Generate and retain Expo-managed Android signing credentials.
+- [x] Produce an installable Android preview APK and signed production AAB.
 
-After the secret is available, GitHub automation can create the EAS project, record its project ID, configure non-secret environment values, and start Android build preparation.
+GitHub automation is connected to EAS and uses manual-only build triggers. Android build evidence:
+
+- Preview APK: [build `5a98428c`](https://expo.dev/accounts/latinmaestro/projects/family-life-admin/builds/5a98428c-5f5b-4807-b246-5f88060d37c5), version `1.0.0 (1)`
+- Production AAB: [build `54b18204`](https://expo.dev/accounts/latinmaestro/projects/family-life-admin/builds/54b18204-b548-46d9-8a60-72d81ab6e5b8), version `1.0.0 (2)`
+- Android package and signing certificate are registered in the Clerk production Native API configuration.
+
+The first Google Play upload remains client-account gated.
 
 ## Apple Developer And App Store Connect
 

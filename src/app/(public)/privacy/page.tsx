@@ -15,10 +15,11 @@ export default function PrivacyPage() {
       title="Privacy policy"
       description="Family Life Admin is a private household coordination service. This policy explains what information the service handles and how it is protected."
     >
-      <p className="text-muted-foreground">Effective 17 July 2026.</p>
+      <p className="text-muted-foreground">Effective 19 July 2026.</p>
       <PolicySection title="Information we handle">
         <p>Account information includes your name, email address, authentication identifier, and household membership.</p>
         <p>Household content includes tasks, reminders, shopping lists, inbox items, bill and renewal reminder metadata, comments, activity history, and source links or location references that household members create.</p>
+        <p>When the app or website communicates with the service, contracted providers may process technical data such as an IP address, coarse location derived from that address, device or browser details, app version, request time, and security, error, or performance records.</p>
         <p>The service does not provide budgeting, banking, transaction, cashflow, tax, lending, or financial analytics.</p>
       </PolicySection>
       <PolicySection title="Bills and source references">
@@ -27,17 +28,20 @@ export default function PrivacyPage() {
       </PolicySection>
       <PolicySection title="How information is used">
         <p>Information is used to provide household coordination, enforce household access, maintain activity history, secure the service, troubleshoot faults, and meet legal obligations.</p>
-        <p>Household content is not sold and is not used for advertising.</p>
+        <p>Household content is not sold and is not used for advertising or cross-app tracking.</p>
       </PolicySection>
       <PolicySection title="Service providers">
-        <p>Authentication, hosting, and database infrastructure are provided by contracted technology providers, currently including Clerk, Vercel, and Neon. They process information only to operate the service under their applicable terms and security controls.</p>
+        <p>Authentication, hosting, database, and native build infrastructure are provided by contracted technology providers, currently including Clerk, Vercel, Neon, and Expo. They process information only to operate the service under their applicable terms and security controls.</p>
+        <p>The current release does not use advertising, analytics, crash-reporting, push-notification, file-upload, or over-the-air update services.</p>
       </PolicySection>
       <PolicySection title="Storage and security">
         <p>Private responses are not publicly cached. Access is checked against active household membership. Sensitive server credentials are kept outside application source code.</p>
+        <p>Information is encrypted in transit. Contracted providers apply their own encryption, access, backup, and operational logging controls.</p>
         <p>No internet service can guarantee absolute security. Report suspected unauthorized access promptly through the support contact.</p>
       </PolicySection>
       <PolicySection title="Retention and deletion">
         <p>Account information is retained while an account is active. When an account is deleted, sign-in access is removed and personal profile and membership information is anonymized. Household records contributed to a shared workspace may remain as operational history under a non-identifying former-member label.</p>
+        <p>Operational logs and provider backups may remain for limited periods after deletion and are then deleted or isolated under provider retention schedules and legal obligations.</p>
         <p>A sole household administrator must appoint another administrator before deleting their account so the remaining household is not locked out.</p>
       </PolicySection>
       <PolicySection title="Your choices">
