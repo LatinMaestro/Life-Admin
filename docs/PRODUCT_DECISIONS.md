@@ -11,12 +11,12 @@ This document records approved product, architecture, and scope decisions for Fa
 5. The app is household-first from the data model upward.
 6. MVP roles are household admin and household member.
 7. Manual creation is the default.
-8. Email forwarding is a future phase.
-9. AI extraction/classification is a future phase.
-10. OCR is a future phase.
-11. Voice capture is a future phase.
-12. Notifications are deferred until separately approved.
-13. File uploads are deferred until separately approved.
+8. Household email forwarding is approved for the pre-store expansion as a review-first intake channel.
+9. General-purpose generative AI remains deferred; bounded safe-field classification is approved.
+10. Direct text extraction and OCR are approved with temporary raw output and mandatory payment-data rejection.
+11. User-initiated voice capture and narrow speech-to-text are approved for reviewable drafts.
+12. Opt-in push notifications are approved with preference, quiet-hour, safe-preview, and access-recheck controls.
+13. Private file uploads and user-initiated camera capture are approved behind household-scoped storage and lifecycle controls.
 14. Source links/references may be included before full uploads.
 15. Bills and renewals are admin reminders only.
 16. The app must not store generated or transcribed payment identifiers.
@@ -25,7 +25,7 @@ This document records approved product, architecture, and scope decisions for Fa
 19. The app uses calm, practical UI and avoids finance-dashboard language.
 20. Every screen should present one obvious primary action, use plain language, hide optional detail until needed, and avoid unnecessary controls.
 21. Household onboarding uses an in-app invitation matched to the signed-in user's verified primary email.
-22. Outbound invitation email delivery remains deferred.
+22. Household invitation delivery may be implemented with onboarding; inbound forwarding and invitation email are separate channels with separate templates and abuse controls.
 23. Production identity mapping uses the Clerk provider subject, never email alone.
 24. Static/demo data must never silently replace live household data in production mode.
 25. Native distribution is now approved for both the Apple App Store and Google Play.
