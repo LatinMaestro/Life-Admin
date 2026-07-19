@@ -90,6 +90,38 @@ enum ReminderCadence {
   custom
 }
 
+enum RecurrenceFrequency {
+  daily
+  weekly
+  monthly
+  yearly
+  custom
+}
+
+enum RecurrenceSeriesState {
+  active
+  paused
+  ended
+}
+
+enum RecurrenceOccurrenceState {
+  scheduled
+  completed
+  skipped
+  cancelled
+}
+
+enum RecurrenceTargetType {
+  task
+  reminder
+}
+
+enum RecurrenceMonthEndPolicy {
+  clamp
+  skip
+  last_day
+}
+
 enum ShoppingListStatus {
   active
   archived
@@ -194,7 +226,9 @@ model Household {
   inboxItems       InboxItem[]
   tasks            Task[]
   reminders        Reminder[]
-  recurrenceRules  RecurrenceRule[]
+  recurrenceRules       RecurrenceRule[]
+  recurrenceSeries      RecurrenceSeries[]
+  recurrenceOccurrences RecurrenceOccurrence[]
   shoppingLists    ShoppingList[]
   shoppingItems    ShoppingListItem[]
   billsAndRenewals BillOrRenewal[]
@@ -235,6 +269,7 @@ model HouseholdMember {
   createdSourceReferences  SourceReference[]  @relation("SourceCreatedByMember")
   comments                 Comment[]          @relation("CommentCreatedByMember")
   activityEvents           ActivityEvent[]    @relation("ActivityActorMember")
+  createdRecurrenceSeries   RecurrenceSeries[] @relation("RecurrenceSeriesCreatedBy")
 
   @@unique([householdId, userId])
   @@index([householdId, role])
@@ -355,6 +390,58 @@ model RecurrenceRule {
   reminders Reminder[]
 
   @@index([householdId])
+}
+
+model RecurrenceSeries {
+  id                String                   @id @default(cuid())
+  householdId       String
+  targetType        RecurrenceTargetType
+  targetId          String
+  timezone          String
+  frequency         RecurrenceFrequency
+  interval          Int                      @default(1)
+  byDay             String[]                 @default([])
+  dayOfMonth        Int?
+  monthEndPolicy    RecurrenceMonthEndPolicy @default(clamp)
+  localTime         String                   @default("09:00")
+  startsOn          DateTime
+  endsOn            DateTime?
+  occurrenceLimit   Int?
+  state             RecurrenceSeriesState    @default(active)
+  nextGenerationAt  DateTime?
+  createdByMemberId String
+  createdAt         DateTime                 @default(now())
+  updatedAt         DateTime                 @updatedAt
+
+  household       Household             @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  createdByMember HouseholdMember        @relation("RecurrenceSeriesCreatedBy", fields: [createdByMemberId], references: [id], onDelete: Restrict)
+  occurrences     RecurrenceOccurrence[]
+
+  @@index([householdId, state])
+  @@index([householdId, nextGenerationAt])
+  @@index([targetType, targetId])
+}
+
+model RecurrenceOccurrence {
+  id              String                    @id @default(cuid())
+  householdId     String
+  seriesId        String
+  scheduledFor    DateTime
+  localDate       String
+  state           RecurrenceOccurrenceState @default(scheduled)
+  generatedItemId String?
+  overrideData    Json?
+  generatedAt     DateTime                  @default(now())
+  completedAt     DateTime?
+  createdAt       DateTime                  @default(now())
+  updatedAt       DateTime                  @updatedAt
+
+  household Household        @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  series    RecurrenceSeries @relation(fields: [seriesId], references: [id], onDelete: Cascade)
+
+  @@unique([seriesId, scheduledFor])
+  @@index([householdId, state, scheduledFor])
+  @@index([generatedItemId])
 }
 
 model ShoppingList {
