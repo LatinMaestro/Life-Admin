@@ -18,7 +18,6 @@ export default function ReviewDraftsScreen() {
       <StatusView
         {...state}
         empty={Boolean(state.data) && state.data.drafts.length === 0}
-        emptyMessage="Nothing is waiting for review."
         onRetry={() => void state.refresh()}
       />
       {state.data?.drafts.length ? (
