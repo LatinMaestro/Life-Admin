@@ -19,6 +19,19 @@ export class MobileApiRequestError extends Error {
   }
 }
 
+export async function withAuthenticatedApi<T>(handler: () => Promise<T>) {
+  if (!isClerkAuthenticationEnabled()) {
+    return errorResponse(503, "live_mode_required", "The private household API is not active.");
+  }
+
+  const { userId } = await auth();
+  if (!userId) {
+    return errorResponse(401, "authentication_required", "Sign in to continue.");
+  }
+
+  return runPrivateHandler(handler);
+}
+
 export async function withHouseholdApi<T>(
   handler: (context: HouseholdAccessContext) => Promise<T>,
 ) {
@@ -40,8 +53,12 @@ export async function withHouseholdApi<T>(
     );
   }
 
+  return runPrivateHandler(() => handler(context));
+}
+
+async function runPrivateHandler<T>(handler: () => Promise<T>) {
   try {
-    const data = await handler(context);
+    const data = await handler();
     return NextResponse.json(data, { status: 200, headers: privateHeaders });
   } catch (error) {
     if (error instanceof MobileApiRequestError) {
