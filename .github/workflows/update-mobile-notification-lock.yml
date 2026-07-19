@@ -1,0 +1,31 @@
+name: Update mobile notification lock
+
+on:
+  push:
+    branches: [phase-12/private-push-notifications]
+    paths:
+      - .github/workflows/update-mobile-notification-lock.yml
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: phase-12/private-push-notifications
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Install compatible Expo packages
+        working-directory: mobile
+        run: npx expo install expo-notifications expo-crypto
+      - name: Commit lockfile
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add mobile/package.json mobile/package-lock.json
+          git diff --cached --quiet || git commit -m "Phase 12: lock Expo notification dependencies"
+          git push origin HEAD:phase-12/private-push-notifications
