@@ -440,6 +440,16 @@ export const prismaHouseholdPersistenceAdapter: HouseholdPersistenceAdapter = {
           remindAt: true, assignedMemberId: true, createdByMemberId: true,
         },
       });
+      await transaction.recurrenceOccurrence.updateMany({
+        where: {
+          householdId: context.householdId,
+          generatedItemId: reminder.id,
+        },
+        data: {
+          state: completed ? "completed" : "scheduled",
+          completedAt: completed ? new Date() : null,
+        },
+      });
       await transaction.activityEvent.create({
         data: {
           householdId: context.householdId, actorUserId: context.userId, actorMemberId: context.memberId,
