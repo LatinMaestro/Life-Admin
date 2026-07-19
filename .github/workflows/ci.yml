@@ -59,6 +59,12 @@ jobs:
       - name: Test source file policy
         run: pnpm test:source-files
 
+      - name: Check email intake migration
+        run: pnpm guardrails:email-intake-migration
+
+      - name: Test email intake signatures
+        run: pnpm test:email-intake
+
       - name: Validate Prisma schema
         run: pnpm db:validate
         env:

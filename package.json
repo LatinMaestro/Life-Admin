@@ -25,7 +25,9 @@
     "guardrails:recurrence-migration": "node scripts/check-recurrence-migration.mjs",
     "test:recurrence": "node --test tests/recurrence-engine.test.mjs",
     "guardrails:source-asset-migration": "node scripts/check-source-asset-migration.mjs",
-    "test:source-files": "node --test tests/source-file-policy.test.mjs"
+    "test:source-files": "node --test tests/source-file-policy.test.mjs",
+    "guardrails:email-intake-migration": "node scripts/check-email-intake-migration.mjs",
+    "test:email-intake": "node --test tests/email-intake-crypto.test.mjs"
   },
   "dependencies": {
     "@clerk/nextjs": "7.5.16",
@@ -38,7 +40,8 @@
     "next": "16.2.10",
     "react": "19.2.7",
     "react-dom": "19.2.7",
-    "tailwind-merge": "3.6.0"
+    "tailwind-merge": "3.6.0",
+    "postal-mime": "2.7.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "3.3.5",

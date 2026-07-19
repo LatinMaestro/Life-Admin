@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ChevronRight, FileText, History, Pencil, Trash2, Users } from "lucide-react";
 import { deleteAccountAction, updateHouseholdProfileAction } from "@/app/(workspace)/settings/actions";
+import { EmailForwardingSettings } from "@/components/email-forwarding-settings";
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -93,6 +94,8 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
           </form>
         </details>
       ) : null}
+
+      {profileEditingEnabled ? <EmailForwardingSettings /> : null}
 
       <details id="delete-account" className="mt-6 scroll-mt-24 rounded-md border border-destructive/40">
         <summary className="flex cursor-pointer list-none items-center gap-2 p-4 text-sm font-medium text-destructive">

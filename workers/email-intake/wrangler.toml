@@ -1,0 +1,8 @@
+name = "family-life-admin-email-intake"
+main = "index.mjs"
+compatibility_date = "2026-07-19"
+
+[vars]
+INTAKE_WEBHOOK_URL = "https://lifeadmin.grovekind.com/api/inbound/email"
+
+# EMAIL_WEBHOOK_SECRET must be added with Wrangler secrets or the Cloudflare dashboard.

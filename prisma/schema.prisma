@@ -182,6 +182,27 @@ enum SourceAssetPurpose {
   voice_audio
 }
 
+enum IntakeAliasState {
+  active
+  revoked
+}
+
+enum IntakeChannel {
+  upload
+  camera
+  email
+  voice
+}
+
+enum IntakeEnvelopeState {
+  received
+  processing
+  ready
+  needs_attention
+  rejected
+  expired
+}
+
 enum CommentEntityType {
   inbox_item
   task
@@ -257,6 +278,8 @@ model Household {
   billReminders    BillReminder[]
   sourceReferences SourceReference[]
   sourceAssets     SourceAsset[]
+  intakeAliases    IntakeAlias[]
+  intakeEnvelopes  IntakeEnvelope[]
   comments         Comment[]
   activityEvents   ActivityEvent[]
   settings         HouseholdSettings?
@@ -291,6 +314,7 @@ model HouseholdMember {
   createdBillsAndRenewals  BillOrRenewal[]    @relation("BillCreatedByMember")
   createdSourceReferences  SourceReference[]  @relation("SourceCreatedByMember")
   createdSourceAssets      SourceAsset[]      @relation("SourceAssetCreatedByMember")
+  createdIntakeAliases     IntakeAlias[]       @relation("IntakeAliasCreatedByMember")
   comments                 Comment[]          @relation("CommentCreatedByMember")
   activityEvents           ActivityEvent[]    @relation("ActivityActorMember")
   createdRecurrenceSeries   RecurrenceSeries[] @relation("RecurrenceSeriesCreatedBy")
@@ -577,6 +601,7 @@ model SourceReference {
   household       Household        @relation(fields: [householdId], references: [id], onDelete: Cascade)
   createdByMember HouseholdMember  @relation("SourceCreatedByMember", fields: [createdByMemberId], references: [id], onDelete: Restrict)
   assets          SourceAsset[]
+  intakeEnvelopes IntakeEnvelope[]
   inboxItems      InboxItem[]
   tasks           Task[]
   billsRenewals   BillOrRenewal[]
@@ -610,6 +635,40 @@ model SourceAsset {
   @@index([householdId, state])
   @@index([householdId, sourceReferenceId])
   @@index([state, retentionUntil])
+}
+
+model IntakeAlias {
+  id                String           @id
+  householdId       String
+  aliasTokenHash    String           @unique
+  state             IntakeAliasState @default(active)
+  createdByMemberId String
+  createdAt         DateTime         @default(now())
+  revokedAt         DateTime?
+
+  household       Household       @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  createdByMember HouseholdMember @relation("IntakeAliasCreatedByMember", fields: [createdByMemberId], references: [id], onDelete: Restrict)
+
+  @@index([householdId, state])
+}
+
+model IntakeEnvelope {
+  id                       String              @id @default(cuid())
+  householdId              String
+  channel                  IntakeChannel
+  providerEventKeyHash     String              @unique
+  state                    IntakeEnvelopeState @default(received)
+  sourceReferenceId        String?
+  attemptCount             Int                 @default(0)
+  expiresAt                DateTime
+  createdAt                DateTime            @default(now())
+  updatedAt                DateTime            @updatedAt
+
+  household       Household        @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  sourceReference SourceReference? @relation(fields: [sourceReferenceId], references: [id], onDelete: SetNull)
+
+  @@index([householdId, state])
+  @@index([state, expiresAt])
 }
 
 model Comment {

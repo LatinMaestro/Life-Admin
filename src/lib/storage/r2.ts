@@ -34,6 +34,18 @@ export class R2PrivateObjectStorage implements PrivateObjectStorage {
     };
   }
 
+  async putObject(objectKey: string, bytes: Uint8Array, contentType: string) {
+    const response = await fetch(await this.createUploadUrl(objectKey, 60), {
+      method: "PUT",
+      headers: { "Content-Type": contentType },
+      body: Buffer.from(bytes),
+      cache: "no-store",
+    });
+    if (!response.ok) {
+      throw new Error(`Private source storage failed with status ${response.status}.`);
+    }
+  }
+
   async deleteObject(objectKey: string) {
     const response = await fetch(await signR2Request("DELETE", objectKey, 60), {
       method: "DELETE",
