@@ -160,6 +160,28 @@ enum SourceSensitivity {
   sensitive
 }
 
+enum SourceAssetProvider {
+  r2
+}
+
+enum SourceAssetState {
+  pending
+  quarantined
+  ready
+  rejected
+  deleting
+  deleted
+}
+
+enum SourceAssetPurpose {
+  direct_upload
+  camera_original
+  camera_crop
+  email_message
+  email_attachment
+  voice_audio
+}
+
 enum CommentEntityType {
   inbox_item
   task
@@ -234,6 +256,7 @@ model Household {
   billsAndRenewals BillOrRenewal[]
   billReminders    BillReminder[]
   sourceReferences SourceReference[]
+  sourceAssets     SourceAsset[]
   comments         Comment[]
   activityEvents   ActivityEvent[]
   settings         HouseholdSettings?
@@ -267,6 +290,7 @@ model HouseholdMember {
   assignedBillsAndRenewals BillOrRenewal[]    @relation("BillAssignedMember")
   createdBillsAndRenewals  BillOrRenewal[]    @relation("BillCreatedByMember")
   createdSourceReferences  SourceReference[]  @relation("SourceCreatedByMember")
+  createdSourceAssets      SourceAsset[]      @relation("SourceAssetCreatedByMember")
   comments                 Comment[]          @relation("CommentCreatedByMember")
   activityEvents           ActivityEvent[]    @relation("ActivityActorMember")
   createdRecurrenceSeries   RecurrenceSeries[] @relation("RecurrenceSeriesCreatedBy")
@@ -552,12 +576,40 @@ model SourceReference {
 
   household       Household        @relation(fields: [householdId], references: [id], onDelete: Cascade)
   createdByMember HouseholdMember  @relation("SourceCreatedByMember", fields: [createdByMemberId], references: [id], onDelete: Restrict)
+  assets          SourceAsset[]
   inboxItems      InboxItem[]
   tasks           Task[]
   billsRenewals   BillOrRenewal[]
 
   @@index([householdId, reviewStatus])
   @@index([householdId, sensitivity])
+}
+
+model SourceAsset {
+  id                String              @id @default(cuid())
+  householdId       String
+  sourceReferenceId String?
+  provider          SourceAssetProvider
+  objectKey         String              @unique
+  originalName      String
+  mediaType         String
+  byteSize          BigInt
+  sha256Digest      String?
+  state             SourceAssetState    @default(pending)
+  purpose           SourceAssetPurpose
+  retentionUntil    DateTime?
+  createdByMemberId String
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  deletedAt         DateTime?
+
+  household       Household        @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  sourceReference SourceReference? @relation(fields: [sourceReferenceId], references: [id], onDelete: SetNull)
+  createdByMember HouseholdMember  @relation("SourceAssetCreatedByMember", fields: [createdByMemberId], references: [id], onDelete: Restrict)
+
+  @@index([householdId, state])
+  @@index([householdId, sourceReferenceId])
+  @@index([state, retentionUntil])
 }
 
 model Comment {
