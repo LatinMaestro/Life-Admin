@@ -73,6 +73,16 @@ export async function processSourceAsset(
   });
   if (existing) return response(existing.id);
 
+  const claimed = await prisma.intakeEnvelope.updateMany({
+    where: {
+      id: envelope.id,
+      householdId: context.householdId,
+      state: { in: ["received", "needs_attention"] },
+    },
+    data: { state: "processing", attemptCount: { increment: 1 } },
+  });
+  if (!claimed.count) return processingResponse();
+
   const job = await prisma.extractionJob.create({
     data: {
       householdId: context.householdId,
@@ -276,6 +286,16 @@ export async function confirmIntakeDraft(
       if (!member) throw new Error("Choose an active household member.");
     }
 
+    const claimed = await transaction.intakeDraft.updateMany({
+      where: {
+        id: draft.id,
+        householdId: context.householdId,
+        state: "needs_review",
+      },
+      data: { state: "confirmed" },
+    });
+    if (!claimed.count) return response(draft.id);
+
     if (proposedType === "task") {
       await transaction.task.create({
         data: {
@@ -366,7 +386,7 @@ export async function confirmIntakeDraft(
         householdId: context.householdId,
         actorUserId: context.userId,
         actorMemberId: context.memberId,
-        entityType: proposedType === "source_reference" ? "source_reference" : entityType(proposedType),
+        entityType: "source_reference",
         entityId: draft.sourceReferenceId,
         eventType: "created",
         summary: "Confirmed a reviewed household item",
@@ -398,10 +418,13 @@ function nullableProtected(value: string | null | undefined, maxLength: number) 
   return protectDraftField(value, maxLength) || null;
 }
 
-function entityType(type: SafeDraftProjection["proposedType"]) {
-  if (type === "bill" || type === "renewal") return "bill_or_renewal" as const;
-  if (type === "inbox") return "inbox_item" as const;
-  return type;
+function processingResponse() {
+  return {
+    apiVersion: "1" as const,
+    generatedAt: new Date().toISOString(),
+    success: true as const,
+    processing: true as const,
+  };
 }
 
 function response(draftId: string) {
