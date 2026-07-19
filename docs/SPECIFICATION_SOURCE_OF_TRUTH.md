@@ -66,9 +66,9 @@ They must not include generated or transcribed payment identifiers such as BPAY 
 - Prisma
 - PostgreSQL
 - Vercel deployment target
-- Auth-ready architecture
-- Mobile-first web first
-- Native iOS later
+- Clerk-authenticated household architecture
+- Mobile-first web plus approved Expo/React Native iOS and Android clients
+- Versioned household APIs and shared server services
 
 
 ## Approved Pre-Store Expansion
