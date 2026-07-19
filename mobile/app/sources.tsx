@@ -1,4 +1,4 @@
-import { Alert, Linking, Pressable, StyleSheet, Text } from "react-native";
+import { Alert, Linking, Pressable, StyleSheet, Text, View } from "react-native";
 import { useState } from "react";
 import { useRouter } from "expo-router";
 
@@ -42,7 +42,16 @@ export default function SourcesScreen() {
               detail={source.label}
               meta={source.kind.replaceAll("_", " ")}
               trailing={
-                source.reviewStatus === "needs_review" ? (
+                <View style={styles.actions}>
+                  <ActionButton
+                    icon="chevron-forward"
+                    label={`Open ${source.title}`}
+                    onPress={() => router.push({
+                      pathname: "/item-detail",
+                      params: { entityType: "source_reference", itemId: source.id },
+                    })}
+                  />
+                  {source.reviewStatus === "needs_review" ? (
                   <ActionButton
                     busy={busyId === source.id}
                     icon="checkmark"
@@ -59,7 +68,8 @@ export default function SourcesScreen() {
                   </Pressable>
                 ) : (
                   <Pill>Confirmed</Pill>
-                )
+                )}
+                </View>
               }
             />
           ))}
@@ -70,6 +80,7 @@ export default function SourcesScreen() {
 }
 
 const styles = StyleSheet.create({
+  actions: { alignItems: "center", flexDirection: "row", gap: 8 },
   openButton: { paddingHorizontal: 8, paddingVertical: 10 },
   openText: { color: colors.primary, fontSize: 14, fontWeight: "700" },
 });
