@@ -12,7 +12,7 @@ import {
 } from "@/lib/notification-policy";
 import { getPrismaClient } from "@/lib/server/prisma";
 
-type PreferenceInput = {
+export type PreferenceInput = {
   enabled?: boolean;
   tasksEnabled?: boolean;
   remindersEnabled?: boolean;
@@ -346,6 +346,7 @@ export async function dispatchDueNotifications(now = new Date()) {
       prisma.notificationDelivery.update({
         where: { id: delivery.id },
         data: {
+          state: delivery.attemptCount >= 2 ? "failed" : "queued",
           attemptCount: { increment: 1 },
           nextAttemptAt: new Date(now.getTime() + 5 * 60_000),
           lastErrorCode: "provider_unavailable",
