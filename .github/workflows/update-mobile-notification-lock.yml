@@ -1,4 +1,4 @@
-name: Update mobile notification lock
+name: Update mobile notification dependency lock
 
 on:
   push:
