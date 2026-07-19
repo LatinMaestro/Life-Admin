@@ -43,7 +43,7 @@ The app must not store generated or transcribed:
 
 ## User-Confirmed Source References
 
-A future phase may support user-confirmed image crops or source references. These may point to the original source location of payment information, but must not convert that information into generated/transcribed stored values.
+Approved upload and camera phases may support user-confirmed image crops or source references. These may point to the original source location of payment information, but must not convert that information into generated or transcribed stored values.
 
 Allowed:
 
