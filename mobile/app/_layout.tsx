@@ -25,6 +25,7 @@ export default function RootLayout() {
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="onboarding" options={{ headerShown: false }} />
         <Stack.Screen name="bills" options={{ title: "Bills & renewals" }} />
         <Stack.Screen name="family" options={{ title: "Family" }} />
         <Stack.Screen name="sources" options={{ title: "Sources" }} />
