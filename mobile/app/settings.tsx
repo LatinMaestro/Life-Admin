@@ -4,8 +4,9 @@ import { useRouter } from "expo-router";
 import { Linking, Pressable, StyleSheet, Text } from "react-native";
 
 import { PageTitle, Row, Screen, Section, StatusView } from "@/components/ui";
-import { useApiResource } from "@/lib/api";
+import { useApiResource, useHouseholdMutation } from "@/lib/api";
 import type { BootstrapResponse } from "@/lib/contracts";
+import { unregisterCurrentInstallation } from "@/lib/notifications";
 import { colors } from "@/lib/theme";
 
 const webUrl = process.env.EXPO_PUBLIC_API_URL?.replace(/\/$/, "");
@@ -13,10 +14,19 @@ const webUrl = process.env.EXPO_PUBLIC_API_URL?.replace(/\/$/, "");
 export default function SettingsScreen() {
   const { signOut } = useClerk();
   const router = useRouter();
+  const mutate = useHouseholdMutation();
   const state = useApiResource<BootstrapResponse>("/api/v1/bootstrap");
 
   const openWebPage = (path: string) => {
     if (webUrl) void Linking.openURL(`${webUrl}${path}`);
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await unregisterCurrentInstallation(mutate);
+    } finally {
+      await signOut();
+    }
   };
 
   return (
@@ -36,6 +46,9 @@ export default function SettingsScreen() {
               detail={state.data.currentMember.role === "household_admin" ? "Household admin" : "Household member"}
             />
           </Section>
+          <Section title="Preferences">
+            <SettingsLink label="Notifications" onPress={() => router.push("/notification-settings")} />
+          </Section>
           <Section title="Help & privacy">
             <SettingsLink label="Privacy policy" onPress={() => openWebPage("/privacy")} />
             <SettingsLink label="Support" onPress={() => openWebPage("/support")} />
@@ -45,7 +58,7 @@ export default function SettingsScreen() {
               onPress={() => router.push("/delete-account")}
             />
           </Section>
-          <Pressable accessibilityRole="button" onPress={() => void signOut()} style={styles.signOut}>
+          <Pressable accessibilityRole="button" onPress={() => void handleSignOut()} style={styles.signOut}>
             <Text style={styles.signOutText}>Sign out</Text>
           </Pressable>
         </>
