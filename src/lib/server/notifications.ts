@@ -417,7 +417,10 @@ async function resolveRecurrenceMembers(
       select: { id: true, assignedMemberId: true, title: true },
     }),
   ]);
-  const targets = new Map([
+  const targets = new Map<string, {
+    assignedMemberId: string | null;
+    title: string;
+  }>([
     ...tasks.map((item) => [`task:${item.id}`, item] as const),
     ...reminders.map((item) => [`reminder:${item.id}`, item] as const),
   ]);
