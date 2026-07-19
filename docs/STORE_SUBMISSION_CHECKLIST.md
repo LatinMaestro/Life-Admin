@@ -23,16 +23,16 @@ This checklist separates completed repository work from release-owner steps that
 - [x] Approve and connect `lifeadmin.grovekind.com` as the custom production domain.
 - [x] Confirm the privacy, support, and account-deletion URLs on `lifeadmin.grovekind.com`.
 - [x] Configure Clerk production keys, custom domain, and Native API.
-- [ ] Configure the mobile production API URL and Clerk publishable key in EAS.
-- [ ] Run `npm run release:check:live` from `mobile/` with production environment values.
+- [x] Configure the mobile production API URL and Clerk publishable key in EAS.
+- [x] Run `npm run release:check:live` from `mobile/` with production environment values.
 - [x] Baseline and verify Prisma migration history in the production database.
 - [ ] Confirm Neon backups, retention, and production access ownership.
 - [ ] Complete a production web smoke test after the final main deployment.
 
 ## Developer Accounts And Signing
 
-- [ ] Confirm organisation ownership of the Expo account and EAS project.
-- [ ] Add `extra.eas.projectId` to `mobile/app.json` after the EAS project is created.
+- [x] Confirm the Expo account and EAS project are owned by `latinmaestro`.
+- [x] Add `extra.eas.projectId` to `mobile/app.json` after the EAS project is created.
 - [ ] Enrol in and verify the Apple Developer Program account.
 - [ ] Create the App Store Connect app record for `com.latinmaestro.familylifeadmin`.
 - [ ] Create the Google Play Console app record with the same package identifier.
