@@ -351,7 +351,7 @@ async function rejectAndDeleteAsset(assetId: string, objectKey: string) {
     data: {
       state: "rejected",
       deletedAt: new Date(),
-      retentionUntil: new Date(Date.now() + 24 * 60 * 60 * 1000),
+      retentionUntil: null,
     },
   });
 }
