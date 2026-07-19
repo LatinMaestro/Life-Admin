@@ -15,7 +15,7 @@ export default function Index() {
     );
   }
 
-  return <Redirect href={isSignedIn ? "/(tabs)" : "/(auth)/sign-in"} />;
+  return <Redirect href={isSignedIn ? "/onboarding" : "/(auth)/sign-in"} />;
 }
 
 const styles = StyleSheet.create({
