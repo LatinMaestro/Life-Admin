@@ -1,4 +1,4 @@
-import { Alert, Pressable, StyleSheet, Text } from "react-native";
+import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 
@@ -14,9 +14,23 @@ export default function ShoppingScreen() {
   const state = useApiResource<ShoppingResponse>("/api/v1/shopping");
   const mutate = useHouseholdMutation();
   const [busyId, setBusyId] = useState<string | null>(null);
-  const lists = (state.data?.lists ?? []).filter((list) => list.status === "active");
+  const allLists = state.data?.lists ?? [];
+  const lists = allLists.filter((list) => list.status === "active");
+  const archivedLists = allLists.filter((list) => list.status === "archived");
   const items = state.data?.items ?? [];
   const hasLists = lists.length > 0;
+
+  const restore = async (id: string) => {
+    setBusyId(id);
+    try {
+      await mutate(`/api/v1/items/shopping_list/${id}`, { archived: false });
+      await state.refresh();
+    } catch (error) {
+      Alert.alert("Could not restore list", error instanceof Error ? error.message : "Please try again.");
+    } finally {
+      setBusyId(null);
+    }
+  };
 
   const toggle = async (id: string, checked: boolean) => {
     setBusyId(id);
@@ -72,24 +86,60 @@ export default function ShoppingScreen() {
                 detail={item.notes}
                 meta={item.quantity ? `Quantity: ${item.quantity}` : item.category}
                 trailing={
-                  <ActionButton
-                    busy={busyId === item.id}
-                    icon={item.checked ? "arrow-undo" : "checkmark"}
-                    label={item.checked ? `Put ${item.label} back` : `Check off ${item.label}`}
-                    onPress={() => void toggle(item.id, !item.checked)}
-                    selected={item.checked}
-                  />
+                  <View style={styles.actions}>
+                    <ActionButton
+                      icon="create-outline"
+                      label={`Edit ${item.label}`}
+                      onPress={() => router.push({
+                        pathname: "/edit-shopping-item",
+                        params: {
+                          itemId: item.id,
+                          label: item.label,
+                          notes: item.notes ?? "",
+                          quantity: item.quantity ?? "",
+                          category: item.category ?? "",
+                        },
+                      })}
+                    />
+                    <ActionButton
+                      busy={busyId === item.id}
+                      icon={item.checked ? "arrow-undo" : "checkmark"}
+                      label={item.checked ? `Put ${item.label} back` : `Check off ${item.label}`}
+                      onPress={() => void toggle(item.id, !item.checked)}
+                      selected={item.checked}
+                    />
+                  </View>
                 }
               />
             ))}
           </Section>
         );
       })}
+      {archivedLists.length > 0 ? (
+        <Section title="Archived lists">
+          {archivedLists.map((list) => (
+            <Row
+              key={list.id}
+              title={list.name}
+              detail={`${list.totalItemCount} items`}
+              trailing={
+                <ActionButton
+                  busy={busyId === list.id}
+                  icon="arrow-undo"
+                  label={`Restore ${list.name}`}
+                  onPress={() => void restore(list.id)}
+                />
+              }
+            />
+          ))}
+        </Section>
+      ) : null}
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
+  actions: { alignItems: "center", flexDirection: "row", gap: 8 },
   newList: {
     alignItems: "center",
     alignSelf: "flex-start",
