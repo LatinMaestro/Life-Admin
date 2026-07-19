@@ -1,20 +1,15 @@
 name: Update mobile notification dependency lock
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - .github/workflows/update-mobile-notification-lock.yml
-  pull_request_target:
-    types: [synchronize]
-    branches: [main]
+  issue_comment:
+    types: [created]
 
 permissions:
   contents: write
 
 jobs:
   update:
-    if: github.event_name == 'push' || github.event.pull_request.head.ref == 'phase-12/private-push-notifications'
+    if: github.event.issue.pull_request && github.event.issue.number == 99 && github.event.comment.body == '/resolve-mobile-lock'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
