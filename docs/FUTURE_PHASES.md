@@ -1,47 +1,64 @@
 # Future Phases
 
-Future phases extend household administration without changing Family Life Admin into personal finance software.
+This document distinguishes the currently approved pre-store expansion from capabilities that remain deferred.
 
 ## Approved Current Scale-Up
 
-Native iOS and Android delivery is approved after completion of the web workflow foundation. The cross-platform implementation plan is in `docs/MOBILE_APP_STORE_ROADMAP.md`.
+The following are approved for implementation before client acceptance testing:
 
-Store delivery includes native authentication, core household workflow parity, secure API access, device testing, and store compliance. It does not automatically approve device permissions or new intake channels.
+- self-service account and household onboarding;
+- complete native workflow parity;
+- advanced recurrence;
+- private file uploads;
+- user-initiated camera/document capture;
+- household email forwarding;
+- direct text extraction and OCR;
+- bounded, reviewable intake classification;
+- user-initiated voice capture and narrow speech-to-text;
+- opt-in push notifications;
+- automated security, authorization, privacy, end-to-end, and emulator QA;
+- final web/native UI and client acceptance testing.
+
+Canonical plans:
+
+- `docs/PHASES_1_TO_16.md`
+- `docs/AUTOMATED_INTAKE_ARCHITECTURE.md`
+- `docs/RECURRENCE_AND_NOTIFICATION_DESIGN.md`
+- `docs/MOBILE_APP_STORE_ROADMAP.md`
 
 ## Still Deferred
 
-- Email forwarding
-- AI intake and classification
-- OCR extraction
-- Voice capture
-- Push notifications
-- SMS reminders
-- Production file uploads
-- Camera/document capture
-- Advanced recurrence
-- Advanced permissions
-- Multi-household switching UI
+- general-purpose generative AI;
+- autonomous creation or completion of household obligations;
+- payment execution or payment-instruction generation;
+- SMS reminders;
+- background recording;
+- unrestricted custom recurrence expressions;
+- advanced permission roles beyond household admin/member;
+- multi-household switching UI;
+- background sync and offline writes;
+- public sharing of source documents;
+- finance features of any kind.
 
-## Email Forwarding
+## Automation Boundary
 
-A future forwarding phase may create source references and draft inbox items for review. It must not automatically transcribe payment identifiers.
+Approved automation prepares drafts. It does not act autonomously.
 
-## AI And OCR
+- Email, upload, camera, OCR, and voice inputs enter a review queue.
+- Safe-field projections use explicit output allowlists.
+- Users confirm record type, fields, recurrence, assignment, and notification choices.
+- Manual creation remains available.
+- Original source documents remain the source of truth.
+- Structured payment identifiers are discarded from extracted data.
 
-AI or OCR may later suggest categories, dates, providers, or titles. Suggestions require review and must never extract or persist payment identifiers.
+## General-Purpose AI
 
-## Voice Capture
-
-Voice capture may later create reviewable household drafts. It must not create automated financial records.
-
-## Notifications
-
-Before implementation, approve channels, preferences, quiet hours, household visibility, privacy behavior, and platform permission timing. Store delivery alone is not notification approval.
-
-## Uploads And Camera
-
-Before implementation, approve storage, retention, access control, malware handling, deletion, source review, and platform permission copy. Source links and references remain the current approach.
+A future proposal may consider broader language-model assistance only after the bounded OCR/classification release is operating safely. It would require separate approval, provider/privacy review, prompt and retention controls, adversarial payment-data testing, and a clear user-confirmation boundary.
 
 ## Multi-Household UI
 
-The schema supports multiple household memberships. The UI may continue to optimise for one primary household until switching behavior is explicitly designed.
+The schema supports multiple household memberships. The UI continues to optimise for one primary household until switching behavior is separately designed and approved.
+
+## Post-Launch Candidates
+
+Possible later household-admin extensions include calendar integration, shared household templates, webhooks, widgets, wearables, and accessibility-driven platform integrations. Each requires its own scope and privacy review and must not introduce SpendGrove finance behavior.
