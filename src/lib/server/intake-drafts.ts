@@ -47,7 +47,7 @@ export async function processSourceAsset(
     },
   });
   if (!asset?.sourceReferenceId) throw new Error("This private source is not ready.");
-  const sourceReferenceId = sourceReferenceId;
+  const sourceReferenceId = asset.sourceReferenceId;
 
   const providerEventKeyHash = createHash("sha256")
     .update(`source-asset:${asset.id}`)
