@@ -17,7 +17,7 @@ export default function ReviewDraftsScreen() {
       <PageTitle title="Review suggestions" subtitle="Check each item before saving it." />
       <StatusView
         {...state}
-        empty={Boolean(state.data) && state.data.drafts.length === 0}
+        empty={Boolean(state.data) && (state.data?.drafts.length ?? 0) === 0}
         onRetry={() => void state.refresh()}
       />
       {state.data?.drafts.length ? (
