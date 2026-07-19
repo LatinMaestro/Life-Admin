@@ -83,10 +83,12 @@ export async function IntakeDraftReview() {
                       <Check className="h-4 w-4" aria-hidden="true" />
                       Confirm
                     </Button>
-                    <Link href="/sources" className={buttonVariants({ variant: "outline" })}>
-                      <FileText className="h-4 w-4" aria-hidden="true" />
-                      Open source
-                    </Link>
+                    {draft.channel !== "voice" ? (
+                      <Link href="/sources" className={buttonVariants({ variant: "outline" })}>
+                        <FileText className="h-4 w-4" aria-hidden="true" />
+                        Open source
+                      </Link>
+                    ) : null}
                   </div>
                 </form>
                 <form action={dismissIntakeDraftAction} className="mt-2">
