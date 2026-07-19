@@ -10,6 +10,13 @@
     "plugins": [
       "expo-router",
       [
+        "expo-notifications",
+        {
+          "defaultChannel": "household-reminders",
+          "enableBackgroundRemoteNotifications": false
+        }
+      ],
+      [
         "expo-audio",
         {
           "microphonePermission": "Record a household note to create a private review draft.",
@@ -57,9 +64,7 @@
         "monochromeImage": "./assets/monochrome-icon.png",
         "backgroundColor": "#28745F"
       },
-      "blockedPermissions": [
-        "android.permission.POST_NOTIFICATIONS"
-      ]
+      "blockedPermissions": []
     },
     "extra": {
       "router": {},
