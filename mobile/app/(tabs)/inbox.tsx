@@ -1,4 +1,4 @@
-import { Alert, StyleSheet, View } from "react-native";
+import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 
@@ -33,6 +33,13 @@ export default function InboxScreen() {
     <Screen refreshing={state.loading} onRefresh={() => void state.refresh()}>
       <PageTitle title="Inbox" subtitle="Things the household still needs to sort." />
       <PrimaryButton label="Add to inbox" onPress={() => router.push("/new-inbox")} />
+      <Pressable
+        accessibilityRole="button"
+        onPress={() => router.push("/new-voice")}
+        style={styles.voiceButton}
+      >
+        <Text style={styles.voiceText}>Record voice note</Text>
+      </Pressable>
       <StatusView {...state} empty={Boolean(state.data) && items.length === 0} onRetry={() => void state.refresh()} />
       {items.length > 0 ? (
         <Section title="Waiting">
@@ -70,5 +77,14 @@ export default function InboxScreen() {
 }
 
 const styles = StyleSheet.create({
+  voiceButton: {
+    alignItems: "center",
+    borderColor: "#D5DAD4",
+    borderRadius: 8,
+    borderWidth: 1,
+    justifyContent: "center",
+    minHeight: 48,
+  },
+  voiceText: { color: "#28745F", fontSize: 15, fontWeight: "700" },
   actions: { alignItems: "center", flexDirection: "row", gap: 8 },
 });
