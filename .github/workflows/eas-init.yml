@@ -1,9 +1,9 @@
 name: Initialize Expo project
 
 on:
-  push:
+  pull_request:
     branches:
-      - release/mobile-eas-link
+      - main
     paths:
       - .github/workflows/eas-init.yml
   workflow_dispatch:
