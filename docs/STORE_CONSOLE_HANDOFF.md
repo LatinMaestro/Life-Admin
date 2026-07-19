@@ -24,8 +24,8 @@ Never place passwords, access tokens, signing files, reviewer credentials, gover
 
 Client-only setup:
 
-- [ ] Save an Expo personal access token as the GitHub repository Actions secret `EXPO_TOKEN`.
-- [ ] Confirm the EAS project is owned by the intended long-term Expo account.
+- [x] Save an Expo personal access token as the GitHub repository Actions secret `EXPO_TOKEN`.
+- [x] Confirm EAS project `d112a576-6adf-4452-b434-4b3cdba7ab0d` is owned by the `latinmaestro` Expo account.
 - [ ] Keep account recovery and billing access outside the repository.
 
 After the secret is available, GitHub automation can create the EAS project, record its project ID, configure non-secret environment values, and start Android build preparation.
