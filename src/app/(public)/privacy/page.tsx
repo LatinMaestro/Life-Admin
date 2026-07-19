@@ -20,6 +20,7 @@ export default function PrivacyPage() {
         <p>Account information includes your name, email address, authentication identifier, and household membership.</p>
         <p>Household content includes tasks, reminders, shopping lists, inbox items, bill and renewal reminder metadata, comments, activity history, and source links or location references that household members create.</p>
         <p>When the app or website communicates with the service, contracted providers may process technical data such as an IP address, coarse location derived from that address, device or browser details, app version, request time, and security, error, or performance records.</p>
+        <p>The app does not request device location permission. Any coarse location described here is inferred from an internet address by a service provider, not collected from device GPS.</p>
         <p>The service does not provide budgeting, banking, transaction, cashflow, tax, lending, or financial analytics.</p>
       </PolicySection>
       <PolicySection title="Bills and source references">
