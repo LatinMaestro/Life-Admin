@@ -234,6 +234,33 @@ enum IntakeDraftState {
   expired
 }
 
+enum DevicePlatform {
+  ios
+  android
+}
+
+enum PushInstallationState {
+  active
+  revoked
+  invalid
+}
+
+enum NotificationDeliveryState {
+  queued
+  sent
+  failed
+  suppressed
+}
+
+enum NotificationKind {
+  task
+  reminder
+  bill
+  renewal
+  recurrence
+  intake_ready
+}
+
 enum CommentEntityType {
   inbox_item
   task
@@ -283,6 +310,7 @@ model User {
   createdInvitations Invitation[]      @relation("InvitationCreatedBy")
   comments           Comment[]         @relation("CommentCreatedBy")
   activityEvents     ActivityEvent[]   @relation("ActivityActor")
+  deviceInstallations DeviceInstallation[]
 
   @@unique([authProvider, authSubject])
   @@index([email])
@@ -313,6 +341,9 @@ model Household {
   intakeEnvelopes  IntakeEnvelope[]
   extractionJobs   ExtractionJob[]
   intakeDrafts     IntakeDraft[]
+  deviceInstallations DeviceInstallation[]
+  notificationPreferences NotificationPreference[]
+  notificationDeliveries NotificationDelivery[]
   comments         Comment[]
   activityEvents   ActivityEvent[]
   settings         HouseholdSettings?
@@ -350,6 +381,9 @@ model HouseholdMember {
   createdIntakeAliases     IntakeAlias[]       @relation("IntakeAliasCreatedByMember")
   proposedIntakeDrafts     IntakeDraft[]       @relation("IntakeDraftProposedAssignee")
   confirmedIntakeDrafts    IntakeDraft[]       @relation("IntakeDraftConfirmedBy")
+  deviceInstallations      DeviceInstallation[]
+  notificationPreference   NotificationPreference?
+  notificationDeliveries   NotificationDelivery[]
   comments                 Comment[]          @relation("CommentCreatedByMember")
   activityEvents           ActivityEvent[]    @relation("ActivityActorMember")
   createdRecurrenceSeries   RecurrenceSeries[] @relation("RecurrenceSeriesCreatedBy")
@@ -769,6 +803,79 @@ model IntakeDraft {
 
   @@index([householdId, state])
   @@index([state, expiresAt])
+}
+
+
+model DeviceInstallation {
+  id                  String                @id @default(cuid())
+  householdId         String
+  userId              String
+  memberId            String
+  installationKeyHash String                @unique
+  expoPushToken       String                @unique
+  platform            DevicePlatform
+  state               PushInstallationState @default(active)
+  lastSeenAt          DateTime              @default(now())
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+
+  household Household       @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  member    HouseholdMember @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  deliveries NotificationDelivery[]
+
+  @@index([householdId, state])
+  @@index([userId, state])
+  @@index([memberId, state])
+}
+
+model NotificationPreference {
+  id              String   @id @default(cuid())
+  householdId     String
+  memberId        String   @unique
+  enabled         Boolean  @default(false)
+  tasksEnabled    Boolean  @default(true)
+  remindersEnabled Boolean @default(true)
+  billsEnabled    Boolean  @default(true)
+  renewalsEnabled Boolean  @default(true)
+  intakeEnabled   Boolean  @default(true)
+  quietStart      String   @default("21:00")
+  quietEnd        String   @default("07:00")
+  showPreview     Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  household Household       @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  member    HouseholdMember @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@index([householdId, enabled])
+}
+
+model NotificationDelivery {
+  id               String                    @id @default(cuid())
+  householdId      String
+  memberId         String
+  installationId   String
+  kind             NotificationKind
+  targetId         String
+  scheduledFor     DateTime
+  dedupeKey        String                    @unique
+  state            NotificationDeliveryState @default(queued)
+  attemptCount     Int                       @default(0)
+  nextAttemptAt    DateTime
+  providerReceiptId String?
+  lastErrorCode    String?
+  sentAt           DateTime?
+  createdAt        DateTime                  @default(now())
+  updatedAt        DateTime                  @updatedAt
+
+  household   Household         @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  member      HouseholdMember   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  installation DeviceInstallation @relation(fields: [installationId], references: [id], onDelete: Cascade)
+
+  @@index([state, nextAttemptAt])
+  @@index([householdId, memberId, scheduledFor])
+  @@index([installationId, state])
 }
 
 model Comment {
