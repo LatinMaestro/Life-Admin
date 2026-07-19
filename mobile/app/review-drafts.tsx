@@ -34,14 +34,16 @@ export default function ReviewDraftsScreen() {
 function DraftReview({ draft, refresh }: { draft: Draft; refresh: () => Promise<void> }) {
   const router = useRouter();
   const mutate = useHouseholdMutation();
+  const [proposedType, setProposedType] = useState<IntakeDraftType>(draft.proposedType);
+  const [showTypes, setShowTypes] = useState(false);
   const [title, setTitle] = useState(draft.title);
   const [provider, setProvider] = useState(draft.provider ?? "");
   const [notes, setNotes] = useState(draft.safeNotes ?? "");
   const [eventDate, setEventDate] = useState(
-    (draft.proposedType === "renewal" ? draft.renewalAt : draft.dueAt)?.slice(0, 10) ?? "",
+    (proposedType === "renewal" ? draft.renewalAt : draft.dueAt)?.slice(0, 10) ?? "",
   );
   const [busy, setBusy] = useState(false);
-  const needsDate = ["reminder", "bill", "renewal"].includes(draft.proposedType);
+  const needsDate = ["reminder", "bill", "renewal"].includes(proposedType);
 
   async function confirm() {
     if (title.trim().length < 2 || (needsDate && !/^\d{4}-\d{2}-\d{2}$/.test(eventDate))) {
@@ -53,12 +55,12 @@ function DraftReview({ draft, refresh }: { draft: Draft; refresh: () => Promise<
       await mutate(
         `/api/v1/intake-drafts/${draft.id}/confirm`,
         {
-          proposedType: draft.proposedType,
+          proposedType,
           title,
           provider: provider || null,
           safeNotes: notes || null,
-          dueAt: draft.proposedType === "renewal" ? null : (eventDate || null),
-          renewalAt: draft.proposedType === "renewal" ? (eventDate || null) : null,
+          dueAt: proposedType === "renewal" ? null : (eventDate || null),
+          renewalAt: proposedType === "renewal" ? (eventDate || null) : null,
           assignedMemberId: draft.proposedAssignedMemberId,
         },
         "POST",
@@ -85,7 +87,31 @@ function DraftReview({ draft, refresh }: { draft: Draft; refresh: () => Promise<
 
   return (
     <View style={styles.card}>
-      <Text style={styles.kind}>{labelForType(draft.proposedType)}</Text>
+      <Pressable
+        accessibilityRole="button"
+        onPress={() => setShowTypes((value) => !value)}
+        style={styles.typeButton}
+      >
+        <Text style={styles.kind}>{labelForType(proposedType)}</Text>
+        <Text style={styles.changeType}>Change</Text>
+      </Pressable>
+      {showTypes ? (
+        <View style={styles.typeChoices}>
+          {draftTypes.map((type) => (
+            <Pressable
+              accessibilityRole="button"
+              key={type}
+              onPress={() => {
+                setProposedType(type);
+                setShowTypes(false);
+              }}
+              style={styles.typeChoice}
+            >
+              <Text style={styles.typeChoiceText}>{labelForType(type)}</Text>
+            </Pressable>
+          ))}
+        </View>
+      ) : null}
       <Text style={styles.label}>Title</Text>
       <TextInput
         accessibilityLabel="Suggested title"
@@ -94,7 +120,7 @@ function DraftReview({ draft, refresh }: { draft: Draft; refresh: () => Promise<
         style={styles.input}
         value={title}
       />
-      {draft.proposedType === "bill" || draft.proposedType === "renewal" ? (
+      {proposedType === "bill" || proposedType === "renewal" ? (
         <>
           <Text style={styles.label}>Provider</Text>
           <TextInput
@@ -147,6 +173,15 @@ function DraftReview({ draft, refresh }: { draft: Draft; refresh: () => Promise<
   );
 }
 
+const draftTypes: IntakeDraftType[] = [
+  "inbox",
+  "task",
+  "reminder",
+  "bill",
+  "renewal",
+  "source_reference",
+];
+
 function labelForType(value: IntakeDraftType) {
   return {
     inbox: "Inbox item",
@@ -160,7 +195,13 @@ function labelForType(value: IntakeDraftType) {
 
 const styles = StyleSheet.create({
   card: { gap: 10, paddingVertical: 8 },
+  typeButton: { alignItems: "center", flexDirection: "row", justifyContent: "space-between", minHeight: 44 },
   kind: { color: colors.primary, fontSize: 14, fontWeight: "700" },
+  changeType: { color: colors.muted, fontSize: 14 },
+  typeChoices: { borderColor: colors.border, borderRadius: 8, borderWidth: 1 },
+  typeChoice: { borderBottomColor: colors.border, borderBottomWidth: StyleSheet.hairlineWidth, minHeight: 44, justifyContent: "center", paddingHorizontal: 12 },
+  typeChoiceText: { color: colors.text, fontSize: 15 },
+
   label: { color: colors.text, fontSize: 14, fontWeight: "700" },
   input: {
     backgroundColor: colors.surface,
