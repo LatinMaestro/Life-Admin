@@ -10,5 +10,6 @@ export interface PrivateObjectStorage {
   createUploadUrl(objectKey: string, expiresInSeconds: number): Promise<string>;
   createReadUrl(objectKey: string, expiresInSeconds: number): Promise<string>;
   readObject(objectKey: string): Promise<StoredObject>;
+  putObject(objectKey: string, bytes: Uint8Array, contentType: string): Promise<void>;
   deleteObject(objectKey: string): Promise<void>;
 }
