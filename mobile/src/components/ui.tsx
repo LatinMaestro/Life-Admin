@@ -44,12 +44,19 @@ export function PageTitle({ title, subtitle }: { title: string; subtitle?: strin
   );
 }
 
-export function Section({ title, children }: PropsWithChildren<{ title: string }>) {
+export function Section({
+  title,
+  action,
+  children,
+}: PropsWithChildren<{ title: string; action?: ReactNode }>) {
   return (
     <View style={styles.section}>
-      <Text accessibilityRole="header" style={styles.sectionTitle}>
-        {title}
-      </Text>
+      <View style={styles.sectionHeading}>
+        <Text accessibilityRole="header" style={styles.sectionTitle}>
+          {title}
+        </Text>
+        {action}
+      </View>
       <View style={styles.list}>{children}</View>
     </View>
   );
@@ -172,6 +179,7 @@ const styles = StyleSheet.create({
   title: { color: colors.text, fontSize: 28, fontWeight: "700" },
   subtitle: { color: colors.muted, fontSize: 15, lineHeight: 21 },
   section: { gap: 10 },
+  sectionHeading: { alignItems: "center", flexDirection: "row", justifyContent: "space-between" },
   sectionTitle: { color: colors.text, fontSize: 18, fontWeight: "700" },
   list: {
     backgroundColor: colors.surface,
