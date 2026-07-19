@@ -1,7 +1,10 @@
 name: Update mobile notification lock
 
 on:
-  workflow_dispatch:
+  push:
+    branches: [phase-12/private-push-notifications]
+    paths:
+      - .github/workflows/update-mobile-notification-lock.yml
 
 permissions:
   contents: write
