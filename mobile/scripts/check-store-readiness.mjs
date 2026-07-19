@@ -57,9 +57,21 @@ const plugins = new Map(
     Array.isArray(plugin) ? plugin[1] : undefined,
   ]),
 );
-const forbiddenPlugins = ["expo-camera", "expo-image-picker", "expo-notifications", "expo-av"];
+const forbiddenPlugins = ["expo-camera", "expo-notifications", "expo-av"];
 for (const name of plugins.keys()) {
   if (forbiddenPlugins.includes(name)) errors.push(`${name} is outside the approved first-store scope.`);
+}
+
+const imagePicker = plugins.get("expo-image-picker");
+if (!imagePicker || imagePicker.microphonePermission !== false) {
+  errors.push("Reviewed image capture must disable microphone access.");
+}
+const blockedPermissions = new Set(app.android?.blockedPermissions ?? []);
+if (blockedPermissions.has("android.permission.CAMERA")) {
+  errors.push("Camera permission cannot be blocked after reviewed capture is enabled.");
+}
+if (!blockedPermissions.has("android.permission.RECORD_AUDIO") || !blockedPermissions.has("android.permission.POST_NOTIFICATIONS")) {
+  errors.push("Deferred microphone and notification permissions must remain blocked.");
 }
 
 const splash = plugins.get("expo-splash-screen");
