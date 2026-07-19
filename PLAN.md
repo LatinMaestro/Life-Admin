@@ -2,62 +2,66 @@
 
 ## Current Objective
 
-Move the completed household web and native applications through final production activation, physical-device quality assurance, signed builds, and store submission. The production data model, Clerk identity mapping, household access enforcement, live manual workflows, privacy guardrails, beginner-friendly interfaces, native release configuration, and store materials are implemented.
+Complete Phases 1-16 in `docs/PHASES_1_TO_16.md` and deliver a client-test-ready web and native application before any paid Apple Developer or Google Play setup.
 
-Notifications, uploads, email forwarding, AI, OCR, and voice capture remain deferred.
+Automatic Vercel Git deployments are paused during development through `vercel.json`. Re-enable them only for the controlled Phase 16 client-testing candidate.
 
 ## Product Boundary
 
-Family Life Admin is private household administration, not personal finance. Bills and renewals are admin reminders that point to original sources. Web, API, iOS, and Android surfaces must never store, display, generate, or transcribe payment identifiers.
+Family Life Admin is private household administration, not personal finance. Bills and renewals are admin reminders that point to original sources. Web, API, native, email, upload, OCR, voice, background processing, and notification surfaces must never persist or reproduce structured payment identifiers.
 
-## Completed
+SpendGrove remains the finance product.
 
-1. Documentation and control pack.
-2. Mobile-first web foundation.
-3. Household workspace, members, and roles.
-4. Dashboard and shared inbox.
-5. Tasks and reminders.
-6. Shopping lists.
-7. Bills and renewals with source-only rules.
-8. Source references.
-9. Comments and activity history.
-10. Prisma/PostgreSQL production schema and Neon migration.
-11. Clerk authentication and household membership enforcement.
-12. Household invitations and member administration.
-13. Live household-scoped create, update, complete, reopen, archive, and routing workflows.
-14. Beginner usability and production code/privacy review.
-15. Release candidate merged to `main`.
-16. Authenticated, household-scoped mobile API.
-17. Expo iOS and Android app with secure Clerk sessions and core native workflows.
-18. Native household comments, activity, invitations, roles, settings, assignments, and task dates.
-19. EAS build configuration, stable app identifiers, deterministic icons and splash artwork.
-20. App Store and Google Play listing copy, review notes, and submission checklist.
-21. Native email-code password recovery with secure session finalization.\n22. Grovekind production domain, Vercel DNS, Clerk DNS, and Clerk SSL certificate configuration.
+## Completed Foundation
 
-## Remaining Delivery Plan
+1. Documentation and original web MVP control pack.
+2. Mobile-first Next.js application and calm design system.
+3. Household workspace, members, roles, invitations, and settings.
+4. Dashboard, inbox, tasks, reminders, shopping, bills/renewals, sources, comments, and activity.
+5. Prisma/PostgreSQL schema, production Neon migration, and household-scoped persistence.
+6. Clerk production authentication and provider-subject identity mapping.
+7. Transactional household authorization and role enforcement.
+8. Versioned household API.
+9. Expo/React Native iOS and Android client with secure Clerk sessions.
+10. Core native reads/writes, password recovery, release configuration, artwork, and store metadata.
+11. Grovekind production domain, Clerk custom domain, Android signing, and initial Android builds.
+12. Bill/payment source-of-truth guardrails and provider privacy review.
 
-### Phase A: Production Activation
+Previous signed builds are engineering evidence only. Development continued after those builds, so the final store candidate will be rebuilt after Phase 16 approval.
 
-- Approve and attach a stable custom production domain.
-- Move Clerk and mobile clients to production keys for that domain.
-- Confirm production environment variables and run the live release gate.
-- Run authenticated web smoke tests against production.
+## Approved Pre-Store Development
 
-### Phase B: Physical Device QA
+1. Architecture and control documentation.
+2. First-user onboarding.
+3. Complete native workflow parity.
+4. Advanced recurrence.
+5. Secure uploads.
+6. Camera/document capture.
+7. Email forwarding.
+8. Text extraction and OCR.
+9. Controlled classification.
+10. Payment-data protection.
+11. Voice capture.
+12. Push notifications.
+13. Automated quality and security.
+14. End-to-end and emulator QA.
+15. Final UI and accessibility.
+16. Client app testing and approval.
 
-- Build internal iOS and Android releases with EAS.
-- Test sign-in, household isolation, invitation acceptance, writes, source-link safety, account deletion, accessibility, and recovery states.
-- Test representative phones and tablets on supported OS versions.
-- Record and resolve any release-blocking defects.
+The detailed scope and exit gates are in `docs/PHASES_1_TO_16.md`.
 
-### Phase C: Store Submission
+## Paid Release Boundary
 
-- Capture final screenshots using fictional household data.
-- Complete Apple privacy and Google Play Data safety forms from the approved privacy documentation.
-- Supply support and privacy URLs on the custom domain.
-- Create a private reviewer account and provide credentials only through store review consoles.
-- Submit version 1.0.0 after all checklist items pass.
+Do not create paid Apple/Google developer accounts or upload store builds until:
 
-## Immediate Next Step
+- Phases 1-15 pass;
+- the client tests the Phase 16 candidate;
+- client feedback is resolved;
+- the client explicitly approves the UI and feature set;
+- the release candidate is frozen.
 
-Complete the production redeployment and authenticated smoke test, then configure the Expo project/signing credentials, developer accounts, internal builds, and physical-device QA. No additional product features are required for the first store candidate unless QA identifies a release-blocking issue.
+After approval, complete store accounts, final signing, TestFlight/Play internal testing, physical-device QA, forms, submission, and review fixes.
+
+## Current Phase
+
+Phase 1: update architecture, security, privacy, data model, recurrence, notification, storage, email, OCR, classification, payment-redaction, voice, QA, and release-control documentation.
