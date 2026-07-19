@@ -4,7 +4,6 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "prebuild": "node scripts/run-vercel-production-baseline.mjs",
     "build": "node scripts/check-production-activation.mjs && prisma generate && next build",
     "start": "next start",
     "lint": "node ./node_modules/eslint/bin/eslint.js .",
