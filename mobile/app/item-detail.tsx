@@ -78,6 +78,26 @@ export default function ItemDetailScreen() {
         ) : null}
       </Section>
 
+      {item.entityType === "reminder" ? (
+        <Pressable
+          accessibilityRole="button"
+          onPress={() =>
+            router.push({
+              pathname: "/repeat-reminder",
+              params: {
+                reminderId: item.id,
+                title: item.title,
+                date: item.edit.date ?? "",
+              },
+            })
+          }
+          style={styles.editButton}
+        >
+          <Ionicons color={colors.primary} name="repeat-outline" size={20} />
+          <Text style={styles.editText}>Repeat</Text>
+        </Pressable>
+      ) : null}
+
       {item.entityType === "inbox_item" && item.status !== "linked" ? (
         <PrimaryButton
           icon="checkmark"
