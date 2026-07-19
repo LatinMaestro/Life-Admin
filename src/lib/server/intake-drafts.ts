@@ -300,11 +300,12 @@ export async function processVoiceAsset(
       return created;
     });
 
-    await storage.deleteObject(asset.objectKey);
-    await prisma.sourceAsset.update({
-      where: { id: asset.id },
-      data: { state: "deleted", deletedAt: new Date(), retentionUntil: null },
-    });
+    await storage.deleteObject(asset.objectKey)
+      .then(() => prisma.sourceAsset.update({
+        where: { id: asset.id },
+        data: { state: "deleted", deletedAt: new Date(), retentionUntil: null },
+      }))
+      .catch(() => undefined);
     return response(draft.id);
   } catch (error) {
     await prisma.$transaction([
