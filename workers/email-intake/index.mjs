@@ -1,6 +1,6 @@
 const MAX_MESSAGE_BYTES = 20 * 1024 * 1024;
 
-export default {
+const emailWorker = {
   async email(message, env) {
     const raw = new Uint8Array(await new Response(message.raw).arrayBuffer());
     if (raw.byteLength < 1 || raw.byteLength > MAX_MESSAGE_BYTES) {
@@ -36,6 +36,8 @@ export default {
     }
   },
 };
+
+export default emailWorker;
 
 async function sha256Hex(value) {
   return hex(await crypto.subtle.digest("SHA-256", value));
