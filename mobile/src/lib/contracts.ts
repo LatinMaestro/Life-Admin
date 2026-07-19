@@ -259,3 +259,18 @@ export type IntakeDraftsResponse = Envelope & {
     sourceReference: { title: string };
   }>;
 };
+
+
+export type NotificationPreferencesResponse = Envelope & {
+  preference: {
+    enabled: boolean;
+    tasksEnabled: boolean;
+    remindersEnabled: boolean;
+    billsEnabled: boolean;
+    renewalsEnabled: boolean;
+    intakeEnabled: boolean;
+    quietStart: string;
+    quietEnd: string;
+    showPreview: boolean;
+  };
+};
