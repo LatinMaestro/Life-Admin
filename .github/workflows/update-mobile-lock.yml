@@ -1,0 +1,33 @@
+name: Update mobile lockfile
+
+on:
+  push:
+    branches:
+      - phase-11/voice-capture
+    paths:
+      - mobile/package.json
+      - .github/workflows/update-mobile-lock.yml
+
+permissions:
+  contents: write
+
+jobs:
+  lockfile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: phase-11/voice-capture
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Update lockfile
+        working-directory: mobile
+        run: npm install --package-lock-only --no-audit --no-fund
+      - name: Commit lockfile
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add mobile/package-lock.json
+          git diff --cached --quiet || git commit -m "Update mobile dependency lockfile"
+          git push
