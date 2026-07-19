@@ -90,14 +90,6 @@ function readUpdate(
           "other",
         ] as const),
         priority: requireEnum(input, "priority", ["low", "normal", "high"] as const),
-        destination: requireEnum(input, "destination", [
-          "task",
-          "reminder",
-          "bill_or_renewal",
-          "shopping_list",
-          "source_reference",
-          "none",
-        ] as const),
         assignedMemberId: optionalId(input, "assignedMemberId"),
         sourceReferenceId: optionalId(input, "sourceReferenceId"),
       };
