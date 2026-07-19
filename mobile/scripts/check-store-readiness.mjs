@@ -3,6 +3,7 @@ import { access, readFile } from "node:fs/promises";
 const requireLive = process.argv.includes("--require-live");
 const app = JSON.parse(await readFile(new URL("../app.json", import.meta.url), "utf8")).expo;
 const eas = JSON.parse(await readFile(new URL("../eas.json", import.meta.url), "utf8"));
+const store = JSON.parse(await readFile(new URL("../store.config.json", import.meta.url), "utf8"));
 const errors = [];
 const expectedIdentifier = "com.latinmaestro.familylifeadmin";
 const projectRoot = new URL("../", import.meta.url);
@@ -22,6 +23,29 @@ if (!eas.build?.preview || !eas.build?.production || !eas.submit?.production) {
 }
 if (eas.build?.production?.credentialsSource !== "remote") {
   errors.push("Production signing credentials must be remotely managed.");
+}
+if (eas.submit?.production?.ios?.metadataPath !== "./store.config.json") {
+  errors.push("The iOS submission profile must use the checked-in store metadata.");
+}
+
+const appleInfo = store.apple?.info?.["en-AU"];
+if (store.configVersion !== 0 || !appleInfo) {
+  errors.push("English (Australia) App Store metadata is required.");
+} else {
+  if (appleInfo.title !== app.name) errors.push("The App Store title must match the app display name.");
+  if (!appleInfo.subtitle || appleInfo.subtitle.length > 30) {
+    errors.push("The App Store subtitle must be present and no longer than 30 characters.");
+  }
+  if (!appleInfo.description) errors.push("The App Store description is required.");
+  if (Buffer.byteLength((appleInfo.keywords ?? []).join(","), "utf8") > 100) {
+    errors.push("App Store keywords must fit the 100-byte limit.");
+  }
+  if (appleInfo.supportUrl !== "https://lifeadmin.grovekind.com/support") {
+    errors.push("The App Store support URL must use the production Grovekind page.");
+  }
+  if (appleInfo.privacyPolicyUrl !== "https://lifeadmin.grovekind.com/privacy") {
+    errors.push("The App Store privacy URL must use the production Grovekind page.");
+  }
 }
 
 const plugins = new Map(
@@ -73,6 +97,9 @@ if (requireLive) {
   }
   if (!clerkKey.startsWith("pk_live_")) {
     errors.push("EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY must be a production Clerk key.");
+  }
+  if (!app.extra?.eas?.projectId) {
+    errors.push("The Expo EAS project ID must be linked for a live release.");
   }
 }
 
