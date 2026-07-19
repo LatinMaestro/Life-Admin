@@ -1,0 +1,67 @@
+name: Initialize Expo project
+
+on:
+  push:
+    branches:
+      - release/mobile-eas-link
+    paths:
+      - .github/workflows/eas-init.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  initialize:
+    name: Link EAS project
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Expo token
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          if [ -z "$EXPO_TOKEN" ]; then
+            echo "EXPO_TOKEN is not configured in repository Actions secrets."
+            exit 1
+          fi
+
+      - name: Checkout release branch
+        uses: actions/checkout@v4
+        with:
+          ref: release/mobile-eas-link
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+
+      - name: Set up Expo and EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install mobile dependencies
+        working-directory: mobile
+        run: npm ci --no-audit --no-fund
+
+      - name: Create or link EAS project
+        working-directory: mobile
+        run: |
+          eas whoami
+          eas project:init --non-interactive --force
+          eas project:info
+
+      - name: Commit generated project link
+        run: |
+          if git diff --quiet -- mobile/app.json; then
+            echo "Expo project was already linked."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add mobile/app.json
+          git commit -m "chore(mobile): link Expo EAS project"
+          git push origin HEAD:release/mobile-eas-link
