@@ -1,4 +1,4 @@
-import { Alert } from "react-native";
+import { Alert, Pressable, StyleSheet, Text } from "react-native";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 
@@ -7,6 +7,7 @@ import { PrimaryButton } from "@/components/primary-button";
 import { PageTitle, Row, Screen, Section, StatusView } from "@/components/ui";
 import { useApiResource, useHouseholdMutation } from "@/lib/api";
 import type { ShoppingResponse } from "@/lib/contracts";
+import { colors } from "@/lib/theme";
 
 export default function ShoppingScreen() {
   const router = useRouter();
@@ -15,6 +16,7 @@ export default function ShoppingScreen() {
   const [busyId, setBusyId] = useState<string | null>(null);
   const lists = state.data?.lists ?? [];
   const items = state.data?.items ?? [];
+  const hasLists = lists.length > 0;
 
   const toggle = async (id: string, checked: boolean) => {
     setBusyId(id);
@@ -31,8 +33,20 @@ export default function ShoppingScreen() {
   return (
     <Screen refreshing={state.loading} onRefresh={() => void state.refresh()}>
       <PageTitle title="Shopping" subtitle="The household lists, kept together." />
-      <PrimaryButton label="Add item" onPress={() => router.push("/new-shopping-item")} />
-      <StatusView {...state} empty={Boolean(state.data) && lists.length === 0} onRetry={() => void state.refresh()} />
+      <PrimaryButton
+        label={hasLists ? "Add item" : "Create your first list"}
+        onPress={() => router.push(hasLists ? "/new-shopping-item" : "/new-shopping-list")}
+      />
+      {hasLists ? (
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => router.push("/new-shopping-list")}
+          style={styles.newList}
+        >
+          <Text style={styles.newListText}>New list</Text>
+        </Pressable>
+      ) : null}
+      <StatusView {...state} empty={Boolean(state.data) && !hasLists} onRetry={() => void state.refresh()} />
       {lists.map((list) => {
         const listItems = items.filter((item) => item.shoppingListId === list.id);
         return (
@@ -61,3 +75,18 @@ export default function ShoppingScreen() {
     </Screen>
   );
 }
+
+const styles = StyleSheet.create({
+  newList: {
+    alignItems: "center",
+    alignSelf: "flex-start",
+    minHeight: 44,
+    justifyContent: "center",
+    paddingHorizontal: 4,
+  },
+  newListText: {
+    color: colors.primary,
+    fontSize: 15,
+    fontWeight: "700",
+  },
+});

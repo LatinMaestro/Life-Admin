@@ -1,5 +1,6 @@
 import { useAuth } from "@clerk/expo";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
+import { useFocusEffect } from "expo-router";
 
 type ApiErrorBody = {
   error?: { code?: string; message?: string };
@@ -94,9 +95,11 @@ export function useApiResource<T>(path: `/api/v1/${string}`): ResourceState<T> {
     }
   }, [getToken, isLoaded, isSignedIn, path]);
 
-  useEffect(() => {
-    void refresh();
-  }, [refresh]);
+  useFocusEffect(
+    useCallback(() => {
+      void refresh();
+    }, [refresh]),
+  );
 
   return { data, error, errorCode, loading, refresh };
 }
