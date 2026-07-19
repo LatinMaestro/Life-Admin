@@ -42,6 +42,14 @@ export default function InboxScreen() {
               meta={item.category.replaceAll("_", " ")}
               trailing={
                 <View style={styles.actions}>
+                  <ActionButton
+                    icon="chevron-forward"
+                    label={`Open ${item.title}`}
+                    onPress={() => router.push({
+                      pathname: "/item-detail",
+                      params: { entityType: "inbox_item", itemId: item.id },
+                    })}
+                  />
                   {item.priority === "high" ? <Pill>High</Pill> : null}
                   <ActionButton
                     busy={busyId === item.id}
