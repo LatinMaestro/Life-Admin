@@ -15,7 +15,7 @@ export default function BillsScreen() {
   const state = useApiResource<BillsResponse>("/api/v1/bills");
   const mutate = useHouseholdMutation();
   const [busyId, setBusyId] = useState<string | null>(null);
-  const items = state.data?.items ?? [];
+  const items = (state.data?.items ?? []).filter((item) => item.status !== "archived");
   const sources = state.data?.sources ?? [];
 
   const toggle = async (id: string, completed: boolean) => {
