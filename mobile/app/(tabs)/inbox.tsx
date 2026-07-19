@@ -13,7 +13,9 @@ export default function InboxScreen() {
   const state = useApiResource<InboxResponse>("/api/v1/inbox");
   const mutate = useHouseholdMutation();
   const [busyId, setBusyId] = useState<string | null>(null);
-  const items = (state.data?.items ?? []).filter((item) => item.status !== "archived");
+  const items = (state.data?.items ?? []).filter(
+    (item) => item.status === "new" || item.status === "needs_review",
+  );
 
   const archive = async (id: string) => {
     setBusyId(id);

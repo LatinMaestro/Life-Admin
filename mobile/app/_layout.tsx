@@ -29,6 +29,7 @@ export default function RootLayout() {
         <Stack.Screen name="item-detail" options={{ title: "Details" }} />
         <Stack.Screen name="edit-item" options={{ title: "Edit item", presentation: "modal" }} />
         <Stack.Screen name="edit-shopping-item" options={{ title: "Edit shopping item", presentation: "modal" }} />
+        <Stack.Screen name="route-inbox" options={{ title: "Sort inbox item", presentation: "modal" }} />
         <Stack.Screen name="bills" options={{ title: "Bills & renewals" }} />
         <Stack.Screen name="family" options={{ title: "Family" }} />
         <Stack.Screen name="sources" options={{ title: "Sources" }} />

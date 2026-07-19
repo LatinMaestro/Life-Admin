@@ -78,6 +78,19 @@ export default function ItemDetailScreen() {
         ) : null}
       </Section>
 
+      {item.entityType === "inbox_item" && item.status !== "linked" ? (
+        <PrimaryButton
+          icon="checkmark"
+          label="Sort inbox item"
+          onPress={() =>
+            router.push({
+              pathname: "/route-inbox",
+              params: { itemId: item.id },
+            })
+          }
+        />
+      ) : null}
+
       <Pressable
         accessibilityRole="button"
         onPress={() =>
