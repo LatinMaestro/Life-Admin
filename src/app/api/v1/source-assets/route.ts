@@ -28,7 +28,7 @@ export function POST(request: Request) {
     const purpose = requireEnum(
       input,
       "purpose",
-      ["direct_upload", "camera_original", "camera_crop"] as const,
+      ["direct_upload", "camera_original", "camera_crop", "voice_audio"] as const,
     );
     return createSourceAssetUpload(context, {
       title,
