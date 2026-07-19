@@ -14,6 +14,39 @@ export type OnboardingResponse = Envelope & {
   };
 };
 
+
+export type ItemEntityType =
+  | "inbox_item"
+  | "task"
+  | "reminder"
+  | "shopping_list"
+  | "bill_or_renewal"
+  | "source_reference";
+
+export type ItemDetailResponse = Envelope & {
+  item: {
+    entityType: ItemEntityType;
+    id: string;
+    title: string;
+    description: string | null;
+    status: string;
+    assignedTo: string | null;
+    details: Array<{ label: string; value: string | null }>;
+    source: { label: string; url: string | null } | null;
+  };
+  comments: Array<{
+    id: string;
+    body: string;
+    author: string;
+    createdAt: string;
+  }>;
+  activity: Array<{
+    id: string;
+    summary: string;
+    createdAt: string;
+  }>;
+};
+
 export type Member = {
   id: string;
   displayName: string;
