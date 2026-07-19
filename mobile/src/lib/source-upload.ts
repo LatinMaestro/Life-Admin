@@ -12,7 +12,7 @@ type UploadInput = {
   uri: string;
   originalName: string;
   mediaType: string;
-  purpose: "camera_original" | "camera_crop";
+  purpose: "camera_original" | "camera_crop" | "voice_audio";
   onStage?: (stage: "preparing" | "uploading" | "checking") => void;
 };
 
@@ -66,8 +66,9 @@ export function usePrivateSourceUpload() {
         },
       }),
     );
+    const processingPath = input.purpose === "voice_audio" ? "transcribe" : "process";
     const processing = await fetch(
-      `${apiUrl}/api/v1/source-assets/${intent.assetId}/process`,
+      `${apiUrl}/api/v1/source-assets/${intent.assetId}/${processingPath}`,
       {
         method: "POST",
         headers: {
