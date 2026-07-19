@@ -82,3 +82,31 @@ Avoid finance-heavy language:
 - Status should not rely only on color.
 - Tap targets should be comfortable.
 - Important due states should be readable at a glance.
+
+
+## Automated Intake UX
+
+- Upload, email, camera, OCR, and voice always produce a draft review screen.
+- Use plain processing states: Uploading, Processing, Ready to review, Needs attention, and Removed.
+- Put the original source behind one clear “View original” action.
+- Show only safe suggested fields and confidence warnings relevant to the decision.
+- Let users edit every suggestion before confirmation.
+- Use one primary action: Create task, Add reminder, Save bill reminder, or Keep in inbox.
+- Never display raw OCR dumps, model reasoning, payment identifiers, or copied payment instructions.
+- Permission education appears immediately before the relevant camera, microphone, or notification request and includes “Not now.”
+- Empty automation states never displace manual create actions.
+
+## Recurrence UX
+
+- Offer common schedules first.
+- Hide custom controls behind “More options.”
+- Clearly distinguish “This occurrence” from “This and future occurrences.”
+- Show the next occurrence in local household time.
+- Confirm end-series and destructive changes without alarming routine completion.
+
+## Notification UX
+
+- Default sensitive previews to generic wording.
+- Group preferences by household task type rather than provider technology.
+- Keep quiet hours and preview controls in Settings.
+- Deep links return to a safe unavailable state when access has changed.
