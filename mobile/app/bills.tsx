@@ -55,6 +55,14 @@ export default function BillsScreen() {
                 ].filter(Boolean).join(" - ")}
                 trailing={
                   <View style={styles.actions}>
+                    <ActionButton
+                      icon="chevron-forward"
+                      label={`Open ${item.title}`}
+                      onPress={() => router.push({
+                        pathname: "/item-detail",
+                        params: { entityType: "bill_or_renewal", itemId: item.id },
+                      })}
+                    />
                     {source?.url ? (
                       <Pressable
                         accessibilityLabel={`Open original source for ${item.title}`}
