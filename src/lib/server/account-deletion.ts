@@ -2,6 +2,7 @@ import "server-only";
 
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { requireCurrentAuthSession } from "@/lib/auth/session";
+import { privateErrorCategory } from "@/lib/private-error";
 import { getPrismaClient } from "@/lib/server/prisma";
 
 export class AccountDeletionError extends Error {
@@ -26,7 +27,7 @@ export async function deleteCurrentAccount() {
     await client.users.deleteUser(clerkUserId);
   } catch (error) {
     await markFailed(request.id, "Identity account deletion failed.");
-    console.error("Unable to delete the Clerk account.", error);
+    console.error("Unable to delete the Clerk account.", privateErrorCategory(error));
     throw new AccountDeletionError("The account could not be deleted. Please try again.");
   }
 
@@ -34,7 +35,10 @@ export async function deleteCurrentAccount() {
     await anonymizeAccount(request.id, session.user.id);
   } catch (error) {
     await markFailed(request.id, "Household data anonymization requires support review.");
-    console.error("Clerk account deleted but household anonymization failed.", error);
+    console.error(
+      "Clerk account deleted but household anonymization failed.",
+      privateErrorCategory(error),
+    );
     throw new AccountDeletionError(
       "Your sign-in was removed. Household anonymization requires support review.",
     );
@@ -174,6 +178,9 @@ async function markFailed(requestId: string, failureReason: string) {
       data: { status: "failed", failureReason: failureReason.slice(0, 240) },
     });
   } catch (error) {
-    console.error("Unable to record account deletion failure.", error);
+    console.error(
+      "Unable to record account deletion failure.",
+      privateErrorCategory(error),
+    );
   }
 }
