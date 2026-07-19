@@ -74,6 +74,12 @@ jobs:
       - name: Check voice migration
         run: pnpm guardrails:voice-migration
 
+      - name: Check private notification migration
+        run: pnpm guardrails:notification-migration
+
+      - name: Test private notification policy
+        run: pnpm test:notifications
+
       - name: Validate Prisma schema
         run: pnpm db:validate
         env:
