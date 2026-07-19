@@ -24,6 +24,12 @@ export default function NewVoiceScreen() {
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
+  useEffect(() => () => {
+    if (recorder.isRecording) void recorder.stop();
+    deleteLocal(recorder.uri);
+    void setAudioModeAsync({ allowsRecording: false, playsInSilentMode: true });
+  }, [recorder]);
+
   useEffect(() => {
     if (recorderState.isRecording) {
       setObservedRecording(true);
