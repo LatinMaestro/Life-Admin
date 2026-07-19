@@ -45,6 +45,13 @@
         "android.permission.RECORD_AUDIO",
         "android.permission.POST_NOTIFICATIONS"
       ]
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "d112a576-6adf-4452-b434-4b3cdba7ab0d"
+      }
+    },
+    "owner": "latinmaestro"
   }
 }
