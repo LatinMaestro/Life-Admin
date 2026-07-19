@@ -26,7 +26,8 @@ This checklist separates completed repository work from release-owner steps that
 - [x] Configure the mobile production API URL and Clerk publishable key in EAS.
 - [x] Run `npm run release:check:live` from `mobile/` with production environment values.
 - [x] Baseline and verify Prisma migration history in the production database.
-- [ ] Confirm Neon backups, retention, and production access ownership.
+- [x] Record the current Neon production state: the main branch is healthy but unprotected, and free-tier restore history is limited.
+- [ ] Decide whether to upgrade Neon for branch protection and a longer restore window before public launch.
 - [ ] Complete a production web smoke test after the final main deployment.
 
 ## Developer Accounts And Signing
@@ -36,13 +37,15 @@ This checklist separates completed repository work from release-owner steps that
 - [ ] Enrol in and verify the Apple Developer Program account.
 - [ ] Create the App Store Connect app record for `com.latinmaestro.familylifeadmin`.
 - [ ] Create the Google Play Console app record with the same package identifier.
-- [ ] Generate remote iOS and Android signing credentials through EAS.
+- [x] Generate remote Android signing credentials through EAS.
+- [ ] Generate remote iOS signing credentials through EAS.
 - [ ] Store console access and recovery details outside the repository.
 - [ ] Never commit production keys, reviewer passwords, signing files, or service credentials.
 
 ## Internal Builds And QA
 
-- [ ] Produce an EAS preview build for iOS and Android.
+- [x] Produce the [Android preview APK](https://expo.dev/accounts/latinmaestro/projects/family-life-admin/builds/5a98428c-5f5b-4807-b246-5f88060d37c5).
+- [ ] Produce an EAS preview build for iOS.
 - [ ] Test on at least one physical iPhone and one physical Android phone.
 - [ ] Test a representative tablet layout or emulator for each supported platform.
 - [ ] Verify sign-in, sign-out, forgotten-password recovery, session recovery, and expired-session handling.
@@ -60,7 +63,7 @@ This checklist separates completed repository work from release-owner steps that
 - [ ] Capture screenshots with fictional Rivera Household data.
 - [ ] Create a support email address owned by the product operator.
 - [x] Confirm every store URL in `docs/STORE_LISTING.md` uses the production Grovekind domain.
-- [ ] Reconcile `docs/STORE_PRIVACY_DECLARATIONS.md` against production Clerk, Vercel, Neon, and Expo settings.
+- [x] Reconcile `docs/STORE_PRIVACY_DECLARATIONS.md` against production Clerk, Vercel, Neon, and Expo settings.
 - [ ] Complete Apple privacy details from the reconciled inventory.
 - [ ] Complete Google Play Data safety from the reconciled inventory.
 - [ ] Complete content-rating and encryption questionnaires truthfully.
@@ -70,7 +73,8 @@ This checklist separates completed repository work from release-owner steps that
 
 ## Submission
 
-- [ ] Produce signed production builds with auto-incremented build numbers.
+- [x] Produce the signed [Android production AAB](https://expo.dev/accounts/latinmaestro/projects/family-life-admin/builds/54b18204-b548-46d9-8a60-72d81ab6e5b8) with an auto-incremented build number.
+- [ ] Produce the signed iOS production build.
 - [ ] Submit first to TestFlight and Google Play internal testing.
 - [ ] Complete a final release-candidate regression pass.
 - [ ] Confirm support monitoring and account-deletion operations are staffed.
