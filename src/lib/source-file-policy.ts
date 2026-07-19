@@ -56,8 +56,8 @@ function matchesMagicBytes(bytes: Uint8Array, mediaType: AllowedSourceMediaType)
     );
   }
   if (mediaType === "image/heic" || mediaType === "image/heif") {
-    const brand = ascii(bytes, 4, 8);
-    return brand.startsWith("ftyp") && ["heic", "heix", "hevc", "hevx", "mif1", "msf1"].includes(brand.slice(4, 8));
+    const box = ascii(bytes, 4, 12);
+    return box.startsWith("ftyp") && ["heic", "heix", "hevc", "hevx", "mif1", "msf1"].includes(box.slice(4, 8));
   }
   return false;
 }
