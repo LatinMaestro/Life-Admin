@@ -6,6 +6,7 @@ import type { HouseholdAccessContext } from "@/lib/access-control";
 import type { MobileApiError, MobileApiErrorCode } from "@/lib/api/v1/contracts";
 import { isClerkAuthenticationEnabled } from "@/lib/auth/config";
 import { getCurrentHouseholdAccessContext } from "@/lib/auth/session";
+import { privateErrorCategory } from "@/lib/private-error";
 
 const privateHeaders = {
   "Cache-Control": "private, no-store, max-age=0",
@@ -65,7 +66,10 @@ async function runPrivateHandler<T>(handler: () => Promise<T>) {
       return errorResponse(400, "invalid_request", error.message);
     }
 
-    console.error("Unable to complete the private household API request.", error);
+    console.error(
+      "Unable to complete the private household API request.",
+      privateErrorCategory(error),
+    );
     return errorResponse(
       500,
       "unexpected_error",

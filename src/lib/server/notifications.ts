@@ -312,13 +312,33 @@ export async function dispatchDueNotifications(now = new Date()) {
     take: 100,
     orderBy: { nextAttemptAt: "asc" },
     include: {
-      installation: { select: { expoPushToken: true } },
+      installation: {
+        select: {
+          expoPushToken: true,
+          state: true,
+          memberId: true,
+          householdId: true,
+        },
+      },
       member: { include: { notificationPreference: true } },
     },
   });
   if (!deliveries.length) return { queued: rows.length, sent: 0 };
 
-  const messages = deliveries.map((delivery) => ({
+  const eligibleDeliveries = [];
+  for (const delivery of deliveries) {
+    if (await isDeliveryStillEligible(delivery)) {
+      eligibleDeliveries.push(delivery);
+    } else {
+      await prisma.notificationDelivery.update({
+        where: { id: delivery.id },
+        data: { state: "suppressed", lastErrorCode: "no_longer_eligible" },
+      });
+    }
+  }
+  if (!eligibleDeliveries.length) return { queued: rows.length, sent: 0 };
+
+  const messages = eligibleDeliveries.map((delivery) => ({
     to: delivery.installation.expoPushToken,
     sound: "default",
     ...genericNotificationContent(
@@ -342,7 +362,7 @@ export async function dispatchDueNotifications(now = new Date()) {
     const payload = await response.json() as { data?: typeof tickets };
     tickets = payload.data ?? [];
   } catch {
-    await Promise.all(deliveries.map((delivery) =>
+    await Promise.all(eligibleDeliveries.map((delivery) =>
       prisma.notificationDelivery.update({
         where: { id: delivery.id },
         data: {
@@ -357,7 +377,7 @@ export async function dispatchDueNotifications(now = new Date()) {
   }
 
   let sent = 0;
-  for (const [index, delivery] of deliveries.entries()) {
+  for (const [index, delivery] of eligibleDeliveries.entries()) {
     const ticket = tickets[index];
     if (ticket?.status === "ok") {
       sent += 1;
@@ -394,6 +414,132 @@ export async function dispatchDueNotifications(now = new Date()) {
     }
   }
   return { queued: rows.length, sent };
+}
+
+async function isDeliveryStillEligible(delivery: {
+  householdId: string;
+  memberId: string;
+  installationId: string;
+  kind: NotificationKind;
+  targetId: string;
+  installation: {
+    state: string;
+    memberId: string;
+    householdId: string;
+  };
+  member: {
+    status: string;
+    notificationPreference: {
+      enabled: boolean;
+      tasksEnabled: boolean;
+      remindersEnabled: boolean;
+      billsEnabled: boolean;
+      renewalsEnabled: boolean;
+      intakeEnabled: boolean;
+    } | null;
+  };
+}) {
+  const preference = delivery.member.notificationPreference;
+  if (
+    delivery.member.status !== "active"
+    || delivery.installation.state !== "active"
+    || delivery.installation.householdId !== delivery.householdId
+    || delivery.installation.memberId !== delivery.memberId
+    || !preference?.enabled
+    || !kindEnabled(preference, delivery.kind)
+  ) return false;
+
+  const prisma = getPrismaClient();
+  if (delivery.kind === "task") {
+    return Boolean(await prisma.task.findFirst({
+      where: {
+        id: delivery.targetId,
+        householdId: delivery.householdId,
+        assignedMemberId: delivery.memberId,
+        status: "open",
+      },
+      select: { id: true },
+    }));
+  }
+  if (delivery.kind === "reminder") {
+    return Boolean(await prisma.reminder.findFirst({
+      where: {
+        id: delivery.targetId,
+        householdId: delivery.householdId,
+        assignedMemberId: delivery.memberId,
+        status: "scheduled",
+      },
+      select: { id: true },
+    }));
+  }
+  if (delivery.kind === "bill") {
+    return Boolean(await prisma.billReminder.findFirst({
+      where: {
+        id: delivery.targetId,
+        householdId: delivery.householdId,
+        status: "scheduled",
+        billOrRenewal: {
+          assignedMemberId: delivery.memberId,
+          status: { notIn: ["done", "archived"] },
+        },
+      },
+      select: { id: true },
+    }));
+  }
+  if (delivery.kind === "renewal") {
+    return Boolean(await prisma.billOrRenewal.findFirst({
+      where: {
+        id: delivery.targetId,
+        householdId: delivery.householdId,
+        assignedMemberId: delivery.memberId,
+        type: "renewal",
+        status: { notIn: ["done", "archived"] },
+      },
+      select: { id: true },
+    }));
+  }
+  if (delivery.kind === "intake_ready") {
+    return Boolean(await prisma.intakeDraft.findFirst({
+      where: {
+        id: delivery.targetId,
+        householdId: delivery.householdId,
+        proposedAssignedMemberId: delivery.memberId,
+        state: "needs_review",
+        expiresAt: { gt: new Date() },
+      },
+      select: { id: true },
+    }));
+  }
+
+  const occurrence = await prisma.recurrenceOccurrence.findFirst({
+    where: {
+      id: delivery.targetId,
+      householdId: delivery.householdId,
+      state: "scheduled",
+    },
+    select: { series: { select: { targetType: true, targetId: true } } },
+  });
+  if (!occurrence) return false;
+  if (occurrence.series.targetType === "task") {
+    return Boolean(await prisma.task.findFirst({
+      where: {
+        id: occurrence.series.targetId,
+        householdId: delivery.householdId,
+        assignedMemberId: delivery.memberId,
+        status: "open",
+      },
+      select: { id: true },
+    }));
+  }
+  return Boolean(await prisma.reminder.findFirst({
+    where: {
+      id: occurrence.series.targetId,
+      householdId: delivery.householdId,
+      assignedMemberId: delivery.memberId,
+      status: "scheduled",
+    },
+    select: { id: true },
+  }));
 }
 
 async function resolveRecurrenceMembers(

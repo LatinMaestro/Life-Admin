@@ -191,7 +191,7 @@ export async function finalizeSourceAsset(
           sha256Digest: digest,
           retentionUntil: asset.purpose === "voice_audio"
             ? new Date(Date.now() + 24 * 60 * 60 * 1000)
-            : null,
+            : asset.retentionUntil,
         },
       });
       if (current.sourceReferenceId) {
@@ -304,8 +304,10 @@ export async function deleteSourceAsset(
     where: { id: asset.id },
     data: { state: "deleting" },
   });
-  const storage = await getPrivateObjectStorage();
-  await storage.deleteObject(asset.objectKey);
+  const removed = await rejectAndDeleteAsset(asset.id, asset.objectKey);
+  if (!removed) {
+    throw new Error("Removal is queued and will be retried.");
+  }
   await prisma.$transaction(async (transaction) => {
     await transaction.sourceAsset.update({
       where: { id: asset.id },
@@ -349,7 +351,7 @@ export async function cleanupExpiredSourceAssets(now = new Date()) {
   const prisma = getPrismaClient();
   const stale = await prisma.sourceAsset.findMany({
     where: {
-      state: { in: ["pending", "quarantined", "rejected"] },
+      state: { in: ["pending", "quarantined", "ready", "rejected", "deleting"] },
       retentionUntil: { lte: now },
     },
     select: { id: true, objectKey: true },
@@ -362,16 +364,29 @@ export async function cleanupExpiredSourceAssets(now = new Date()) {
 }
 
 async function rejectAndDeleteAsset(assetId: string, objectKey: string) {
+  const prisma = getPrismaClient();
   const storage = await getPrivateObjectStorage();
-  await storage.deleteObject(objectKey).catch(() => undefined);
-  await getPrismaClient().sourceAsset.update({
+  try {
+    await storage.deleteObject(objectKey);
+  } catch {
+    await prisma.sourceAsset.update({
+      where: { id: assetId },
+      data: {
+        state: "deleting",
+        retentionUntil: new Date(Date.now() + 60 * 60 * 1000),
+      },
+    });
+    return false;
+  }
+  await prisma.sourceAsset.update({
     where: { id: assetId },
     data: {
-      state: "rejected",
+      state: "deleted",
       deletedAt: new Date(),
       retentionUntil: null,
     },
   });
+  return true;
 }
 
 function sourceKind(mediaType: string, purpose: SourceAssetPurpose) {
