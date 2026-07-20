@@ -68,7 +68,8 @@ fs.mkdirSync(evidenceDirectory, { recursive: true });
               const label = element.getAttribute("aria-label")
                 || element.getAttribute("title")
                 || element.getAttribute("placeholder");
-              return !text && !label;
+              const associatedLabel = "labels" in element && element.labels?.length;
+              return !text && !label && !associatedLabel;
             })
             .map((element) => element.outerHTML.slice(0, 160));
 
