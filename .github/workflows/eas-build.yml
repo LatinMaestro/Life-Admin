@@ -1,41 +1,34 @@
-name: EAS mobile build
+name: EAS client candidate builds
 
 on:
-  workflow_dispatch:
-    inputs:
-      platform:
-        description: Platform to build
-        required: true
-        default: android
-        type: choice
-        options:
-          - android
-          - ios
-          - all
-      profile:
-        description: EAS build profile
-        required: true
-        default: preview
-        type: choice
-        options:
-          - preview
-          - simulator
-          - production
+  push:
+    branches:
+      - release/client-candidate-builds
 
 permissions:
   contents: read
 
 jobs:
   build:
-    name: Start EAS build
+    name: Build ${{ matrix.label }}
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: Android preview
+            platform: android
+            profile: preview
+          - label: iOS simulator
+            platform: ios
+            profile: simulator
     steps:
       - name: Require Expo token
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
           if [ -z "$EXPO_TOKEN" ]; then
-            echo "Add EXPO_TOKEN under repository Actions secrets before starting a build."
+            echo "EXPO_TOKEN is required."
             exit 1
           fi
 
@@ -70,4 +63,4 @@ jobs:
 
       - name: Start cloud build
         working-directory: mobile
-        run: eas build --platform "${{ inputs.platform }}" --profile "${{ inputs.profile }}" --non-interactive --no-wait
+        run: eas build --platform "${{ matrix.platform }}" --profile "${{ matrix.profile }}" --non-interactive --no-wait
