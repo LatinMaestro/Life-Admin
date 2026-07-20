@@ -102,6 +102,36 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: Install Chromium test runtime
+        run: |
+          npm install --prefix /tmp/life-admin-playwright playwright@1.56.1
+          node /tmp/life-admin-playwright/node_modules/playwright/cli.js install --with-deps chromium
+
+      - name: Start production build
+        run: |
+          pnpm start > /tmp/life-admin-next.log 2>&1 &
+          for attempt in {1..30}; do
+            curl --fail --silent http://127.0.0.1:3000/ > /dev/null && exit 0
+            sleep 1
+          done
+          cat /tmp/life-admin-next.log
+          exit 1
+
+      - name: Run responsive browser journeys
+        run: node scripts/e2e-release-smoke.cjs
+        env:
+          E2E_BASE_URL: http://127.0.0.1:3000
+          NODE_PATH: /tmp/life-admin-playwright/node_modules
+
+      - name: Upload browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-smoke-screenshots
+          path: test-results/release-smoke
+          if-no-files-found: warn
+          retention-days: 14
+
   mobile:
     name: Mobile typecheck
     runs-on: ubuntu-latest
@@ -125,3 +155,15 @@ jobs:
 
       - name: Check store configuration
         run: npm run release:check
+
+      - name: Export iOS bundle
+        run: npx expo export --platform ios --output-dir dist-ios
+        env:
+          EXPO_PUBLIC_API_URL: https://lifeadmin.grovekind.com
+          EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY: pk_test_ZmFrZS5jbGVyay5hY2NvdW50JA
+
+      - name: Export Android bundle
+        run: npx expo export --platform android --output-dir dist-android
+        env:
+          EXPO_PUBLIC_API_URL: https://lifeadmin.grovekind.com
+          EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY: pk_test_ZmFrZS5jbGVyay5hY2NvdW50JA
