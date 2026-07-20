@@ -19,6 +19,7 @@ on:
         type: choice
         options:
           - preview
+          - simulator
           - production
 
 permissions:
@@ -54,7 +55,7 @@ jobs:
 
       - name: Install mobile dependencies
         working-directory: mobile
-        run: npm ci --no-audit --no-fund
+        run: npm install --no-audit --no-fund
 
       - name: Verify live release configuration
         working-directory: mobile

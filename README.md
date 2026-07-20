@@ -12,13 +12,15 @@ This project is separate from SpendGrove. It does not include budgeting, bank im
 - Mobile-first web plus approved native iOS and Android clients.
 - Bills and renewals track household admin dates and original source references, not financial analysis.
 - Payment reminders point back to original sources instead of storing generated or transcribed payment identifiers.
-- Email forwarding, secure uploads/camera, OCR, bounded classification, voice capture, advanced recurrence, and opt-in notifications are approved pre-store phases with strict privacy and confirmation gates.
+- Email forwarding, secure uploads/camera, OCR, bounded classification, voice capture, advanced recurrence, and opt-in notifications use strict privacy and confirmation gates.
 
 ## Current Product
 
-The web app includes live Clerk authentication, Neon/PostgreSQL persistence, household membership enforcement, invitation acceptance, household settings, dashboard, inbox routing, tasks and reminders, shopping lists, bills and renewals, source references, comments, and activity history. Development is now progressing through the approved Phases 1-16 before client acceptance testing.
+The web app includes Clerk authentication, Neon/PostgreSQL persistence, household membership enforcement, invitation acceptance, household settings, dashboard, inbox routing, tasks and reminders, shopping lists, bills and renewals, source references, comments, activity, recurrence, private source intake, review-first classification, and notification controls.
 
-The `mobile/` project is a genuine Expo/React Native client for iOS and Android. It uses Clerk secure sessions and the authenticated household API. Core native read and write workflows, release configuration, app artwork, and store copy are implemented. Signed builds and store submission remain controlled external release steps.
+The `mobile/` project is a genuine Expo/React Native client for iOS and Android. It uses Clerk secure sessions and the authenticated household API. Native household workflows, camera and document capture, voice capture, private review drafts, release configuration, artwork, and store copy are implemented.
+
+Phases 1-15 are complete. Phase 16 prepares one controlled web and native candidate for client acceptance before any paid Apple Developer or Google Play work.
 
 ## Technology
 
@@ -30,6 +32,7 @@ The `mobile/` project is a genuine Expo/React Native client for iOS and Android.
 - Neon PostgreSQL
 - Clerk
 - Vercel
+- Cloudflare R2, Email Routing, Email Workers, and Workers AI
 - Expo and React Native for iOS and Android
 
 ## Documentation Map
@@ -40,9 +43,12 @@ The `mobile/` project is a genuine Expo/React Native client for iOS and Android.
 - `docs/MVP_SCOPE.md` - original web MVP boundaries
 - `docs/MOBILE_APP_STORE_ROADMAP.md` - iOS, Android, API, testing, and store-release plan
 - `docs/PHASES_1_TO_16.md` - approved pre-store development sequence and exit gates
+- `docs/CLIENT_TESTING.md` - fictional acceptance journey for the Phase 16 candidate
+- `docs/RELEASE_CANDIDATE.md` - release manifest, deployment controls, and known external gates
 - `docs/AUTOMATED_INTAKE_ARCHITECTURE.md` - upload, email, OCR, classification, voice, retention, and redaction architecture
 - `docs/RECURRENCE_AND_NOTIFICATION_DESIGN.md` - recurrence, scheduling, preferences, and safe delivery rules
 - `docs/TEST_STRATEGY_PHASES_1_TO_16.md` - automated, integration, API, provider, end-to-end, and emulator test strategy
+- `docs/FINAL_UI_REVIEW.md` - final beginner-friendly UI and accessibility acceptance
 - `docs/STORE_LISTING.md` - approved App Store and Google Play listing copy
 - `mobile/store.config.json` - machine-readable Apple App Store metadata
 - `docs/STORE_PRIVACY_DECLARATIONS.md` - current data inventory and draft store privacy answers
@@ -55,25 +61,10 @@ The `mobile/` project is a genuine Expo/React Native client for iOS and Android.
 - `docs/ACCESS_CONTROL.md` - membership and permission enforcement
 - `docs/DATA_MODEL.md` - household-scoped data model
 - `docs/PRODUCTION_ACTIVATION_RUNBOOK.md` - controlled web activation
-- `docs/FUTURE_PHASES.md` - approved current scale-up and capabilities that remain deferred
+- `docs/FUTURE_PHASES.md` - capabilities that remain deferred
 - `docs/BILL_PAYMENT_SOURCE_OF_TRUTH_RULES.md` - strict bill/payment rules
 - `docs/IOS_FUTURE_ROADMAP.md` - historical iOS roadmap and current cross-platform direction
 
 ## Quality Checks
 
-GitHub Actions validates the web app and native app independently. The web job runs all existing privacy, migration, typecheck, and build gates; the mobile job installs the Expo project and runs its strict TypeScript and store-structure checks.
-
-```bash
-pnpm install
-pnpm lint
-pnpm guardrails:payment-source
-pnpm guardrails:static-data-boundary
-pnpm guardrails:migration
-pnpm db:validate
-pnpm typecheck
-pnpm build
-cd mobile
-npm install
-npm run typecheck
-npm run release:check
-```
+GitHub Actions validates privacy boundaries, migrations, recurrence, secure intake, notifications, authorization, TypeScript, production builds, responsive browser journeys, and both native platform exports from a clean checkout.

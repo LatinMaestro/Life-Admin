@@ -4,7 +4,7 @@
 
 Complete Phases 1-16 in `docs/PHASES_1_TO_16.md` and deliver a client-test-ready web and native application before any paid Apple Developer or Google Play setup.
 
-Automatic Vercel Git deployments are paused during development through `vercel.json`. Re-enable them only for the controlled Phase 16 client-testing candidate.
+Automatic Vercel Git deployments remain paused until the controlled Phase 16 release commit.
 
 ## Product Boundary
 
@@ -28,6 +28,7 @@ SpendGrove remains the finance product.
 12. Bill/payment source-of-truth guardrails and provider privacy review.
 13. Private lifecycle recovery and security hardening.
 14. Automated responsive browser journeys and native bundle QA.
+15. Final beginner-friendly UI and accessibility review.
 
 Previous signed builds are engineering evidence only. Development continued after those builds, so the final store candidate will be rebuilt after Phase 16 approval.
 
@@ -66,4 +67,4 @@ After approval, complete store accounts, final signing, TestFlight/Play internal
 
 ## Current Phase
 
-Phase 15 is in final review. Phase 16 will prepare one controlled client-testing candidate, re-enable a single Vercel deployment, document the test journey, and collect approval before the paid store phase.
+Phase 16 is in progress. Release preparation, fictional test scenarios, provider activation, one production web deployment, Android preview, iOS simulator candidate, client testing, and explicit approval remain before the paid store phase.

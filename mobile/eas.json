@@ -12,6 +12,13 @@
         "buildType": "apk"
       }
     },
+    "simulator": {
+      "distribution": "internal",
+      "environment": "preview",
+      "ios": {
+        "simulator": true
+      }
+    },
     "production": {
       "autoIncrement": true,
       "credentialsSource": "remote",
