@@ -33,7 +33,8 @@
     "guardrails:voice-migration": "node scripts/check-voice-migration.mjs",
     "guardrails:notification-migration": "node scripts/check-notification-migration.mjs",
     "test:notifications": "node --test tests/notification-policy.test.mjs",
-    "test:security-boundaries": "node --test tests/security-boundaries.test.mjs"
+    "test:security-boundaries": "node --test tests/security-boundaries.test.mjs",
+    "guardrails:private-lifecycle": "node scripts/check-private-lifecycle.mjs"
   },
   "dependencies": {
     "@clerk/nextjs": "7.5.16",
