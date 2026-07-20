@@ -26,6 +26,8 @@ SpendGrove remains the finance product.
 10. Core native reads/writes, password recovery, release configuration, artwork, and store metadata.
 11. Grovekind production domain, Clerk custom domain, Android signing, and initial Android builds.
 12. Bill/payment source-of-truth guardrails and provider privacy review.
+13. Private lifecycle recovery and security hardening.
+14. Automated responsive browser journeys and native bundle QA.
 
 Previous signed builds are engineering evidence only. Development continued after those builds, so the final store candidate will be rebuilt after Phase 16 approval.
 
@@ -64,4 +66,4 @@ After approval, complete store accounts, final signing, TestFlight/Play internal
 
 ## Current Phase
 
-Phase 1: update architecture, security, privacy, data model, recurrence, notification, storage, email, OCR, classification, payment-redaction, voice, QA, and release-control documentation.
+Phase 15 is in final review. Phase 16 will prepare one controlled client-testing candidate, re-enable a single Vercel deployment, document the test journey, and collect approval before the paid store phase.

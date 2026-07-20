@@ -31,6 +31,7 @@ fs.mkdirSync(evidenceDirectory, { recursive: true });
       const context = await browser.newContext({
         viewport: { width: viewport.width, height: viewport.height },
         colorScheme: "light",
+        reducedMotion: "reduce",
       });
       const page = await context.newPage();
       const consoleErrors = [];
@@ -72,13 +73,29 @@ fs.mkdirSync(evidenceDirectory, { recursive: true });
               return !text && !label && !associatedLabel;
             })
             .map((element) => element.outerHTML.slice(0, 160));
+          const undersizedControls = [
+            ...document.querySelectorAll(
+              'button,select,input:not([type="checkbox"]):not([type="radio"]),textarea',
+            ),
+          ]
+            .filter(visible)
+            .filter((element) => {
+              const box = element.getBoundingClientRect();
+              return box.height < 43.5 || (element.tagName === "BUTTON" && box.width < 43.5);
+            })
+            .map((element) => {
+              const box = element.getBoundingClientRect();
+              return `${element.tagName.toLowerCase()} ${Math.round(box.width)}x${Math.round(box.height)} ${element.outerHTML.slice(0, 100)}`;
+            });
 
           const text = document.body.innerText.toLowerCase();
           return {
             hasMain: Boolean(document.querySelector("main")),
             hasHeading: Boolean(document.querySelector("h1")),
             horizontalOverflow: document.documentElement.scrollWidth > window.innerWidth + 1,
+            currentPageCount: [...document.querySelectorAll('[aria-current="page"]')].filter(visible).length,
             unnamed,
+            undersizedControls,
             forbidden: forbiddenTerms.filter((term) => text.includes(term)),
           };
         }, forbiddenProductTerms);
@@ -86,8 +103,25 @@ fs.mkdirSync(evidenceDirectory, { recursive: true });
         if (!audit.hasMain) failures.push(`${label}: missing main landmark`);
         if (!audit.hasHeading) failures.push(`${label}: missing page heading`);
         if (audit.horizontalOverflow) failures.push(`${label}: horizontal overflow`);
+        if (audit.currentPageCount !== 1) failures.push(`${label}: expected one visible current-page marker, found ${audit.currentPageCount}`);
         if (audit.unnamed.length) failures.push(`${label}: unnamed controls ${audit.unnamed.join(" | ")}`);
+        if (audit.undersizedControls.length) failures.push(`${label}: undersized controls ${audit.undersizedControls.join(" | ")}`);
         if (audit.forbidden.length) failures.push(`${label}: forbidden product terms ${audit.forbidden.join(", ")}`);
+
+        if (route === "/") {
+          await page.keyboard.press("Tab");
+          const firstFocus = await page.evaluate(() => ({
+            href: document.activeElement?.getAttribute("href"),
+            text: document.activeElement?.textContent?.trim(),
+          }));
+          if (firstFocus.href !== "#main-content" || firstFocus.text !== "Skip to main content") {
+            failures.push(`${label}: first keyboard focus is not the skip link`);
+          } else {
+            await page.keyboard.press("Enter");
+            const mainFocused = await page.evaluate(() => document.activeElement?.id === "main-content");
+            if (!mainFocused) failures.push(`${label}: skip link did not focus main content`);
+          }
+        }
 
         const fileName = route === "/" ? "home" : route.slice(1).replaceAll("/", "-");
         await page.screenshot({

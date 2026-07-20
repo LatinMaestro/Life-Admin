@@ -47,6 +47,13 @@ export function AppShell({ children, household, currentMember }: AppShellProps) 
 
   return (
     <div className="min-h-screen bg-background">
+      <a
+        href="#main-content"
+        className="fixed left-4 top-4 z-50 -translate-y-24 rounded-md bg-primary px-4 py-3 font-medium text-primary-foreground transition-transform focus:translate-y-0 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+      >
+        Skip to main content
+      </a>
+
       <aside className="fixed inset-y-0 left-0 hidden w-64 border-r bg-card px-4 py-5 lg:block">
         <Link href="/" className="block px-3">
           <p className="text-sm text-muted-foreground">Family Life Admin</p>
@@ -61,8 +68,9 @@ export function AppShell({ children, household, currentMember }: AppShellProps) 
               <Link
                 key={item.href}
                 href={item.href}
+                aria-current={active ? "page" : undefined}
                 className={cn(
-                  "flex min-h-11 items-center gap-3 rounded-md px-3 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+                  "flex min-h-11 items-center gap-3 rounded-md px-3 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                   active && "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground",
                 )}
               >
@@ -76,12 +84,16 @@ export function AppShell({ children, household, currentMember }: AppShellProps) 
 
       <div className="lg:pl-64">
         <header className="sticky top-0 z-20 border-b bg-background/95 px-4 py-3 backdrop-blur lg:hidden">
-          <Link href="/">
+          <Link href="/" className="block rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
             <p className="text-xs text-muted-foreground">Family Life Admin</p>
             <p className="text-base font-semibold">{household.name}</p>
           </Link>
         </header>
-        <main className="mx-auto min-h-screen w-full max-w-6xl px-4 pb-28 pt-5 sm:px-6 lg:px-8 lg:pb-10 lg:pt-8">
+        <main
+          id="main-content"
+          tabIndex={-1}
+          className="mx-auto min-h-screen w-full max-w-6xl px-4 pb-28 pt-5 outline-none sm:px-6 lg:px-8 lg:pb-10 lg:pt-8"
+        >
           {children}
         </main>
       </div>
@@ -91,14 +103,15 @@ export function AppShell({ children, household, currentMember }: AppShellProps) 
           {mobileNavigation.map((item) => {
             const active =
               pathname === item.href ||
-              (item.label === "More" && ["/sources", "/activity", "/family", "/settings"].includes(pathname));
+              (item.label === "More" && ["/bills", "/sources", "/activity", "/family", "/settings"].includes(pathname));
             const Icon = item.icon;
             return (
               <Link
                 key={item.label}
                 href={item.href}
+                aria-current={active ? "page" : undefined}
                 className={cn(
-                  "flex min-h-14 flex-col items-center justify-center gap-1 rounded-md text-[0.68rem] font-medium text-muted-foreground",
+                  "flex min-h-14 flex-col items-center justify-center gap-1 rounded-md text-[0.68rem] font-medium text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                   active && "bg-primary text-primary-foreground",
                 )}
               >

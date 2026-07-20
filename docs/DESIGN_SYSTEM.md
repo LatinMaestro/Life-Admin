@@ -80,27 +80,29 @@ Avoid finance-heavy language:
 - Buttons and controls must have clear accessible names.
 - Text should fit on mobile.
 - Status should not rely only on color.
-- Tap targets should be comfortable.
+- Interactive controls should provide at least a 44 by 44 pixel target.
+- Every page should expose one visible current-page navigation state.
+- Web pages should provide a keyboard skip link and visible focus treatment.
+- Motion should respect the user's reduced-motion preference.
 - Important due states should be readable at a glance.
-
 
 ## Automated Intake UX
 
 - Upload, email, camera, OCR, and voice always produce a draft review screen.
 - Use plain processing states: Uploading, Processing, Ready to review, Needs attention, and Removed.
-- Put the original source behind one clear “View original” action.
+- Put the original source behind one clear "View original" action.
 - Show only safe suggested fields and confidence warnings relevant to the decision.
 - Let users edit every suggestion before confirmation.
 - Use one primary action: Create task, Add reminder, Save bill reminder, or Keep in inbox.
 - Never display raw OCR dumps, model reasoning, payment identifiers, or copied payment instructions.
-- Permission education appears immediately before the relevant camera, microphone, or notification request and includes “Not now.”
+- Permission education appears immediately before the relevant camera, microphone, or notification request and includes "Not now."
 - Empty automation states never displace manual create actions.
 
 ## Recurrence UX
 
 - Offer common schedules first.
-- Hide custom controls behind “More options.”
-- Clearly distinguish “This occurrence” from “This and future occurrences.”
+- Hide custom controls behind "More options."
+- Clearly distinguish "This occurrence" from "This and future occurrences."
 - Show the next occurrence in local household time.
 - Confirm end-series and destructive changes without alarming routine completion.
 
