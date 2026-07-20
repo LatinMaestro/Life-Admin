@@ -103,7 +103,7 @@ export function AppShell({ children, household, currentMember }: AppShellProps) 
           {mobileNavigation.map((item) => {
             const active =
               pathname === item.href ||
-              (item.label === "More" && ["/sources", "/activity", "/family", "/settings"].includes(pathname));
+              (item.label === "More" && ["/bills", "/sources", "/activity", "/family", "/settings"].includes(pathname));
             const Icon = item.icon;
             return (
               <Link
