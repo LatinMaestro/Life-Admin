@@ -2,14 +2,16 @@
 
 ## Status
 
-Phase 5 uses a provider-neutral private object-storage boundary with a Cloudflare R2 implementation. The code remains inactive until the production environment has the required server-only values.
+The private Cloudflare R2 bucket `family-life-admin-production` is provisioned in APAC with public access disabled. Production CORS permits only `https://lifeadmin.grovekind.com` to upload with `PUT`. Incomplete multipart uploads expire after one day.
+
+The application storage boundary is complete and remains inactive until the production runtime receives bucket-scoped credentials.
 
 ## Required Environment Values
 
 - `R2_ACCOUNT_ID`
 - `R2_ACCESS_KEY_ID`
 - `R2_SECRET_ACCESS_KEY`
-- `R2_BUCKET_NAME`
+- `R2_BUCKET_NAME=family-life-admin-production`
 
 Never expose these values through `NEXT_PUBLIC_*`, `EXPO_PUBLIC_*`, GitHub, logs, source records, or client responses.
 
@@ -17,17 +19,11 @@ Never expose these values through `NEXT_PUBLIC_*`, `EXPO_PUBLIC_*`, GitHub, logs
 
 - Keep public development URLs and custom public domains disabled.
 - Permit object access only through signed S3 requests.
-- Scope the production token to object read/write for the single Family Life Admin bucket.
+- Scope the production token to object read/write for this bucket only.
 - Keep preview/test credentials separate from production.
-- Configure browser CORS only for the approved app origins and `PUT`.
+- Keep production CORS limited to the approved app origin and `PUT`.
 - Do not permit wildcard production origins.
-- Keep lifecycle cleanup in the application because retention depends on confirmation state.
-
-## Initial CORS Origins
-
-- `https://lifeadmin.grovekind.com`
-- the single controlled Vercel client-test origin when Phase 16 begins;
-- local development origins only in a separate non-production bucket.
+- Keep application retention rules authoritative; the provider lifecycle rule only aborts incomplete multipart uploads.
 
 ## Validation Flow
 
@@ -40,6 +36,6 @@ Never expose these values through `NEXT_PUBLIC_*`, `EXPO_PUBLIC_*`, GitHub, logs
 7. Reads use a five-minute URL created only after household authorization.
 8. Authorized deletion removes the provider object and records a metadata-only activity event.
 
-## Current Activation Dependency
+## Remaining Activation Dependency
 
-R2 must be enabled once in the Cloudflare dashboard before the bucket and scoped credentials can be provisioned. Until then, source links continue to work and private file uploads fail closed with a generic configuration message.
+Create one bucket-scoped R2 Object Read & Write token, then add its access key and secret to the Vercel production environment. Do not paste either credential into chat, GitHub, screenshots, or client-side configuration.

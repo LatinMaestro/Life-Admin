@@ -44,6 +44,7 @@ Phases 1-15 are complete. Phase 16 prepares one controlled web and native candid
 - `docs/MOBILE_APP_STORE_ROADMAP.md` - iOS, Android, API, testing, and store-release plan
 - `docs/PHASES_1_TO_16.md` - approved pre-store development sequence and exit gates
 - `docs/CLIENT_TESTING.md` - fictional acceptance journey for the Phase 16 candidate
+- `docs/CLIENT_PROVIDER_SETUP.md` - final account-owner setup before the controlled candidate deployment
 - `docs/RELEASE_CANDIDATE.md` - release manifest, deployment controls, and known external gates
 - `docs/AUTOMATED_INTAKE_ARCHITECTURE.md` - upload, email, OCR, classification, voice, retention, and redaction architecture
 - `docs/RECURRENCE_AND_NOTIFICATION_DESIGN.md` - recurrence, scheduling, preferences, and safe delivery rules
