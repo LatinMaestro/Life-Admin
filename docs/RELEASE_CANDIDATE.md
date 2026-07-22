@@ -39,23 +39,28 @@ It never includes banking, budgeting, transaction tracking, spend analysis, cash
 
 Populate after activation:
 
-- Approved Git commit: pending
-- Vercel production deployment: pending
-- Android preview build: pending
-- iOS simulator build: pending
-- GitHub CI run: pending
-- Production migration status: reviewed migrations applied; final status check pending
+- Approved Git commit: pending final activation
+- Vercel production deployment: pending final activation
+- Android preview build: pending final candidate build
+- iOS simulator build: pending final candidate build
+- GitHub CI run: latest complete run 296; final activation run pending
+- Production migration status: all eight reviewed migrations recorded exactly once with repository checksums
 - Client approval: pending
 
 ## Provider Readiness
 
 - Clerk production and Grovekind custom domain: configured
-- Neon production database and migrations: configured
-- Cloudflare zone and Email Routing: active
-- Cloudflare R2: requires one-time account activation before provisioning
-- R2 scoped credentials and CORS: pending R2 activation
-- Inbound Email Worker and signed route: pending R2 and server secret configuration
-- Workers AI scoped token: pending client-test provider configuration
+- Neon production database, schema, and migration baseline: configured and verified
+- Cloudflare zone and apex Email Routing: active and healthy
+- Cloudflare R2 bucket: provisioned privately in APAC
+- R2 public access: disabled
+- R2 production CORS: restricted to `https://lifeadmin.grovekind.com` and `PUT`
+- R2 incomplete multipart cleanup: one day
+- R2 bucket-scoped credentials: client-owner setup pending
+- `intake.grovekind.com` Email Routing subdomain: client-owner setup pending
+- Inbound Email Worker and signed route: pending shared secret and subdomain setup
+- Workers AI scoped token: client-owner setup pending
+- Vercel server-only provider values: client-owner setup pending
 - Internal scheduler secret and trigger: pending client-test provider configuration
 - Apple/Google store accounts and production push credentials: deliberately deferred
 
