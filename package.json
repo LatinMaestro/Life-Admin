@@ -35,7 +35,8 @@
     "test:notifications": "node --test tests/notification-policy.test.mjs",
     "test:security-boundaries": "node --test tests/security-boundaries.test.mjs",
     "guardrails:private-lifecycle": "node scripts/check-private-lifecycle.mjs",
-    "guardrails:production-baseline": "node scripts/check-production-baseline.mjs"
+    "guardrails:production-baseline": "node scripts/check-production-baseline.mjs",
+    "test:operations-scheduler": "node --test tests/operations-scheduler.test.mjs"
   },
   "dependencies": {
     "@clerk/nextjs": "7.5.16",

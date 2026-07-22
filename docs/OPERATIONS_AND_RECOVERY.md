@@ -11,7 +11,13 @@ Both internal jobs require an exact bearer `CRON_SECRET` of at least 32 characte
 - `POST /api/internal/notifications/dispatch` gathers due notification work, applies current access and preferences, and sends bounded batches.
 - `POST /api/internal/maintenance/cleanup` expires temporary intake records, removes expired private assets, and prunes old delivery/device records.
 
-Production scheduling remains disabled until the controlled client-test deployment.
+The reviewed Cloudflare Worker in `workers/operations-scheduler` calls both endpoints every five minutes. It requires:
+
+- encrypted Worker secret `CRON_SECRET`, identical to the Vercel production value;
+- plain Worker variable `APP_BASE_URL=https://lifeadmin.grovekind.com`;
+- the configured `*/5 * * * *` Cron Trigger.
+
+The Worker sends no source content, logs no response bodies, requires HTTPS, and fails when either private operation rejects the request. Production scheduling remains disabled until the controlled client-test deployment is ready.
 
 ## Private Asset Recovery
 
@@ -36,4 +42,4 @@ Production scheduling remains disabled until the controlled client-test deployme
 3. Inspect only counts, states, timestamps, and opaque identifiers.
 4. Never copy source text or payment identifiers into tickets, logs, or chat.
 5. Retry cleanup after provider recovery.
-6. Rerun CI privacy, payment-source, authorization, and migration gates before reactivation.
+6. Rerun CI privacy, payment-source, authorization, scheduler, and migration gates before reactivation.
