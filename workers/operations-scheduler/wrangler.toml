@@ -1,0 +1,11 @@
+name = "family-life-admin-operations"
+main = "index.mjs"
+compatibility_date = "2026-07-22"
+
+[vars]
+APP_BASE_URL = "https://lifeadmin.grovekind.com"
+
+[triggers]
+crons = ["*/5 * * * *"]
+
+# CRON_SECRET must be added as an encrypted Worker secret and match Vercel.
