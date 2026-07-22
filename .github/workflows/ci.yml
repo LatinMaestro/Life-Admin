@@ -86,6 +86,9 @@ jobs:
       - name: Check private lifecycle recovery
         run: pnpm guardrails:private-lifecycle
 
+      - name: Check production migration baseline coverage
+        run: pnpm guardrails:production-baseline
+
       - name: Validate Prisma schema
         run: pnpm db:validate
         env:

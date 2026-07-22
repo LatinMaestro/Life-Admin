@@ -4,6 +4,27 @@ import { neon } from "@neondatabase/serverless";
 const migrations = [
   "20260710103700_init",
   "20260717040000_account_deletion_requests",
+  "20260719115500_advanced_recurrence",
+  "20260719124500_secure_source_assets",
+  "20260719133000_household_email_intake",
+  "20260719140500_safe_intake_drafts",
+  "20260719142500_voice_transcription",
+  "20260719144500_private_push_notifications",
+];
+const requiredTables = [
+  "User",
+  "Household",
+  "AccountDeletionRequest",
+  "RecurrenceSeries",
+  "RecurrenceOccurrence",
+  "SourceAsset",
+  "IntakeAlias",
+  "IntakeEnvelope",
+  "ExtractionJob",
+  "IntakeDraft",
+  "DeviceInstallation",
+  "NotificationPreference",
+  "NotificationDelivery",
 ];
 const apply = process.argv.includes("--apply");
 const databaseUrl = process.env.DATABASE_URL?.trim();
@@ -24,19 +45,36 @@ if (!["postgres:", "postgresql:"].includes(parsedUrl.protocol)) {
 }
 
 const sql = neon(databaseUrl);
-const [schemaState] = await sql`
-  SELECT
-    to_regclass('public."User"') IS NOT NULL AS has_user,
-    to_regclass('public."Household"') IS NOT NULL AS has_household,
-    to_regclass('public."AccountDeletionRequest"') IS NOT NULL AS has_deletion,
-    to_regclass('public."_prisma_migrations"') IS NOT NULL AS has_history
+const tableState = await sql`
+  SELECT table_name
+  FROM information_schema.tables
+  WHERE table_schema = 'public'
+    AND table_name = ANY(${requiredTables})
+`;
+const presentTables = new Set(tableState.map((row) => row.table_name));
+const missingTables = requiredTables.filter((table) => !presentTables.has(table));
+const [voiceState] = await sql`
+  SELECT EXISTS (
+    SELECT 1
+    FROM pg_enum e
+    JOIN pg_type t ON t.oid = e.enumtypid
+    WHERE t.typname = 'ExtractionStrategy'
+      AND e.enumlabel = 'speech_transcription'
+  ) AS has_voice_strategy
+`;
+const [historyState] = await sql`
+  SELECT to_regclass('public."_prisma_migrations"') IS NOT NULL AS has_history
 `;
 
-if (!schemaState?.has_user || !schemaState?.has_household || !schemaState?.has_deletion) {
-  fail("The reviewed production schema is incomplete; refusing to baseline migration history.");
+if (missingTables.length || !voiceState?.has_voice_strategy) {
+  const details = [
+    missingTables.length ? `missing tables: ${missingTables.join(", ")}` : null,
+    !voiceState?.has_voice_strategy ? "missing speech transcription strategy" : null,
+  ].filter(Boolean);
+  fail(`The reviewed production schema is incomplete (${details.join("; ")}); refusing to baseline migration history.`);
 }
 
-const appliedBefore = schemaState.has_history
+const appliedBefore = historyState?.has_history
   ? new Set(
       (
         await sql`

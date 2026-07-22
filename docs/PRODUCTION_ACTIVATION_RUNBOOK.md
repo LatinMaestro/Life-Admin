@@ -40,17 +40,17 @@ Partial activation is rejected by `pnpm check:activation`. The build runs this c
 
 ## Production Migration History Baseline
 
-The production schema was applied through the reviewed Neon migration process before Prisma Migrate created its history table. Before future migrations are deployed, record the two already-applied migrations through Prisma's supported baseline workflow.
+The production schema was applied through reviewed Neon migration processes before every migration was recorded by Prisma Migrate. On 22 July 2026, the complete eight-migration production baseline was reconciled and verified against repository checksums.
 
-The command is guarded: it verifies the reviewed schema exists, skips migrations already recorded, and performs no write without `--apply`.
+The baseline helper remains available for disaster recovery and environment audits. It verifies all required feature tables and extraction strategies, skips migrations already recorded, and performs no write without `--apply`.
 
-Inspect the intended remote production environment:
+Inspect an intended remote environment:
 
 ```bash
 pnpm db:baseline:production
 ```
 
-After confirming the target, apply and verify the migration history:
+If an independently verified environment needs its history repaired, apply and verify the baseline:
 
 ```bash
 pnpm db:baseline:production -- --apply
@@ -90,7 +90,7 @@ The seed is intentionally narrow and idempotent. It creates only the first inter
 
 ## Verification Gates
 
-- Production migration history records both reviewed migrations and migration status is clean.
+- Production migration history records all eight reviewed migrations exactly once and migration status is clean.
 - Runtime activation check passes.
 - The first Clerk subject maps to exactly one internal user.
 - The user has exactly one intended active household membership.
