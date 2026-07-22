@@ -34,7 +34,8 @@
     "guardrails:notification-migration": "node scripts/check-notification-migration.mjs",
     "test:notifications": "node --test tests/notification-policy.test.mjs",
     "test:security-boundaries": "node --test tests/security-boundaries.test.mjs",
-    "guardrails:private-lifecycle": "node scripts/check-private-lifecycle.mjs"
+    "guardrails:private-lifecycle": "node scripts/check-private-lifecycle.mjs",
+    "guardrails:production-baseline": "node scripts/check-production-baseline.mjs"
   },
   "dependencies": {
     "@clerk/nextjs": "7.5.16",
