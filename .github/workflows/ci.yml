@@ -80,6 +80,9 @@ jobs:
       - name: Test private notification policy
         run: pnpm test:notifications
 
+      - name: Test operations scheduler contract
+        run: pnpm test:operations-scheduler
+
       - name: Test security boundaries
         run: pnpm test:security-boundaries
 
