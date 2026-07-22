@@ -43,7 +43,7 @@ Populate after activation:
 - Vercel production deployment: pending final activation
 - Android preview build: pending final candidate build
 - iOS simulator build: pending final candidate build
-- GitHub CI run: latest complete run 296; final activation run pending
+- GitHub CI run: latest complete run 299; final activation run pending
 - Production migration status: all eight reviewed migrations recorded exactly once with repository checksums
 - Client approval: pending
 
@@ -57,11 +57,13 @@ Populate after activation:
 - R2 production CORS: restricted to `https://lifeadmin.grovekind.com` and `PUT`
 - R2 incomplete multipart cleanup: one day
 - R2 bucket-scoped credentials: client-owner setup pending
+- `family-life-admin-email-intake` Worker: reviewed code staged, no route or secret
+- `family-life-admin-operations` Worker: reviewed code staged, no schedule or secret
+- Worker public development URLs and previews: disabled
 - `intake.grovekind.com` Email Routing subdomain: client-owner setup pending
-- Inbound Email Worker and signed route: pending shared secret and subdomain setup
 - Workers AI scoped token: client-owner setup pending
 - Vercel server-only provider values: client-owner setup pending
-- Internal scheduler secret and trigger: pending client-test provider configuration
+- Worker encrypted secrets, email route, and scheduler trigger: pending client-test activation
 - Apple/Google store accounts and production push credentials: deliberately deferred
 
 ## Rollback
