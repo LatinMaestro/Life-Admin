@@ -4,6 +4,8 @@
 
 These are the only account-owner steps required before the controlled Phase 16 deployment. Complete them in provider dashboards. Do not paste secrets into chat, GitHub, screenshots, or public notes.
 
+Both reviewed Cloudflare Workers are already staged without routes, schedules, public development URLs, or encrypted secrets.
+
 ## 1. Cloudflare R2 Credential
 
 1. Open Cloudflare, then **R2 Object Storage**.
@@ -37,7 +39,7 @@ Generate three independent random secrets of at least 32 characters and store th
 - `EMAIL_WEBHOOK_SECRET`
 - `CRON_SECRET`
 
-The `EMAIL_WEBHOOK_SECRET` value must be identical in Vercel and the Email Worker. The other two remain in Vercel only.
+The `EMAIL_WEBHOOK_SECRET` value must be identical in Vercel and the Email Worker. The `CRON_SECRET` value must be identical in Vercel and the operations Worker. `EMAIL_ALIAS_SECRET` remains in Vercel only.
 
 ## 5. Vercel Production Values
 
@@ -60,9 +62,9 @@ Keep every value server-only. None may use a `NEXT_PUBLIC_` or `EXPO_PUBLIC_` pr
 
 After all five sections are complete, tell Codex **provider setup ready**. Codex will then:
 
-1. deploy the reviewed Email Worker and encrypted Worker secret;
+1. add the encrypted secrets to the staged Workers;
 2. connect the `intake.grovekind.com` catch-all;
-3. configure the private maintenance scheduler;
+3. activate the private maintenance scheduler;
 4. enable one controlled Vercel deployment;
 5. verify production with fictional data;
 6. create final Android preview and iOS simulator candidates;
