@@ -53,9 +53,16 @@ test("service-authenticated routes bypass Clerk without widening app access", ()
   assert.equal(isPublicRequestPath("/api/inbound/email"), true);
   assert.equal(isPublicRequestPath("/api/internal/maintenance/cleanup"), true);
   assert.equal(isPublicRequestPath("/api/internal/notifications/dispatch"), true);
+  assert.equal(isPublicRequestPath("/sign-in/sso-callback"), true);
+  assert.equal(isPublicRequestPath("/__clerk/handler"), true);
   assert.equal(isPublicRequestPath("/api/inbound/email/other"), false);
   assert.equal(isPublicRequestPath("/api/internal"), false);
+  assert.equal(isPublicRequestPath("/api/internal/future-operation"), false);
+  assert.equal(isPublicRequestPath("/api/internal/maintenance/cleanup/extra"), false);
   assert.equal(isPublicRequestPath("/api/v1/tasks"), false);
+  assert.equal(isPublicRequestPath("/privacy-centre"), false);
+  assert.equal(isPublicRequestPath("/support-private"), false);
+  assert.equal(isPublicRequestPath("/sign-internal"), false);
 });
 
 test("private errors expose categories, never provider or household messages", () => {
