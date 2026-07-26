@@ -1,4 +1,4 @@
-const publicPagePrefixes = [
+const publicPageRoutes = [
   "/sign-in",
   "/sign-up",
   "/privacy",
@@ -7,10 +7,19 @@ const publicPagePrefixes = [
   "/__clerk",
 ] as const;
 
+const serviceAuthenticatedRoutes = [
+  "/api/inbound/email",
+  "/api/internal/maintenance/cleanup",
+  "/api/internal/notifications/dispatch",
+] as const;
+
+function matchesRouteOrChild(pathname: string, route: string) {
+  return pathname === route || pathname.startsWith(`${route}/`);
+}
+
 export function isPublicRequestPath(pathname: string) {
   return (
-    publicPagePrefixes.some((prefix) => pathname.startsWith(prefix)) ||
-    pathname === "/api/inbound/email" ||
-    pathname.startsWith("/api/internal/")
+    publicPageRoutes.some((route) => matchesRouteOrChild(pathname, route)) ||
+    serviceAuthenticatedRoutes.some((route) => pathname === route)
   );
 }
