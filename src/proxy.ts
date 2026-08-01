@@ -1,21 +1,13 @@
 import { clerkMiddleware } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
+import { isPublicRequestPath } from "@/lib/request-boundary";
 
 const demoProxy = () => NextResponse.next();
 const clerkProxy =
   process.env.FAMILY_LIFE_ADMIN_AUTH_MODE === "clerk"
     ? clerkMiddleware(
         async (auth, request) => {
-          const pathname = request.nextUrl.pathname;
-          const isPublic =
-            pathname.startsWith("/sign-in") ||
-            pathname.startsWith("/sign-up") ||
-            pathname.startsWith("/privacy") ||
-            pathname.startsWith("/support") ||
-            pathname.startsWith("/account-deletion") ||
-            pathname.startsWith("/__clerk");
-
-          if (isPublic) {
+          if (isPublicRequestPath(request.nextUrl.pathname)) {
             return NextResponse.next();
           }
 
