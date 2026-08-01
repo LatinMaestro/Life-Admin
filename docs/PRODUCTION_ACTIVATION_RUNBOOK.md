@@ -23,11 +23,14 @@ Use GitHub and hosted providers only. Do not require development, installation, 
 ## Verified Starting State — 1 August 2026
 
 - PR #113 passed exact-head CI run 30207082000, including web/browser job 91330296765 and native job 91330296759, and was squash-merged as 2838a9fa55ae4f22feae0390284ca899b1efbe18.
-- PR #114 exact head f489e6887f5e9fbe53d78c2afa825aaad43985ed passed CI run 30687110059. Its intended eleven-file documentation/store-metadata diff had no reviews or unresolved threads and was squash-merged as current main 2de83f6315839bf1e1907e6d13dc0dc369f57e5d.
+- PR #114 exact head f489e6887f5e9fbe53d78c2afa825aaad43985ed passed CI run 30687110059. Its intended eleven-file documentation/store-metadata diff had no reviews or unresolved threads and was squash-merged as 2de83f6315839bf1e1907e6d13dc0dc369f57e5d.
+- PR #115 exact head b8f8a2ef5a1a0adf1a5b2ca053d00f3b44b272d2 passed CI run 30689204206 and merged release-evidence reconciliation as 9d16c320a921fadf3be2d4ba3527babea5e78ae4.
+- PR #117 exact head 6577b816eb62557ee016ddc3edc2380b795d2ccc passed CI run 30689423957 and merged fail-closed provider activation checks as the latest executable candidate f042dd1baaf3e4db5d336c5d7605110fd3153573.
+- PR #118 exact head e19d6677098c9689f7e7a8092fbb9d0670c8fb14 passed CI run 30689584408 and merged evidence-only plan updates as afa4724ba044250b017ae53029a7eb30d6534ec7.
 - No pull request is open. Issue #70 is the current Phase 16-to-App-Review delivery tracker.
 - Production Vercel deployment dpl_ADEQqtGDN5zqb99Jqenrk1XthcFL remains Ready on old main 4233d14e4f77d096120a3d90c4b42d2928779f3d. No deployment was triggered by integration.
 - Production runtime uses the supported Clerk authentication and Prisma persistence pair.
-- Neon production uses PostgreSQL 17 and records all eight reviewed migrations as finished and not rolled back; 28 public tables are present.
+- Neon production uses PostgreSQL 17 and records all eight reviewed migrations as finished and not rolled back; 28 public tables are present. On 1 August 2026 every applied SHA-256 checksum exactly matched the corresponding migration file at repository state afa4724ba044250b017ae53029a7eb30d6534ec7.
 - The private R2 bucket is provisioned with public access disabled, Grovekind PUT-only CORS, and one-day incomplete multipart cleanup.
 - The reviewed Email and operations Workers are staged with public development URLs disabled.
 - Runtime evidence shows the operations trigger is active and reaches both internal endpoints. The old production deployment still returns 404; route-level authentication must be verified after the single controlled candidate deployment.
@@ -38,9 +41,9 @@ This state is evidence only. It does not approve a deployment, provider mutation
 
 Do not deploy until all of the following are true:
 
-1. Integration main is 2de83f6315839bf1e1907e6d13dc0dc369f57e5d after PR #113 and PR #114 passed exact-head CI, complete diff review, and thread checks and merged without triggering Vercel.
+1. The repository contains verified executable candidate f042dd1baaf3e4db5d336c5d7605110fd3153573 plus subsequent evidence-only merges; PRs #113, #114, #115, #117, and #118 passed exact-head CI and merged without triggering Vercel.
 2. No open pull request or active implementation stack precedes provider preflight.
-3. All eight production migration records and repository migration checksums are reverified.
+3. All eight production migration records and repository migration checksums are reverified. Completed 1 August 2026: every applied checksum matches repository state afa4724ba044250b017ae53029a7eb30d6534ec7 and no migration is rolled back.
 4. Clerk, Neon, R2, Email Routing, Workers AI, Expo, and Vercel environment names are reconciled without exposing values.
 5. R2 privacy, CORS, lifecycle, quarantine, deletion, and orphan-recovery settings are ready.
 6. Email signature, timestamp, replay, duplicate, size, type, original-source, and alias-rotation controls are ready.
