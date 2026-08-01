@@ -1,6 +1,9 @@
 import "server-only";
 
-import { cleanupExpiredSourceAssets } from "@/lib/server/source-assets";
+import {
+  archiveAbandonedIntakeSources,
+  cleanupExpiredSourceAssets,
+} from "@/lib/server/source-assets";
 import { getPrismaClient } from "@/lib/server/prisma";
 
 const deliveryRetentionMs = 90 * 24 * 60 * 60 * 1000;
@@ -41,9 +44,11 @@ export async function runPrivateMaintenance(now = new Date()) {
       },
     }),
   ]);
+  const archivedSources = await archiveAbandonedIntakeSources(now);
 
   return {
     expiredAssets,
+    archivedSources,
     expiredDrafts: drafts.count,
     expiredJobs: jobs.count,
     expiredEnvelopes: envelopes.count,
