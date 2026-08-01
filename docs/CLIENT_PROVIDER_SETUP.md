@@ -10,6 +10,7 @@ Repository and runtime evidence may confirm that a resource exists without provi
 
 - Clerk production authentication, the Grovekind domain, and Native API are configured.
 - Neon production is PostgreSQL 17 with all eight reviewed migrations complete; main is unprotected and restore history is six hours.
+- The eight applied migration checksums exactly match the corresponding repository migration files at afa4724ba044250b017ae53029a7eb30d6534ec7; every record is finished and none is rolled back.
 - On 1 August the inactive production main branch was observed archived; a read-only schema query restored it to Ready with the read/write compute active, 8/8 migrations applied, and 28 public tables intact. Measure the candidate cold start and confirm that this branch lifecycle is acceptable before release.
 - Cloudflare R2 bucket `family-life-admin-production` is provisioned privately with public access disabled.
 - Production R2 CORS is restricted to `https://lifeadmin.grovekind.com` and `PUT`; incomplete multipart uploads expire after one day.
@@ -109,7 +110,7 @@ Report **provider setup ready** only when the owner has confirmed the relevant e
 
 That confirmation unlocks Codex to:
 
-1. finish repository/provider preflight from integrated main 2de83f6315839bf1e1907e6d13dc0dc369f57e5d;
+1. finish repository/provider preflight from the repository state containing executable candidate f042dd1baaf3e4db5d336c5d7605110fd3153573 and its subsequent evidence-only merges;
 2. use one controlled production deployment only after preflight passes;
 3. verify signed email, bearer routes, invalid-request rejection, ordinary Clerk protection, storage, bounded processing, notifications, retention, cleanup, and deletion with fictional data;
 4. create current Android preview and iOS simulator candidates from the same exact commit;

@@ -24,20 +24,23 @@ It never includes banking, budgeting, transaction tracking, spend analysis, cash
 
 ## Verified State — 1 August 2026
 
-- Main commit: 2de83f6315839bf1e1907e6d13dc0dc369f57e5d
+- Latest executable candidate: f042dd1baaf3e4db5d336c5d7605110fd3153573; repository evidence state: afa4724ba044250b017ae53029a7eb30d6534ec7
 - PR #113 exact-head CI run 30207082000 passed on e145e21873a34702a880984bb1e24c7b6181dcc9; web/browser job 91330296765 and native job 91330296759 passed every configured step
 - PR #113 had no reviews or unresolved threads and was squash-merged as 2838a9fa55ae4f22feae0390284ca899b1efbe18
 - PR #114 exact-head CI run 30687110059 passed on f489e6887f5e9fbe53d78c2afa825aaad43985ed; its eleven-file release/privacy/store diff had no reviews or unresolved threads
-- PR #114 was squash-merged as current main 2de83f6315839bf1e1907e6d13dc0dc369f57e5d
+- PR #114 was squash-merged as 2de83f6315839bf1e1907e6d13dc0dc369f57e5d
+- PR #115 exact head b8f8a2ef5a1a0adf1a5b2ca053d00f3b44b272d2 passed CI run 30689204206 and merged release-evidence reconciliation as 9d16c320a921fadf3be2d4ba3527babea5e78ae4
+- PR #117 exact head 6577b816eb62557ee016ddc3edc2380b795d2ccc passed CI run 30689423957 and merged fail-closed provider activation checks as f042dd1baaf3e4db5d336c5d7605110fd3153573
+- PR #118 exact head e19d6677098c9689f7e7a8092fbb9d0670c8fb14 passed CI run 30689584408 and merged evidence-only plan updates as afa4724ba044250b017ae53029a7eb30d6534ec7
 - No pull request is open; issue #70 is the current Phase 16 and App Review delivery tracker
 - Vercel production deployment dpl_ADEQqtGDN5zqb99Jqenrk1XthcFL remains Ready on old main 4233d14e4f77d096120a3d90c4b42d2928779f3d; no integration deployment was triggered
 - Production scheduled requests reach cleanup and notification paths, but the old deployment returns 404 until the merged service-route fix is included in the controlled candidate
-- Neon production PostgreSQL 17 has all eight migration records finished and not rolled back and 28 public tables; branch protection remains disabled and restore history is six hours
+- Neon production PostgreSQL 17 has all eight migration records finished and not rolled back and 28 public tables; every applied checksum exactly matches the corresponding migration file at repository state afa4724ba044250b017ae53029a7eb30d6534ec7; branch protection remains disabled and restore history is six hours
 - The release privacy, permission, reviewer, provider, data-model and store-metadata documents are integrated on main and remain subject to final frozen-build/provider reconciliation
 
 ## Controlled Activation
 
-1. Use integrated main 2de83f6315839bf1e1907e6d13dc0dc369f57e5d as the current pre-deployment candidate.
+1. Use the repository state containing executable candidate f042dd1baaf3e4db5d336c5d7605110fd3153573 and its subsequent evidence-only merges as the current pre-deployment candidate.
 2. Complete provider and repository preflight without triggering Vercel.
 3. Deploy the exact verified candidate once after preflight passes.
 4. Verify the Grovekind domain resolves to that Ready deployment.
@@ -57,10 +60,10 @@ It never includes banking, budgeting, transaction tracking, spend analysis, cash
 
 ## Immutable Evidence
 
-- Approved client-candidate Git commit: pending provider preflight and activation; current pre-deployment main is 2de83f6315839bf1e1907e6d13dc0dc369f57e5d
+- Approved client-candidate Git commit: pending provider preflight and activation; latest executable candidate is f042dd1baaf3e4db5d336c5d7605110fd3153573 and repository evidence state is afa4724ba044250b017ae53029a7eb30d6534ec7
 - GitHub CI evidence: PR #113 run 30207082000 and PR #114 run 30687110059 passed exact-head checks
 - Vercel deployment: current Ready main deployment recorded above; final candidate deployment pending
-- Migration state: all eight reviewed migrations recorded; final candidate re-verification pending
+- Migration state: all eight reviewed migrations are finished, none is rolled back, and all eight applied SHA-256 checksums match repository state afa4724ba044250b017ae53029a7eb30d6534ec7; final post-deployment health re-verification remains pending
 - Android preview: earlier builds are engineering evidence only; final candidate pending
 - iOS simulator: pending
 - Production provider acceptance: pending fictional-data verification
