@@ -24,7 +24,7 @@ It never includes banking, budgeting, transaction tracking, spend analysis, cash
 
 ## Verified State — 1 August 2026
 
-- Latest verified executable candidate and repository state: 5dd94fdf5512abc83c96f824446e205d632f2d94
+- Latest verified executable candidate: 5dd94fdf5512abc83c96f824446e205d632f2d94; subsequent evidence-only reconciliation does not alter runtime behaviour
 - PR #113 exact-head CI run 30207082000 passed on e145e21873a34702a880984bb1e24c7b6181dcc9; web/browser job 91330296765 and native job 91330296759 passed every configured step
 - PR #113 had no reviews or unresolved threads and was squash-merged as 2838a9fa55ae4f22feae0390284ca899b1efbe18
 - PR #114 exact-head CI run 30687110059 passed on f489e6887f5e9fbe53d78c2afa825aaad43985ed; its eleven-file release/privacy/store diff had no reviews or unresolved threads
@@ -65,7 +65,7 @@ It never includes banking, budgeting, transaction tracking, spend analysis, cash
 ## Immutable Evidence
 
 - Approved client-candidate Git commit: pending provider preflight and activation; latest verified executable candidate is 5dd94fdf5512abc83c96f824446e205d632f2d94
-- GitHub CI evidence: PR #113 run 30207082000 and PR #114 run 30687110059 passed exact-head checks
+- GitHub CI evidence: PR #113 run 30207082000, PR #114 run 30687110059, and executable PR #122 run 30695258402 passed exact-head checks
 - Vercel deployment: current Ready main deployment recorded above; final candidate deployment pending
 - Migration state: all eight reviewed migrations are finished, none is rolled back, and all eight applied SHA-256 checksums match repository state afa4724ba044250b017ae53029a7eb30d6534ec7; final post-deployment health re-verification remains pending
 - Android preview: earlier builds are engineering evidence only; final candidate pending
