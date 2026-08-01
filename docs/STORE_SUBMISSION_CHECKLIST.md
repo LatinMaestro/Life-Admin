@@ -33,8 +33,9 @@ This checklist separates completed repository work from release-owner steps that
 - [ ] Decide whether to upgrade Neon for branch protection and longer restore history before public launch.
 - [x] Obtain passing exact-head CI for PR #113 and merge only after review.
 - [x] Obtain passing exact-head CI for PR #114, review its intended eleven-file diff, and merge it.
-- [x] Reconcile issue #70 to merged integration truth; no pull request remains open.
-- [ ] Complete repository and provider preflight from main 2de83f6315839bf1e1907e6d13dc0dc369f57e5d.
+- [x] Reconcile issue #70 to merged integration truth.
+- [x] Add and verify fail-closed live-mode checks for private R2, Cloudflare AI, signed email and operations configuration.
+- [ ] Complete remaining repository and provider preflight from executable candidate f042dd1baaf3e4db5d336c5d7605110fd3153573 plus evidence-only documentation merges.
 - [ ] Deploy the exact verified main candidate.
 - [ ] Verify signed service routes, invalid-request rejection, and Clerk protection for ordinary routes.
 - [ ] Verify private R2, email intake, OCR/classification, voice, notification, retention, and cleanup provider flows with fictional data.
