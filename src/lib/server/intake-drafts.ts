@@ -564,15 +564,45 @@ export async function dismissIntakeDraft(
   draftId: string,
 ) {
   requireHouseholdPermission(context, "manage_shared_items");
-  const result = await getPrismaClient().intakeDraft.updateMany({
-    where: {
-      id: draftId,
-      householdId: context.householdId,
-      state: "needs_review",
-    },
-    data: { state: "dismissed" },
+  const prisma = getPrismaClient();
+  await prisma.$transaction(async (transaction) => {
+    const draft = await transaction.intakeDraft.findFirst({
+      where: {
+        id: draftId,
+        householdId: context.householdId,
+        state: "needs_review",
+      },
+      select: { sourceReferenceId: true },
+    });
+    if (!draft) throw new Error("This review draft is not available.");
+
+    await transaction.intakeDraft.update({
+      where: { id: draftId },
+      data: { state: "dismissed" },
+    });
+    const archived = await transaction.sourceReference.updateMany({
+      where: {
+        id: draft.sourceReferenceId,
+        householdId: context.householdId,
+        reviewStatus: "needs_review",
+        assets: { none: { state: { not: "deleted" } } },
+        intakeDrafts: {
+          none: { state: "needs_review", expiresAt: { gt: new Date() } },
+        },
+      },
+      data: { reviewStatus: "archived" },
+    });
+    if (archived.count) {
+      await transaction.inboxItem.updateMany({
+        where: {
+          householdId: context.householdId,
+          sourceReferenceId: draft.sourceReferenceId,
+          status: "needs_review",
+        },
+        data: { status: "archived" },
+      });
+    }
   });
-  if (!result.count) throw new Error("This review draft is not available.");
   return response(draftId);
 }
 

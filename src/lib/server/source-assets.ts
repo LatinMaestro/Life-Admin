@@ -347,6 +347,53 @@ export async function deleteSourceAsset(
   };
 }
 
+export async function archiveAbandonedIntakeSources(
+  now = new Date(),
+  sourceReferenceIds?: string[],
+) {
+  if (sourceReferenceIds && sourceReferenceIds.length === 0) return 0;
+
+  const prisma = getPrismaClient();
+  return prisma.$transaction(async (transaction) => {
+    const candidates = await transaction.sourceReference.findMany({
+      where: {
+        ...(sourceReferenceIds ? { id: { in: sourceReferenceIds } } : {}),
+        reviewStatus: { in: ["needs_review", "archived"] },
+        assets: { none: { state: { not: "deleted" } } },
+        intakeDrafts: {
+          some: { state: { in: ["dismissed", "expired"] } },
+          none: { state: "needs_review", expiresAt: { gt: now } },
+        },
+      },
+      select: { id: true },
+    });
+    const candidateIds = candidates.map(({ id }) => id);
+    if (!candidateIds.length) return 0;
+
+    const archived = await transaction.sourceReference.updateMany({
+      where: {
+        id: { in: candidateIds },
+        reviewStatus: "needs_review",
+        assets: { none: { state: { not: "deleted" } } },
+        intakeDrafts: {
+          some: { state: { in: ["dismissed", "expired"] } },
+          none: { state: "needs_review", expiresAt: { gt: now } },
+        },
+      },
+      data: { reviewStatus: "archived" },
+    });
+    await transaction.inboxItem.updateMany({
+      where: {
+        sourceReferenceId: { in: candidateIds },
+        status: "needs_review",
+        sourceReference: { is: { reviewStatus: "archived" } },
+      },
+      data: { status: "archived" },
+    });
+    return archived.count;
+  });
+}
+
 export async function cleanupExpiredSourceAssets(now = new Date()) {
   const prisma = getPrismaClient();
   const stale = await prisma.sourceAsset.findMany({
