@@ -47,7 +47,7 @@
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
     "lucide-react": "1.23.0",
-    "next": "16.2.10",
+    "next": "16.2.11",
     "react": "19.2.7",
     "react-dom": "19.2.7",
     "tailwind-merge": "3.6.0",
@@ -60,9 +60,16 @@
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
     "eslint": "9.39.4",
-    "eslint-config-next": "16.2.10",
+    "eslint-config-next": "16.2.11",
     "prisma": "7.8.0",
     "tailwindcss": "4.3.2",
     "typescript": "6.0.3"
+  },
+  "pnpm": {
+    "overrides": {
+      "fast-uri": "3.1.4",
+      "postcss": "8.5.18",
+      "sharp": "0.35.0"
+    }
   }
 }
