@@ -110,7 +110,7 @@ Report **provider setup ready** only when the owner has confirmed the relevant e
 
 That confirmation unlocks Codex to:
 
-1. finish repository/provider preflight from the repository state containing executable candidate f042dd1baaf3e4db5d336c5d7605110fd3153573 and its subsequent evidence-only merges;
+1. finish repository/provider preflight from exact verified executable candidate 5dd94fdf5512abc83c96f824446e205d632f2d94;
 2. use one controlled production deployment only after preflight passes;
 3. verify signed email, bearer routes, invalid-request rejection, ordinary Clerk protection, storage, bounded processing, notifications, retention, cleanup, and deletion with fictional data;
 4. create current Android preview and iOS simulator candidates from the same exact commit;
