@@ -41,6 +41,11 @@ assert.match(
   "Provider-confirmed deletion must be recorded as deleted.",
 );
 assert.match(
+  sourceAssets,
+  /sourceReference\.updateMany\([\s\S]{0,500}assets: \{ none: \{ state: \{ not: "deleted" \} \} \}[\s\S]{0,200}reviewStatus: "archived"/,
+  "Deleting the last private object must archive its empty source reference.",
+);
+assert.match(
   notifications,
   /isDeliveryStillEligible[\s\S]{0,800}state: "suppressed"/,
   "Notification delivery must recheck current eligibility and suppress stale work.",
