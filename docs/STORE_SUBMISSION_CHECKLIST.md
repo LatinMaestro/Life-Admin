@@ -36,7 +36,7 @@ This checklist separates completed repository work from release-owner steps that
 - [x] Obtain passing exact-head CI for PR #114, review its intended eleven-file diff, and merge it.
 - [x] Reconcile issue #70 to merged integration truth.
 - [x] Add and verify fail-closed live-mode checks for private R2, Cloudflare AI, signed email and operations configuration.
-- [ ] Complete remaining repository and provider preflight from executable candidate f042dd1baaf3e4db5d336c5d7605110fd3153573 plus evidence-only documentation merges.
+- [ ] Complete remaining repository and provider preflight from exact verified executable candidate 5dd94fdf5512abc83c96f824446e205d632f2d94.
 - [ ] Deploy the exact verified main candidate.
 - [ ] Verify signed service routes, invalid-request rejection, and Clerk protection for ordinary routes.
 - [ ] Verify private R2, email intake, OCR/classification, voice, notification, retention, and cleanup provider flows with fictional data.
