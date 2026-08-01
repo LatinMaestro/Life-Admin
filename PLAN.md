@@ -28,7 +28,7 @@ Previous signed builds are engineering evidence only. Client and store candidate
 ## Verified State — 1 August 2026
 
 - Phase 16 is in progress.
-- The latest verified executable candidate is current main 5dd94fdf5512abc83c96f824446e205d632f2d94 after the reviewed provider guard, private-object cleanup, and terminal intake-source lifecycle fixes.
+- The latest verified executable candidate is 5dd94fdf5512abc83c96f824446e205d632f2d94 after the reviewed provider guard, private-object cleanup, and terminal intake-source lifecycle fixes. Subsequent evidence-only reconciliation does not alter runtime behaviour.
 - PR #113 exact head e145e21873a34702a880984bb1e24c7b6181dcc9 passed CI run 30207082000. Web/browser job 91330296765 and native job 91330296759 passed every configured step; the PR had no reviews or unresolved threads and was squash-merged as 2838a9fa55ae4f22feae0390284ca899b1efbe18.
 - PR #114 exact head f489e6887f5e9fbe53d78c2afa825aaad43985ed passed CI run 30687110059. Its eleven-file documentation and store-metadata diff had no reviews or unresolved threads and was squash-merged as 2de83f6315839bf1e1907e6d13dc0dc369f57e5d.
 - PR #115 exact head b8f8a2ef5a1a0adf1a5b2ca053d00f3b44b272d2 passed CI run 30689204206 and merged the post-integration release evidence as 9d16c320a921fadf3be2d4ba3527babea5e78ae4.
