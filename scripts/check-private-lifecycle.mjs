@@ -60,5 +60,25 @@ assert.match(
   /intakeDraft\.updateMany[\s\S]{0,250}state: "expired"/,
   "Expired unconfirmed intake drafts must become inaccessible.",
 );
+assert.match(
+  sourceAssets,
+  /archiveAbandonedIntakeSources[\s\S]{0,900}some: \{ state: \{ in: \["dismissed", "expired"\] \} \}[\s\S]{0,250}none: \{ state: "needs_review", expiresAt: \{ gt: now \} \}/,
+  "Only terminal intake sources without an active draft may be archived.",
+);
+assert.match(
+  sourceAssets,
+  /archiveAbandonedIntakeSources[\s\S]{0,1800}inboxItem\.updateMany[\s\S]{0,300}status: "archived"/,
+  "Archiving an abandoned intake source must remove its generated inbox review item.",
+);
+assert.match(
+  intakeDrafts,
+  /dismissIntakeDraft[\s\S]{0,1500}sourceReference\.updateMany[\s\S]{0,900}inboxItem\.updateMany/,
+  "Dismissing a draft must archive an empty source and its review item atomically.",
+);
+assert.match(
+  maintenance,
+  /archiveAbandonedIntakeSources\(now\)/,
+  "Maintenance must retry terminal intake-source archival.",
+);
 
 console.log("Private lifecycle and recovery guardrails passed.");
