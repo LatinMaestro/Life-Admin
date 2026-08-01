@@ -32,6 +32,38 @@ if (authMode === "clerk") {
   }
 }
 
+if (modePair === "clerk:prisma") {
+  for (const name of [
+    "R2_ACCOUNT_ID",
+    "R2_ACCESS_KEY_ID",
+    "R2_SECRET_ACCESS_KEY",
+    "R2_BUCKET_NAME",
+    "CLOUDFLARE_ACCOUNT_ID",
+    "CLOUDFLARE_AI_API_TOKEN",
+    "EMAIL_ALIAS_SECRET",
+    "EMAIL_WEBHOOK_SECRET",
+    "EMAIL_INTAKE_DOMAIN",
+    "CRON_SECRET",
+  ]) {
+    requireValue(name);
+  }
+
+  requireExactValue("R2_BUCKET_NAME", "family-life-admin-production");
+  requireExactValue("EMAIL_INTAKE_DOMAIN", "intake.grovekind.com");
+
+  for (const name of ["EMAIL_ALIAS_SECRET", "EMAIL_WEBHOOK_SECRET", "CRON_SECRET"]) {
+    requireStrongSecret(name);
+  }
+
+  if (
+    process.env.R2_ACCOUNT_ID
+    && process.env.CLOUDFLARE_ACCOUNT_ID
+    && process.env.R2_ACCOUNT_ID !== process.env.CLOUDFLARE_ACCOUNT_ID
+  ) {
+    errors.push("R2_ACCOUNT_ID and CLOUDFLARE_ACCOUNT_ID must identify the same account.");
+  }
+}
+
 if (persistenceMode === "prisma") {
   requireValue("DATABASE_URL");
 
@@ -72,5 +104,19 @@ console.log(
 function requireValue(name) {
   if (!process.env[name]?.trim()) {
     errors.push(`${name} is required for live activation.`);
+  }
+}
+
+function requireExactValue(name, expected) {
+  const value = process.env[name]?.trim();
+  if (value && value !== expected) {
+    errors.push(`${name} must be ${expected} for the production candidate.`);
+  }
+}
+
+function requireStrongSecret(name) {
+  const value = process.env[name]?.trim();
+  if (value && value.length < 32) {
+    errors.push(`${name} must contain at least 32 characters.`);
   }
 }
