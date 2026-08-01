@@ -24,12 +24,14 @@ It excludes banking, budgeting, transaction tracking, spend analysis, cashflow, 
 
 ## Verified Repository Candidate — 1 August 2026
 
-- Current `main` and latest executable candidate: `07807e2c24b89b4420d0ffb6b33d2847e4c81fd0`.
+- Current `main` and latest executable candidate: `2df917bea662f940c9c631a130baae99455b8a99`.
 - No pull request is open.
 - Issue #70 is the current Phase 16-to-App-Review tracker.
-- PRs #113–#124 were reviewed and integrated in dependency order with passing exact-head CI.
-- PR #124 exact head `97c0a694b67008739885e35d493646063f73888e` passed CI run `30697413278`, had no reviews or unresolved threads, and merged as current `main`.
-- Web and native production dependency audits report zero high-severity findings; three moderate findings remain below the enforced high-severity threshold.
+- PRs #113–#127 were reviewed and integrated in dependency order with passing exact-head CI.
+- PR #124 exact head `97c0a694b67008739885e35d493646063f73888e` passed CI run `30697413278`, had no reviews or unresolved threads, and merged dependency/crash gates as `07807e2c24b89b4420d0ffb6b33d2847e4c81fd0`.
+- PR #126 exact head `f4f393be1fa2ed6c075b6be9b9c93c6d9a3104f8` passed CI run `30700645080` and merged the reproducible mobile lock plus `npm ci` as `06144e9045b530bb21571f2e8b8bf3999b1b699b`.
+- PR #127 exact head `0608038ad3bfdf2b9493b4a143fc8a38a449517a` passed CI run `30700781844` and merged two actionable moderate web patches as current `main`.
+- Web and native production audits report zero high or critical findings. One Windows-only Hono advisory remains in Prisma development tooling; the mobile audit's 23 moderate dependency nodes trace to one transitive `uuid` advisory. Application code reaches neither vulnerable API, and compatible upstream fixes are unavailable.
 - Next.js route/global error boundaries and the Expo Router error boundary are present and verified in CI.
 - Private-object deletion and terminal intake cleanup archive empty source references and generated review items while preserving manual sources and sources with another live draft.
 - Exact signed email retries are acknowledged idempotently without another source, draft, or notification. Missing, malformed, expired, altered-event, and invalid signatures are rejected.
