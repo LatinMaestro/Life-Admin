@@ -109,11 +109,10 @@ Report **provider setup ready** only when the owner has confirmed the relevant e
 
 That confirmation unlocks Codex to:
 
-1. finish repository/provider preflight;
-2. merge PR #114 only after its exact-head CI and review gates pass;
-3. use one controlled production deployment;
-4. verify signed email, bearer routes, invalid-request rejection, ordinary Clerk protection, storage, bounded processing, notifications, retention, cleanup, and deletion with fictional data;
-5. create current Android preview and iOS simulator candidates from the same exact commit;
-6. hand the candidate over for explicit client acceptance.
+1. finish repository/provider preflight from integrated main 2de83f6315839bf1e1907e6d13dc0dc369f57e5d;
+2. use one controlled production deployment only after preflight passes;
+3. verify signed email, bearer routes, invalid-request rejection, ordinary Clerk protection, storage, bounded processing, notifications, retention, cleanup, and deletion with fictional data;
+4. create current Android preview and iOS simulator candidates from the same exact commit;
+5. hand the candidate over for explicit client acceptance.
 
 Paid Apple account work remains deferred until client acceptance and version 1.0.0 freeze.

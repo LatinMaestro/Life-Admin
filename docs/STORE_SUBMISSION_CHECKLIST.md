@@ -32,6 +32,9 @@ This checklist separates completed repository work from release-owner steps that
 - [x] Record the current Neon state: PostgreSQL 17 is healthy, branch protection is disabled, and restore history is six hours.
 - [ ] Decide whether to upgrade Neon for branch protection and longer restore history before public launch.
 - [x] Obtain passing exact-head CI for PR #113 and merge only after review.
+- [x] Obtain passing exact-head CI for PR #114, review its intended eleven-file diff, and merge it.
+- [x] Reconcile issue #70 to merged integration truth; no pull request remains open.
+- [ ] Complete repository and provider preflight from main 2de83f6315839bf1e1907e6d13dc0dc369f57e5d.
 - [ ] Deploy the exact verified main candidate.
 - [ ] Verify signed service routes, invalid-request rejection, and Clerk protection for ordinary routes.
 - [ ] Verify private R2, email intake, OCR/classification, voice, notification, retention, and cleanup provider flows with fictional data.

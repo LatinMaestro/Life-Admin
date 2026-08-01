@@ -24,22 +24,22 @@ It never includes banking, budgeting, transaction tracking, spend analysis, cash
 
 ## Verified State — 1 August 2026
 
-- Main commit: 2838a9fa55ae4f22feae0390284ca899b1efbe18
-- PR #113 exact-head CI: run 30207082000 passed on e145e21873a34702a880984bb1e24c7b6181dcc9
-- Web/browser job 91330296765 passed every configured lint, privacy, migration, provider-contract, security, build, and responsive journey step
-- Native job 91330296759 passed typecheck, store configuration, and iOS and Android bundle exports
-- PR #113 was reviewed with no unresolved threads and squash-merged as the current main commit
-- Draft PR #114 is recomposed onto verified main with exactly eleven intended documentation/store files; its exact-head CI and final review remain pending
-- Vercel production deployment: dpl_ADEQqtGDN5zqb99Jqenrk1XthcFL remains Ready on old main 4233d14e4f77d096120a3d90c4b42d2928779f3d; no integration deployment was triggered
-- Production runtime: scheduled requests reach cleanup and notification paths, but the old deployment returns 404 until the merged service-route fix is included in the controlled candidate
-- Neon: production PostgreSQL 17 has all eight migration records finished and not rolled back and 28 public tables; branch protection remains disabled and restore history is six hours
-- Privacy documentation: PR #114 reconciles implemented intake permissions and data flows and remains subject to exact-head verification and review
+- Main commit: 2de83f6315839bf1e1907e6d13dc0dc369f57e5d
+- PR #113 exact-head CI run 30207082000 passed on e145e21873a34702a880984bb1e24c7b6181dcc9; web/browser job 91330296765 and native job 91330296759 passed every configured step
+- PR #113 had no reviews or unresolved threads and was squash-merged as 2838a9fa55ae4f22feae0390284ca899b1efbe18
+- PR #114 exact-head CI run 30687110059 passed on f489e6887f5e9fbe53d78c2afa825aaad43985ed; its eleven-file release/privacy/store diff had no reviews or unresolved threads
+- PR #114 was squash-merged as current main 2de83f6315839bf1e1907e6d13dc0dc369f57e5d
+- No pull request is open; issue #70 is the current Phase 16 and App Review delivery tracker
+- Vercel production deployment dpl_ADEQqtGDN5zqb99Jqenrk1XthcFL remains Ready on old main 4233d14e4f77d096120a3d90c4b42d2928779f3d; no integration deployment was triggered
+- Production scheduled requests reach cleanup and notification paths, but the old deployment returns 404 until the merged service-route fix is included in the controlled candidate
+- Neon production PostgreSQL 17 has all eight migration records finished and not rolled back and 28 public tables; branch protection remains disabled and restore history is six hours
+- The release privacy, permission, reviewer, provider, data-model and store-metadata documents are integrated on main and remain subject to final frozen-build/provider reconciliation
 
 ## Controlled Activation
 
-1. Obtain a valid exact-head CI run for the recomposed PR #114.
-2. Review and merge #114 only with passing required checks, then verify resulting main.
-3. Complete provider preflight and deploy the exact verified main candidate.
+1. Use integrated main 2de83f6315839bf1e1907e6d13dc0dc369f57e5d as the current pre-deployment candidate.
+2. Complete provider and repository preflight without triggering Vercel.
+3. Deploy the exact verified candidate once after preflight passes.
 4. Verify the Grovekind domain resolves to that Ready deployment.
 5. Prove:
    - correctly signed inbound email succeeds;
@@ -57,8 +57,8 @@ It never includes banking, budgeting, transaction tracking, spend analysis, cash
 
 ## Immutable Evidence
 
-- Approved client-candidate Git commit: pending exact-head CI and activation
-- GitHub CI run: pending a valid exact-head run
+- Approved client-candidate Git commit: pending provider preflight and activation; current pre-deployment main is 2de83f6315839bf1e1907e6d13dc0dc369f57e5d
+- GitHub CI evidence: PR #113 run 30207082000 and PR #114 run 30687110059 passed exact-head checks
 - Vercel deployment: current Ready main deployment recorded above; final candidate deployment pending
 - Migration state: all eight reviewed migrations recorded; final candidate re-verification pending
 - Android preview: earlier builds are engineering evidence only; final candidate pending
