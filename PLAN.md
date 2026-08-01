@@ -28,11 +28,14 @@ Previous signed builds are engineering evidence only. Client and store candidate
 ## Verified State — 1 August 2026
 
 - Phase 16 is in progress.
-- The latest verified executable candidate is f042dd1baaf3e4db5d336c5d7605110fd3153573 after the reviewed integration and production-provider guard sequence completed. Subsequent release-evidence-only merges do not change executable behaviour.
+- The latest verified executable candidate is current main 01348c0f0f3389145430e8883d8aaa3523f321c7 after the reviewed provider guard and private-object orphan-cleanup sequence. Evidence-only merges between those executable changes did not alter runtime behaviour.
 - PR #113 exact head e145e21873a34702a880984bb1e24c7b6181dcc9 passed CI run 30207082000. Web/browser job 91330296765 and native job 91330296759 passed every configured step; the PR had no reviews or unresolved threads and was squash-merged as 2838a9fa55ae4f22feae0390284ca899b1efbe18.
 - PR #114 exact head f489e6887f5e9fbe53d78c2afa825aaad43985ed passed CI run 30687110059. Its eleven-file documentation and store-metadata diff had no reviews or unresolved threads and was squash-merged as 2de83f6315839bf1e1907e6d13dc0dc369f57e5d.
 - PR #115 exact head b8f8a2ef5a1a0adf1a5b2ca053d00f3b44b272d2 passed CI run 30689204206 and merged the post-integration release evidence as 9d16c320a921fadf3be2d4ba3527babea5e78ae4.
 - PR #117 exact head 6577b816eb62557ee016ddc3edc2380b795d2ccc passed CI run 30689423957, including the new production activation regression suite, and merged as f042dd1baaf3e4db5d336c5d7605110fd3153573.
+- PR #118 exact head e19d6677098c9689f7e7a8092fbb9d0670c8fb14 passed CI run 30689584408 and merged plan/checklist evidence as afa4724ba044250b017ae53029a7eb30d6534ec7.
+- PR #119 exact head b7a1f3794c1e45c97eaf41614a8a0b21a1e827c4 passed CI run 30691259456 and merged exact production migration checksum evidence as fe92382b62c05fc2b0d239fae951adecdab54f54.
+- PR #120 exact head e8b622416294c959ac966e63a41f6c21fcb2c63f passed CI run 30693355367 and merged empty-source orphan prevention after private-object cleanup as 01348c0f0f3389145430e8883d8aaa3523f321c7.
 - Clerk/Prisma live builds now fail closed unless the approved private R2, Cloudflare AI, signed-email, and operations configuration is present and internally consistent.
 - No pull request is open. Phase 16 and release branches outside main map to merged or deliberately closed historical pull requests; no additional active implementation stack was identified.
 - Issue #70 is the sole open issue and now tracks the current Phase 16-to-App-Review delivery sequence. Its obsolete feature-building backlog has been removed.

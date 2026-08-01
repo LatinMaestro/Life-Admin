@@ -86,7 +86,8 @@ Required results after the controlled deployment:
 | Request | Expected result |
 | --- | --- |
 | Correctly signed inbound email webhook | Accepted by route-level signature verification |
-| Missing, malformed, expired, replayed, or invalid email signature | Rejected without source disclosure |
+| Exact signed provider retry | Idempotently acknowledged without creating another source, draft, or notification |
+| Missing, malformed, expired, altered-event, or invalid email signature | Rejected without source disclosure |
 | Valid cleanup bearer request | Accepted by route-level secret verification |
 | Valid notification-dispatch bearer request | Accepted by route-level secret verification |
 | Missing, short, or invalid bearer secret | Rejected |
