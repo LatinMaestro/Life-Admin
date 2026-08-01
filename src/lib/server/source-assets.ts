@@ -378,14 +378,28 @@ async function rejectAndDeleteAsset(assetId: string, objectKey: string) {
     });
     return false;
   }
-  await prisma.sourceAsset.update({
+  const deleted = await prisma.sourceAsset.update({
     where: { id: assetId },
     data: {
       state: "deleted",
       deletedAt: new Date(),
       retentionUntil: null,
     },
+    select: {
+      householdId: true,
+      sourceReferenceId: true,
+    },
   });
+  if (deleted.sourceReferenceId) {
+    await prisma.sourceReference.updateMany({
+      where: {
+        id: deleted.sourceReferenceId,
+        householdId: deleted.householdId,
+        assets: { none: { state: { not: "deleted" } } },
+      },
+      data: { reviewStatus: "archived" },
+    });
+  }
   return true;
 }
 
