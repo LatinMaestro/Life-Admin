@@ -37,7 +37,7 @@ Previous signed builds are engineering evidence only. Client and store candidate
 ### Repository and integration
 
 - Phase 16 is in progress.
-- Current `main` and latest verified executable candidate: `07807e2c24b89b4420d0ffb6b33d2847e4c81fd0`.
+- Current `main` and latest verified executable candidate: `2df917bea662f940c9c631a130baae99455b8a99`.
 - No pull request is open after the complete repository review.
 - Issue #70 is the sole open issue and the Phase 16-to-App-Review delivery tracker.
 - Phase 16 and release branches outside `main` map to merged or deliberately closed historical pull requests; no hidden active implementation stack was found.
@@ -48,8 +48,10 @@ Previous signed builds are engineering evidence only. Client and store candidate
 - PR #117 passed exact-head CI run `30689423957` and merged fail-closed private-provider activation checks.
 - PR #120 passed exact-head CI run `30693355367` and fixed empty source references after private-object deletion.
 - PR #122 passed exact-head CI run `30695258402` and fixed terminal intake-source and inbox cleanup.
-- PR #124 exact head `97c0a694b67008739885e35d493646063f73888e` passed CI run `30697413278`, had no reviews or unresolved threads, and merged dependency and crash-readiness gates as current `main`.
-- PR #124 reduced the production dependency audit from 17 findings including 8 high-severity findings to zero high-severity findings. Three moderate findings remain below the enforced high-severity release threshold.
+- PR #124 exact head `97c0a694b67008739885e35d493646063f73888e` passed CI run `30697413278`, had no reviews or unresolved threads, and merged dependency and crash-readiness gates as executable commit `07807e2c24b89b4420d0ffb6b33d2847e4c81fd0`.
+- PR #126 exact head `f4f393be1fa2ed6c075b6be9b9c93c6d9a3104f8` passed CI run `30700645080`; mobile job `91370951769` and web/browser job `91370951748` passed every step. It merged the reproducible mobile lock and `npm ci` gate as `06144e9045b530bb21571f2e8b8bf3999b1b699b`.
+- PR #127 exact head `0608038ad3bfdf2b9493b4a143fc8a38a449517a` passed CI run `30700781844`; web/browser job `91371307718` and mobile job `91371307740` passed every step. It merged two actionable moderate web patches as current `main` `2df917bea662f940c9c631a130baae99455b8a99`.
+- Production audits report zero high or critical findings. Web has one residual moderate Windows-only `serveStatic` advisory in Prisma development tooling; mobile enumerates 23 affected dependency nodes that trace to one `uuid` buffer advisory in transitive Expo/Clerk tooling. Neither vulnerable API is imported or invoked by application code, and neither has a compatible upstream audit fix; both remain release-tracked rather than force-overridden.
 - Web and native CI now include high-severity production dependency audits, web route/global error boundaries, and a native Expo Router error boundary.
 
 ### Neon
@@ -99,12 +101,12 @@ Actions completed:
 1. Enumerated open, draft, closed, and merged pull requests and relevant remote branches.
 2. Reviewed complete diffs, reviews, threads, mergeability, and exact-head Actions evidence.
 3. Recovered Actions execution after capacity reset.
-4. Integrated PRs #113–#124 in dependency order.
+4. Integrated PRs #113–#127 in dependency order.
 5. Reconciled stale historical issue #70 into the current delivery tracker.
 6. Confirmed no open PR or unintegrated implementation stack remains.
 7. Kept Vercel untouched throughout integration.
 
-Exit evidence: current `main` is `07807e2c24b89b4420d0ffb6b33d2847e4c81fd0`, required CI is green, and no PR is open.
+Exit evidence: current `main` is `2df917bea662f940c9c631a130baae99455b8a99`, required CI is green, and no PR is open.
 
 ### Phase 1 — Repository and Provider Preflight — Current
 
