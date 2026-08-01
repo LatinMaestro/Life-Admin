@@ -39,6 +39,7 @@ Previous signed builds are engineering evidence only. Client and store candidate
 - Vercel production remains unchanged on Ready deployment dpl_ADEQqtGDN5zqb99Jqenrk1XthcFL at old main 4233d14e4f77d096120a3d90c4b42d2928779f3d.
 - Production scheduled cleanup and notification requests will continue returning 404 until the controlled candidate deploys merged main. Do not deploy before provider and repository preflight are complete.
 - Neon production uses PostgreSQL 17 with all eight reviewed migrations and 28 public tables. Branch protection remains disabled and restore history is six hours.
+- On 1 August 2026, the SHA-256 checksum of every applied `_prisma_migrations` record matched its corresponding `migration.sql` at repository state afa4724ba044250b017ae53029a7eb30d6534ec7; all eight records were finished and none was rolled back.
 - On 1 August 2026 the inactive Neon main branch was observed archived; a read-only schema query restored it to Ready with the read/write compute active and no schema loss. Record cold-start/recovery timing during the controlled candidate and confirm the intended branch lifecycle before release.
 
 ## Deployment Discipline
@@ -75,7 +76,7 @@ Exit gate: passed. Continue at Milestone 2 without consuming a Vercel deployment
 ### Milestone 2 — Pre-Deployment Production Readiness
 
 1. Reconcile Clerk, Neon, Cloudflare R2, Email Routing, Workers AI, Expo, and Vercel environment configuration without exposing secret values. The merged live-mode activation guard must pass before the controlled deployment.
-2. Re-verify all eight migration records and repository checksums.
+2. Re-verify all eight migration records and repository checksums. Completed 1 August 2026: 8/8 exact SHA-256 checksums match repository state afa4724ba044250b017ae53029a7eb30d6534ec7, with no rollback records.
 3. Confirm private R2 access, bucket policy, CORS, lifecycle cleanup, quarantine, deletion, and orphan handling.
 4. Confirm signed inbound-email configuration, duplicate protection, size/type controls, original-source retention, and rotation/revocation paths.
 5. Confirm OCR/classification and voice adapters remain bounded, review-first, redacted, temporary, and excluded from logs.
