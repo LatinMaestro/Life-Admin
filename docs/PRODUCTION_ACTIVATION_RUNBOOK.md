@@ -22,10 +22,11 @@ Use GitHub and hosted providers only. Do not require development, installation, 
 
 ## Verified Starting State — 1 August 2026
 
-- PR #113 passed exact-head CI run 30207082000, including both web/browser and native bundle jobs, and was squash-merged as main 2838a9fa55ae4f22feae0390284ca899b1efbe18.
-- Draft PR #114 has been recomposed onto that verified main with exactly eleven intended documentation/store-metadata files; its exact-head CI and final review remain pending.
-- Production Vercel deployment dpl_ADEQqtGDN5zqb99Jqenrk1XthcFL remains Ready on old main 4233d14e4f77d096120a3d90c4b42d2928779f3d. No deployment was triggered by the integration work.
-- Production runtime uses the supported clerk authentication and prisma persistence pair.
+- PR #113 passed exact-head CI run 30207082000, including web/browser job 91330296765 and native job 91330296759, and was squash-merged as 2838a9fa55ae4f22feae0390284ca899b1efbe18.
+- PR #114 exact head f489e6887f5e9fbe53d78c2afa825aaad43985ed passed CI run 30687110059. Its intended eleven-file documentation/store-metadata diff had no reviews or unresolved threads and was squash-merged as current main 2de83f6315839bf1e1907e6d13dc0dc369f57e5d.
+- No pull request is open. Issue #70 is the current Phase 16-to-App-Review delivery tracker.
+- Production Vercel deployment dpl_ADEQqtGDN5zqb99Jqenrk1XthcFL remains Ready on old main 4233d14e4f77d096120a3d90c4b42d2928779f3d. No deployment was triggered by integration.
+- Production runtime uses the supported Clerk authentication and Prisma persistence pair.
 - Neon production uses PostgreSQL 17 and records all eight reviewed migrations as finished and not rolled back; 28 public tables are present.
 - The private R2 bucket is provisioned with public access disabled, Grovekind PUT-only CORS, and one-day incomplete multipart cleanup.
 - The reviewed Email and operations Workers are staged with public development URLs disabled.
@@ -37,18 +38,16 @@ This state is evidence only. It does not approve a deployment, provider mutation
 
 Do not deploy until all of the following are true:
 
-1. PR #113 has passing required checks on its exact immutable head, complete diff review, and no unresolved threads.
-2. PR #113 is merged and the resulting main commit is verified without triggering Vercel.
-3. PR #114 is retargeted to verified main, contains only its intended documentation/store-metadata files, passes exact-head checks, is reviewed, and is merged.
-4. Combined main is reviewed and required CI is green.
-5. All eight production migration records and repository migration checksums are reverified.
-6. Clerk, Neon, R2, Email Routing, Workers AI, Expo, and Vercel environment names are reconciled without exposing values.
-7. R2 privacy, CORS, lifecycle, quarantine, deletion, and orphan-recovery settings are ready.
-8. Email signature, timestamp, replay, duplicate, size, type, original-source, and alias-rotation controls are ready.
-9. OCR/classification and voice providers are bounded, review-first, temporary, redacted, and excluded from logs.
-10. Notification preferences, token lifecycle, quiet hours, generic previews, deep links, retries, deduplication, and sign-out cleanup are ready.
-11. The previous Ready Vercel deployment remains available as the rollback target.
-12. The release owner has approved any required production credential or provider-account action. No paid plan or irreversible change is inferred.
+1. Integration main is 2de83f6315839bf1e1907e6d13dc0dc369f57e5d after PR #113 and PR #114 passed exact-head CI, complete diff review, and thread checks and merged without triggering Vercel.
+2. No open pull request or active implementation stack precedes provider preflight.
+3. All eight production migration records and repository migration checksums are reverified.
+4. Clerk, Neon, R2, Email Routing, Workers AI, Expo, and Vercel environment names are reconciled without exposing values.
+5. R2 privacy, CORS, lifecycle, quarantine, deletion, and orphan-recovery settings are ready.
+6. Email signature, timestamp, replay, duplicate, size, type, original-source, and alias-rotation controls are ready.
+7. OCR/classification and voice providers are bounded, review-first, temporary, redacted, and excluded from logs.
+8. Notification preferences, token lifecycle, quiet hours, generic previews, deep links, retries, deduplication, and sign-out cleanup are ready.
+9. The previous Ready Vercel deployment remains available as the rollback target.
+10. The release owner has approved any required production credential or provider-account action. No paid plan or irreversible change is inferred.
 
 ## Supported Runtime Pair
 
