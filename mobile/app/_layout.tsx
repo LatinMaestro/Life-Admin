@@ -1,14 +1,36 @@
 import { ClerkProvider, useAuth } from "@clerk/expo";
 import { tokenCache } from "@clerk/expo/token-cache";
-import { Stack, useRouter } from "expo-router";
+import { Stack, useRouter, type ErrorBoundaryProps } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { listenForNotificationResponses } from "@/lib/notifications";
 import { colors } from "@/lib/theme";
 
 const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY ?? "";
 if (!publishableKey) throw new Error("EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY is required.");
+
+export function ErrorBoundary({ retry }: ErrorBoundaryProps) {
+  return (
+    <View accessibilityRole="alert" style={styles.errorScreen}>
+      <Text style={styles.errorTitle}>Family Life Admin needs a moment</Text>
+      <Text style={styles.errorMessage}>
+        Your household data has not been changed. Try loading this screen again.
+      </Text>
+      <Pressable
+        accessibilityRole="button"
+        onPress={() => void retry()}
+        style={({ pressed }) => [
+          styles.retryButton,
+          pressed && styles.retryButtonPressed,
+        ]}
+      >
+        <Text style={styles.retryButtonText}>Try again</Text>
+      </Pressable>
+    </View>
+  );
+}
 
 export default function RootLayout() {
   return (
@@ -73,3 +95,45 @@ function NotificationNavigation() {
 
   return null;
 }
+
+const styles = StyleSheet.create({
+  errorScreen: {
+    alignItems: "center",
+    backgroundColor: colors.background,
+    flex: 1,
+    justifyContent: "center",
+    padding: 24,
+  },
+  errorTitle: {
+    color: colors.text,
+    fontSize: 22,
+    fontWeight: "700",
+    textAlign: "center",
+  },
+  errorMessage: {
+    color: colors.muted,
+    fontSize: 16,
+    lineHeight: 24,
+    marginTop: 12,
+    maxWidth: 420,
+    textAlign: "center",
+  },
+  retryButton: {
+    backgroundColor: colors.primary,
+    borderRadius: 8,
+    marginTop: 24,
+    minHeight: 48,
+    minWidth: 120,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+  },
+  retryButtonPressed: {
+    backgroundColor: colors.primaryPressed,
+  },
+  retryButtonText: {
+    color: colors.surface,
+    fontSize: 16,
+    fontWeight: "700",
+    textAlign: "center",
+  },
+});
