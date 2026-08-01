@@ -11,9 +11,11 @@ This checklist separates completed repository work from release-owner steps that
 - [x] Merge the fail-closed live-provider activation gate in PR #117.
 - [x] Merge private-object and terminal intake-source cleanup fixes in PRs #120 and #122.
 - [x] Merge dependency and crash-readiness gates in PR #124.
+- [x] Merge the reproducible mobile lock and `npm ci` gate in PR #126.
+- [x] Merge actionable moderate web dependency patches in PR #127.
 - [x] Confirm no open PR or unintegrated implementation stack remains.
 - [x] Reconcile issue #70 to current delivery truth.
-- [x] Record current verified executable `main`: `07807e2c24b89b4420d0ffb6b33d2847e4c81fd0`.
+- [x] Record current verified executable `main`: `2df917bea662f940c9c631a130baae99455b8a99`.
 - [x] Keep Vercel untouched during repository integration.
 
 ## Repository Release Gates
@@ -28,7 +30,10 @@ This checklist separates completed repository work from release-owner steps that
 - [x] Native typecheck, iOS export, Android export, and structural release checks run in CI.
 - [x] Web lint, typecheck, production build, browser smoke, privacy/security guardrails, and API tests run in CI.
 - [x] High-severity production dependency audits run for web and native.
-- [x] PR #124 reduced production dependency findings to zero high-severity findings; three moderate findings remain below the enforced high threshold.
+- [x] PR #124 reduced production dependency findings to zero high-severity findings.
+- [x] PR #126 committed the exact mobile dependency graph and verified `npm ci`, store checks, and iOS/Android exports.
+- [x] PR #127 patched two actionable web moderate advisories; one Windows-only Hono advisory remains in Prisma development tooling.
+- [x] Record the mobile residual: 23 moderate dependency nodes trace to one transitive `uuid` advisory in Expo/Clerk tooling; application code uses Expo Crypto instead and does not invoke the vulnerable API.
 - [x] Web route/global error boundaries and the Expo Router error boundary are implemented.
 - [x] Privacy, support, and account-deletion pages exist.
 - [x] Account deletion has last-admin and household ownership safeguards.
