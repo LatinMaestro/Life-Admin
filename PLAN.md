@@ -28,20 +28,19 @@ Previous signed builds are engineering evidence only. Client and store candidate
 ## Verified State — 1 August 2026
 
 - Phase 16 is in progress.
-- Main remains 4233d14e4f77d096120a3d90c4b42d2928779f3d.
-- PR #113, Fix service-authenticated production routes, remains the first dependency at e145e21873a34702a880984bb1e24c7b6181dcc9.
-- PR #113 is mergeable and has no unresolved review threads.
-- GitHub Actions run 30207082000, its pre-reset retry, and one post-reset same-head retry all failed before either job executed. The post-reset attempt created Web quality and build job 90914167953 and Mobile typecheck job 90914167959; both have zero steps and their log downloads return BlobNotFound/404. This is still not valid exact-head verification and is not evidence of a source failure.
-- The post-reset retry was accepted after 01:00 Australia/Brisbane on 31 July 2026 but execution capacity did not become available. Do not merge, create a no-op commit, or consume repeated retries. Retry the immutable head only after GitHub Actions capacity is confirmed.
-- Draft PR #114, Reconcile store privacy and release handoff, is stacked on #113 and contains the corrected feature, privacy, permission, provider-activation, reviewer, checklist, store-metadata, and App Review delivery plan.
-- Its mandatory-source audit now also reconciles the implemented production data model and review gates: onboarding, private source assets, recurrence, intake drafts, voice, device installations, and notifications are implemented rather than deferred proposals.
-- Exactly two pull requests are open: #113 and #114. Neither has reviews or unresolved inline review threads.
-- The repository has 114 remote branch names. The Phase 16 and release branches outside #113/#114 map to merged or deliberately closed historical pull requests; no additional active implementation stack was identified.
+- Main is now 2838a9fa55ae4f22feae0390284ca899b1efbe18 after the reviewed service-route boundary fix merged through PR #113.
+- GitHub Actions capacity is available. Exact PR #113 head e145e21873a34702a880984bb1e24c7b6181dcc9 passed CI run 30207082000 on 1 August 2026.
+- CI job 91330296765 passed lint, payment/source guardrails, static/API/migration checks, recurrence, storage, email, intake, voice, notification, scheduler, security, lifecycle, Prisma, typecheck, production build, responsive browser journeys, and evidence upload.
+- CI job 91330296759 passed native dependency install, TypeScript, store configuration, and iOS and Android bundle exports.
+- PR #113 had no reviews or unresolved inline threads and was squash-merged as 2838a9fa55ae4f22feae0390284ca899b1efbe18.
+- Draft PR #114 has been atomically recomposed onto verified main. Its diff contains exactly the eleven intended documentation and store-metadata files; required exact-head CI and final diff review remain its merge gate.
+- Exactly one pull request is open: #114.
+- The repository has 114 remote branch names. Phase 16 and release branches outside #114 map to merged or deliberately closed historical pull requests; no additional active implementation stack was identified.
 - The only open issue is #70. Its older pre-store feature checkboxes and release wording are stale against the merged Phase 1-15 implementation and the #114 documents. Reconcile it after #114 lands; do not use its unchecked historical list as the current build backlog.
-- Vercel production deployment dpl_ADEQqtGDN5zqb99Jqenrk1XthcFL is Ready on main 4233d14e4f77d096120a3d90c4b42d2928779f3d.
-- Production runtime evidence shows scheduled cleanup and notification requests returning 404 because current main's Clerk middleware intercepts their route-level authentication. PR #113 is the scoped fix.
-- Neon production uses PostgreSQL 17 and all eight reviewed migrations. Branch protection remains disabled and restore history is six hours; the pre-launch protection/retention decision remains open.
-- On 1 August 2026 the production main branch was observed archived after inactivity; a read-only schema query restored it to Ready with the read/write compute active, 8/8 migrations applied, and 28 public tables intact. Record cold-start/recovery timing during the controlled candidate and confirm the intended branch lifecycle before release.
+- Vercel production remains unchanged on Ready deployment dpl_ADEQqtGDN5zqb99Jqenrk1XthcFL at old main 4233d14e4f77d096120a3d90c4b42d2928779f3d.
+- Production scheduled cleanup and notification requests will continue returning 404 until the controlled candidate deploys merged main; do not deploy before #114 and provider preflight are complete.
+- Neon production uses PostgreSQL 17 with all eight reviewed migrations and 28 public tables. Branch protection remains disabled and restore history is six hours.
+- On 1 August 2026 the inactive Neon main branch was observed archived; a read-only schema query restored it to Ready with the read/write compute active and no schema loss. Record cold-start/recovery timing during the controlled candidate and confirm the intended branch lifecycle before release.
 
 ## Deployment Discipline
 
@@ -66,15 +65,13 @@ Vercel deployment limits are shared across the owner's projects and must be cons
 
 ### Milestone 1 — Integration Recovery
 
-1. Confirm GitHub Actions execution capacity, then execute CI once on the immutable PR #113 head. The first post-reset retry still failed before execution, so do not consume repeated retries or create a no-op commit.
-2. Inspect real job steps and logs once a job actually starts. Fix only evidenced source failures in a focused commit; do not weaken checks.
-3. Review the complete #113 diff, confirm no unresolved threads, and merge only when exact-head required checks pass.
-4. Verify the resulting main commit without triggering Vercel.
-5. Retarget or rebase draft PR #114 onto verified main so its diff contains only the eleven intended documentation and store-metadata files.
-6. Re-run its document/metadata checks and required exact-head CI, review the final diff, mark ready, and merge.
-7. Keep Vercel paused throughout this milestone.
+1. Complete required exact-head CI on the atomically recomposed PR #114.
+2. Review its complete eleven-file diff, confirm no unresolved threads, mark ready, and merge only when required checks pass.
+3. Verify the resulting main commit without triggering Vercel.
+4. Reconcile issue #70 with merged repository truth and keep it as the external release tracker rather than a historical feature backlog.
+5. Confirm no other active implementation branch or pull request precedes provider preflight.
 
-Exit gate: #113 and #114 are merged in order, required exact-head checks pass, main is verified, and no Vercel deployment was consumed.
+Exit gate: #113 and #114 are merged in order, required exact-head checks pass, main is verified, issue #70 is current, and no Vercel deployment was consumed.
 
 ### Milestone 2 — Pre-Deployment Production Readiness
 

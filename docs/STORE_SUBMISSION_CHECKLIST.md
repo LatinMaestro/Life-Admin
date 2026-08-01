@@ -31,7 +31,7 @@ This checklist separates completed repository work from release-owner steps that
 - [x] Baseline and verify all eight Prisma migrations in the production database.
 - [x] Record the current Neon state: PostgreSQL 17 is healthy, branch protection is disabled, and restore history is six hours.
 - [ ] Decide whether to upgrade Neon for branch protection and longer restore history before public launch.
-- [ ] Obtain passing exact-head CI for PR #113 and merge only after review.
+- [x] Obtain passing exact-head CI for PR #113 and merge only after review.
 - [ ] Deploy the exact verified main candidate.
 - [ ] Verify signed service routes, invalid-request rejection, and Clerk protection for ordinary routes.
 - [ ] Verify private R2, email intake, OCR/classification, voice, notification, retention, and cleanup provider flows with fictional data.

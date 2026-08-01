@@ -20,16 +20,16 @@ Use GitHub and hosted providers only. Do not require development, installation, 
 - Raw OCR text, speech text, and temporary voice audio follow the documented deletion limits.
 - Never commit provider credentials, reviewer credentials, signing files, real household data, or real source documents.
 
-## Verified Starting State — 31 July 2026
+## Verified Starting State — 1 August 2026
 
-- Production Vercel deployment `dpl_ADEQqtGDN5zqb99Jqenrk1XthcFL` is Ready on main `4233d14e4f77d096120a3d90c4b42d2928779f3d`.
-- Production runtime uses the supported `clerk` authentication and `prisma` persistence pair.
-- Neon production uses PostgreSQL 17 and records all eight reviewed migrations as finished and not rolled back.
+- PR #113 passed exact-head CI run 30207082000, including both web/browser and native bundle jobs, and was squash-merged as main 2838a9fa55ae4f22feae0390284ca899b1efbe18.
+- Draft PR #114 has been recomposed onto that verified main with exactly eleven intended documentation/store-metadata files; its exact-head CI and final review remain pending.
+- Production Vercel deployment dpl_ADEQqtGDN5zqb99Jqenrk1XthcFL remains Ready on old main 4233d14e4f77d096120a3d90c4b42d2928779f3d. No deployment was triggered by the integration work.
+- Production runtime uses the supported clerk authentication and prisma persistence pair.
+- Neon production uses PostgreSQL 17 and records all eight reviewed migrations as finished and not rolled back; 28 public tables are present.
 - The private R2 bucket is provisioned with public access disabled, Grovekind PUT-only CORS, and one-day incomplete multipart cleanup.
 - The reviewed Email and operations Workers are staged with public development URLs disabled.
-- Runtime evidence shows the operations trigger is active and reaches both internal endpoints, but current main returns 404 because Clerk intercepts service-authenticated routes.
-- PR #113 is the scoped route-boundary fix. It must not merge until exact-head required checks execute and pass.
-- Draft PR #114 reconciles release, privacy, permission, provider, and store documentation and must follow #113.
+- Runtime evidence shows the operations trigger is active and reaches both internal endpoints. The old production deployment still returns 404; route-level authentication must be verified after the single controlled candidate deployment.
 
 This state is evidence only. It does not approve a deployment, provider mutation, client acceptance, Apple account action, App Review submission, or public release.
 

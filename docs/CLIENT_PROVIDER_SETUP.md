@@ -14,7 +14,7 @@ Repository and runtime evidence may confirm that a resource exists without provi
 - Cloudflare R2 bucket `family-life-admin-production` is provisioned privately with public access disabled.
 - Production R2 CORS is restricted to `https://lifeadmin.grovekind.com` and `PUT`; incomplete multipart uploads expire after one day.
 - `family-life-admin-email-intake` and `family-life-admin-operations` Workers contain the reviewed handlers and have public development URLs disabled.
-- Production evidence shows the operations trigger is active and reaches cleanup and notification endpoints, but current main returns 404 before route-level bearer validation. PR #113 is the scoped fix.
+- Production evidence shows the operations trigger is active and reaches cleanup and notification endpoints. The service-route fix is merged on main, but production remains on the old deployment and will return 404 until the controlled candidate deployment.
 - The final Email Routing subdomain/route, Worker secret alignment, R2 credential scope, Workers AI scope, provider retention, and deletion behaviour still require direct verification.
 - Vercel production remains on Ready deployment `dpl_ADEQqtGDN5zqb99Jqenrk1XthcFL` at main `4233d14e4f77d096120a3d90c4b42d2928779f3d`.
 
@@ -59,7 +59,7 @@ Confirm in Cloudflare Email Routing for `grovekind.com`:
 7. The Worker secret matches Vercel's `EMAIL_WEBHOOK_SECRET` without revealing the value.
 8. Signature timestamp, replay, duplicate, size, type, and attachment controls will be verified with fictional messages after deployment.
 
-If the subdomain or route is not configured, leave it inactive until PR #113/#114 integration and provider preflight are complete.
+If the subdomain or route is not configured, leave it inactive until PR #114 integration and provider preflight are complete.
 
 ## 4. Operations Worker
 
@@ -74,7 +74,7 @@ Confirm without revealing values:
 5. It sends no source content and logs no response bodies.
 6. The trigger can be stopped independently for rollback.
 
-Current 404 responses are expected from the old main boundary and do not prove that the shared secret matches. Verify successful route-level authentication only after the exact #113 fix is merged and included in the controlled deployment.
+Current 404 responses are expected from the old production deployment and do not prove that the shared secret matches. Verify successful route-level authentication only after merged main is included in the controlled deployment.
 
 ## 5. Private Secrets
 
@@ -110,7 +110,7 @@ Report **provider setup ready** only when the owner has confirmed the relevant e
 That confirmation unlocks Codex to:
 
 1. finish repository/provider preflight;
-2. merge PR #113/#114 only after exact-head CI and review gates pass;
+2. merge PR #114 only after its exact-head CI and review gates pass;
 3. use one controlled production deployment;
 4. verify signed email, bearer routes, invalid-request rejection, ordinary Clerk protection, storage, bounded processing, notifications, retention, cleanup, and deletion with fictional data;
 5. create current Android preview and iOS simulator candidates from the same exact commit;

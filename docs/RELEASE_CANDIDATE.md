@@ -22,25 +22,24 @@ It never includes banking, budgeting, transaction tracking, spend analysis, cash
 - Notifications: explicit opt-in preference and registration flow
 - Operations: bearer-authenticated cleanup and notification dispatch endpoints
 
-## Verified State — 31 July 2026
+## Verified State — 1 August 2026
 
-- Main commit: 4233d14e4f77d096120a3d90c4b42d2928779f3d
-- Vercel production deployment: dpl_ADEQqtGDN5zqb99Jqenrk1XthcFL, Ready on that main commit
-- Open route-boundary fix: PR #113 at e145e21873a34702a880984bb1e24c7b6181dcc9
-- PR #113 review state: mergeable, no unresolved review threads
-- Exact-head CI: run 30207082000, its pre-reset retry, and one post-reset same-head retry all failed before either job executed. The post-reset jobs 90914167953 and 90914167959 had zero steps and log downloads returned BlobNotFound/404, so this remains an Actions execution-capacity failure rather than valid source verification
-- Hosted Node 24 security-boundary test at PR head: 5 of 5 passing
-- Production runtime: scheduled requests are reaching cleanup and notification paths, but current main returns 404 because Clerk middleware intercepts the service routes
-- Neon: production project PostgreSQL 17 directly reverified on 31 July 2026 with all eight migration records finished and not rolled back and all 13 required release tables present; branch protection disabled; restore history six hours
-- Privacy documentation: staged reconciliation on release/reconcile-store-privacy-v1 because earlier store documents incorrectly described implemented intake permissions and data flows as absent
-
-PR #113 must not merge until exact-head required checks execute and pass. Do not create a no-op commit or consume repeated retries while Actions execution capacity remains unavailable. The documentation branch is stacked on its exact head and must be rebased or retargeted after #113 lands.
+- Main commit: 2838a9fa55ae4f22feae0390284ca899b1efbe18
+- PR #113 exact-head CI: run 30207082000 passed on e145e21873a34702a880984bb1e24c7b6181dcc9
+- Web/browser job 91330296765 passed every configured lint, privacy, migration, provider-contract, security, build, and responsive journey step
+- Native job 91330296759 passed typecheck, store configuration, and iOS and Android bundle exports
+- PR #113 was reviewed with no unresolved threads and squash-merged as the current main commit
+- Draft PR #114 is recomposed onto verified main with exactly eleven intended documentation/store files; its exact-head CI and final review remain pending
+- Vercel production deployment: dpl_ADEQqtGDN5zqb99Jqenrk1XthcFL remains Ready on old main 4233d14e4f77d096120a3d90c4b42d2928779f3d; no integration deployment was triggered
+- Production runtime: scheduled requests reach cleanup and notification paths, but the old deployment returns 404 until the merged service-route fix is included in the controlled candidate
+- Neon: production PostgreSQL 17 has all eight migration records finished and not rolled back and 28 public tables; branch protection remains disabled and restore history is six hours
+- Privacy documentation: PR #114 reconciles implemented intake permissions and data flows and remains subject to exact-head verification and review
 
 ## Controlled Activation
 
-1. Obtain a valid exact-head CI run for PR #113.
-2. Review the final diff and merge only with passing required checks.
-3. Deploy the exact verified main candidate.
+1. Obtain a valid exact-head CI run for the recomposed PR #114.
+2. Review and merge #114 only with passing required checks, then verify resulting main.
+3. Complete provider preflight and deploy the exact verified main candidate.
 4. Verify the Grovekind domain resolves to that Ready deployment.
 5. Prove:
    - correctly signed inbound email succeeds;
