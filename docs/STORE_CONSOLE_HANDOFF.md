@@ -1,20 +1,20 @@
 # Store Console Handoff
 
-This is the release-owner handoff for Family Life Admin version 1.0.0. Repository automation can prepare builds and metadata, but the account owner must complete identity verification, agreements, store records, reviewer credentials, declarations, and final submission approvals.
+This is the release-owner handoff for Family Life Admin version 1.0.0. Repository automation may prepare builds, evidence, and metadata. The account owner must complete identity verification, agreements, store records, reviewer credentials, declarations, availability, submission approval, and public-release approval.
 
-Never place passwords, access tokens, signing files, reviewer credentials, government identity documents, or recovery codes in GitHub.
+Never place passwords, access tokens, signing files, reviewer credentials, identity documents, or recovery codes in GitHub.
 
 ## Shared App Identity
 
-- App name: `Family Life Admin`
-- iOS bundle identifier: `com.latinmaestro.familylifeadmin`
-- Android package: `com.latinmaestro.familylifeadmin`
-- Version: `1.0.0`
+- App name: Family Life Admin
+- iOS bundle identifier: com.latinmaestro.familylifeadmin
+- Android package: com.latinmaestro.familylifeadmin
+- Version: 1.0.0
 - Category: Productivity
 - Default language: English (Australia)
-- Support URL: `https://lifeadmin.grovekind.com/support`
-- Privacy URL: `https://lifeadmin.grovekind.com/privacy`
-- Account-deletion URL: `https://lifeadmin.grovekind.com/account-deletion`
+- Support URL: https://lifeadmin.grovekind.com/support
+- Privacy URL: https://lifeadmin.grovekind.com/privacy
+- Account-deletion URL: https://lifeadmin.grovekind.com/account-deletion
 - Price: Free
 - Advertising: None
 - In-app purchases: None
@@ -22,86 +22,84 @@ Never place passwords, access tokens, signing files, reviewer credentials, gover
 
 ## Expo
 
-Client-only setup:
+Verified repository/account boundary:
 
-- [x] Save an Expo personal access token as the GitHub repository Actions secret `EXPO_TOKEN`.
-- [x] Confirm EAS project `d112a576-6adf-4452-b434-4b3cdba7ab0d` is owned by the `latinmaestro` Expo account.
-- [ ] Keep account recovery and billing access outside the repository.
-- [x] Generate and retain Expo-managed Android signing credentials.
-- [x] Produce an installable Android preview APK and signed production AAB.
+- EAS project d112a576-6adf-4452-b434-4b3cdba7ab0d is owned by latinmaestro.
+- Android signing credentials and earlier engineering builds exist.
+- Earlier Android preview and production builds predate the frozen Phase 16 candidate and are evidence only.
 
-GitHub automation is connected to EAS and uses manual-only build triggers. Android build evidence:
+Owner actions:
 
-- Preview APK: [build `5a98428c`](https://expo.dev/accounts/latinmaestro/projects/family-life-admin/builds/5a98428c-5f5b-4807-b246-5f88060d37c5), version `1.0.0 (1)`
-- Production AAB: [build `54b18204`](https://expo.dev/accounts/latinmaestro/projects/family-life-admin/builds/54b18204-b548-46d9-8a60-72d81ab6e5b8), version `1.0.0 (2)`
-- Android package and signing certificate are registered in the Clerk production Native API configuration.
+- keep Expo recovery and billing access outside the repository;
+- approve creation of Expo-managed iOS signing credentials after Apple enrolment;
+- approve EAS/App Store Connect submission access;
+- retain signing and recovery ownership.
 
-The first Google Play upload remains client-account gated.
+The final iOS build must be produced from the frozen exact verified commit, uploaded to TestFlight, and linked to immutable build evidence.
 
 ## Apple Developer And App Store Connect
 
-Client-only setup:
+The intended long-term legal owner must:
 
-1. Enrol in the Apple Developer Program using the intended long-term legal owner.
+1. Enrol in the Apple Developer Program.
 2. Complete identity or organisation verification.
 3. Accept current Apple agreements.
-4. Record the Apple Team ID for native Clerk registration.
-5. In App Store Connect, create a new iOS app:
-   - Name: `Family Life Admin`
+4. Provide the Apple Team ID, not account credentials, so the bundle and Clerk native configuration can be registered.
+5. Create an iOS app in App Store Connect:
+   - Name: Family Life Admin
    - Primary language: English (Australia)
-   - Bundle ID: `com.latinmaestro.familylifeadmin`
-   - SKU: an internal value such as `family-life-admin-ios`
-   - User access: Full Access unless the account has a deliberate restricted-access policy
-6. Record the numeric App Store Connect app ID for EAS Submit.
-7. Create an App Store Connect API key or approve EAS-managed submission access.
-8. Supply App Review contact details and fictional reviewer credentials privately in App Store Connect.
-9. Complete age rating, encryption, privacy, availability, and content-rights questions truthfully.
-10. Approve final TestFlight distribution and App Review submission.
+   - Bundle ID: com.latinmaestro.familylifeadmin
+   - SKU: a private internal value such as family-life-admin-ios
+   - User access: the owner's deliberate policy
+6. Record the numeric App Store Connect app ID privately.
+7. Create an App Store Connect API key or explicitly approve EAS-managed submission access.
+8. Provide App Review contact details and stable fictional reviewer credentials only in App Store Connect.
+9. Complete category, availability, age rating, encryption/export compliance, App Privacy, content-rights, and permission questions against the frozen build.
+10. Approve TestFlight distribution after build evidence and QA are ready.
+11. Give separate explicit approval for App Review submission.
+12. Give separate explicit approval for public release after review acceptance.
 
-The Account Holder must accept current agreements before a new App Store Connect record can be created.
+Codex must never handle identity documents, passwords, recovery codes, or legal acceptance.
 
-## Google Play Console
+## Reviewer Account And Data
 
-Client-only setup:
+Create a dedicated reviewer account with fictional Rivera Household data only:
 
-1. Create or verify the intended long-term Play Console developer account.
-2. Complete identity, contact, payments-profile, and Android-device verification where requested.
-3. Create the app:
-   - Default language: English (Australia)
-   - Name: `Family Life Admin`
-   - Type: App
-   - Price: Free
-4. Accept the Developer Program, export-law, and Play App Signing declarations.
-5. Use `com.latinmaestro.familylifeadmin` for the first uploaded Android App Bundle.
-6. Create an internal testing track and tester list.
-7. Supply fictional sign-in details and instructions under App content because the app is login-restricted.
-8. Complete the privacy policy, ads, target audience, content rating, Data safety, account deletion, and app-access declarations.
-9. After the first manual upload, create a Google service account for later EAS submissions if desired.
-10. Approve closed testing and production rollout when testing requirements are satisfied.
+- one open and one completed task;
+- a short shopping list;
+- a bill reminder and renewal with safe fictional HTTPS sources;
+- two fictional household members covering roles;
+- a short activity history;
+- a fictional private source image or document;
+- reviewable OCR/classification and voice drafts containing no payment identifiers;
+- notification preferences;
+- Settings, privacy, support, and account deletion.
 
-For a personal developer account created after 13 November 2023, Google currently requires a closed test with at least 12 continuously opted-in testers for 14 days before production access can be requested. Internal testing can still begin first.
+Do not reuse a real household account. Keep reviewer credentials only in App Store Connect.
 
-## Reviewer Account
+## Reviewer Paths And Permissions
 
-Create one dedicated reviewer account with fictional household data only.
+The review notes must state that automated intake creates drafts only and an authorised member confirms them. Manual entry remains available.
 
-The reviewer household should make these flows easy to inspect:
+Document deterministic review paths for:
 
-- Home with a small number of current items
-- One open and one completed task
-- One short shopping list
-- One bill reminder and one renewal with safe fictional HTTPS source references
-- Two fictional members covering both roles
-- A short activity history
-- Settings, support, privacy, and account deletion
+- user-initiated camera/photo source selection;
+- private document upload;
+- forwarded fictional email intake;
+- bounded OCR/classification review;
+- user-initiated voice draft;
+- notification opt-in and deep link;
+- deletion and retention behaviour.
 
-Do not reuse a real household account. Store reviewer credentials only in the private review consoles.
+Camera, photo-library, microphone, and notification prompts must appear only after the related user action. Reviewer notes must explain why each prompt appears and what works after denial. Background audio recording and remote-notification background mode are disabled.
+
+Never claim an implemented feature is absent to simplify review. If a live provider flow cannot be safely exposed to the reviewer, state the exact limitation and give a deterministic fictional path.
 
 ## Screenshots
 
-Capture final screenshots only from the signed release candidate after physical-device QA.
+Capture final screenshots only from the approved signed build after physical-device QA.
 
-Required scenes:
+Core scenes:
 
 1. Home
 2. Tasks
@@ -110,15 +108,34 @@ Required scenes:
 5. Family
 6. Settings and privacy
 
-Use fictional Rivera Household data. Remove real names, email addresses, links, source documents, and credentials. Do not add captions that promise notifications, uploads, OCR, AI, email forwarding, voice capture, offline writes, or finance functionality.
+Use fictional Rivera Household data. Remove real names, email addresses, links, source documents, tokens, and credentials. Captions may mention implemented review-first uploads, OCR, email intake, voice drafts, or opt-in notifications only when the captured build demonstrates that exact behaviour.
+
+Do not promise finance features, automatic final actions, payment handling, guaranteed extraction accuracy, background recording, or offline writes.
+
+## Final Evidence Package
+
+Before submission, the release owner should receive one concise audit linking:
+
+- exact Git commit and passing exact-head CI;
+- Vercel production deployment and Grovekind smoke tests;
+- all eight migrations and provider-health evidence;
+- private storage, signed email intake, bounded processing, notification, retention, and deletion checks;
+- EAS iOS build and App Store Connect/TestFlight build number;
+- current iPhone and representative iPad QA;
+- final screenshots, listing, privacy answers, permission strings, age rating, encryption, content rights, reviewer access, and availability;
+- support ownership and rollback plan.
 
 ## Final Approval Boundary
 
-Codex may prepare, build, validate, and upload internal candidates when credentials permit. The release owner must personally approve:
+Owner approval is required for:
 
 - legal agreements and identity verification;
+- credentials, account recovery, and support contacts;
 - store privacy and policy declarations;
 - reviewer credentials;
 - production territories and availability;
-- final submission for Apple or Google review;
-- production rollout after approval.
+- TestFlight distribution where account policy requires it;
+- Apple App Review submission;
+- public release after review acceptance.
+
+No repository checkbox substitutes for explicit owner approval.

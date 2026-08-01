@@ -15,7 +15,7 @@ This document defines the household-first data model direction for Family Life A
 
 ## Production Prisma Schema Checkpoint
 
-The production data-model checkpoint is `prisma/schema.prisma`. The generated initial PostgreSQL migration is stored in `prisma/migrations/20260710103700_init/migration.sql` and was applied to the production Neon database on 10 July 2026.
+The production data-model checkpoint is `prisma/schema.prisma`. Eight reviewed PostgreSQL migrations are applied to production Neon: the initial household schema plus account deletion, advanced recurrence, secure source assets, household email intake, safe intake drafts, voice transcription, and private push notifications.
 
 Current checkpoint includes:
 
@@ -35,17 +35,28 @@ Current checkpoint includes:
 - `Comment`
 - `ActivityEvent`
 - `HouseholdSettings`
+- `AccountDeletionRequest`
+- `SourceAsset`
+- `IntakeAlias`
+- `IntakeEnvelope`
+- `ExtractionJob`
+- `IntakeDraft`
+- `RecurrenceSeries`
+- `RecurrenceOccurrence`
+- `DeviceInstallation`
+- `NotificationPreference`
+- `NotificationDelivery`
 
 Important boundaries:
 
-- The initial migration has been generated, reviewed, rehearsed on isolated Neon branches, and applied to production.
-- The production schema is available, but application runtime access remains disabled until Clerk, secure environment values, and the initial household membership are ready.
-- Production runtime uses database-backed household persistence.
-- Invitation and membership administration are implemented; first-user self-service onboarding remains in Phase 2.
-- Source references are metadata/pointers only and do not implement uploads or document previews.
+- All eight migrations have been generated, reviewed, rehearsed, and applied to production.
+- Production runtime uses Clerk-authenticated, database-backed household persistence.
+- Invitation, membership administration, and first-user self-service onboarding are implemented.
+- Source references may point to private source assets; object access remains household-scoped and short-lived.
+- Recurrence, email intake, safe extraction drafts, voice drafts, device installations, and notification delivery are implemented within their review-first and retention boundaries.
 - Bills and renewals do not include generated or transcribed payment identifier fields.
 
-## Phase 2 Static Mock Architecture
+## Historical Phase 2 Static Mock Architecture
 
 Phase 2 added a typed static data layer before real persistence. This is not a database connection.
 
@@ -58,11 +69,11 @@ The static layer includes:
 - household-scoped demo records using `householdId`
 - member ownership placeholders such as `assignedMemberId` and `createdByMemberId`
 
-This allowed the app to validate household workspace structure and user experience before choosing production authentication, invite flow, database hosting, or persistence details.
+This allowed early validation of household workspace structure and user experience. It is historical design evidence only; production does not use the static layer as a data fallback.
 
-## Phase 3 Static Role Model
+## Historical Phase 3 Static Role Model
 
-Phase 3 represents MVP role behavior in TypeScript before production authentication or authorisation exists. This is not access control enforcement.
+Phase 3 represented MVP role behavior in TypeScript before production authentication and authorisation were implemented. This section is historical; current access control is enforced server-side.
 
 The static role model includes:
 
@@ -71,7 +82,7 @@ The static role model includes:
 - helper functions for static admin/member decisions
 - member status and current member display in the household workspace
 
-Production role enforcement must wait until authentication, membership queries, and database-backed access checks are approved and implemented.
+Production role enforcement is implemented through Clerk subject mapping, active membership resolution, household-scoped services, and server-side role checks.
 
 ## Core Entities
 
@@ -147,7 +158,7 @@ Fields:
 
 ### Invitation
 
-Invitation-ready model for family sharing. This does not implement invite sending or acceptance yet.
+Household invitation model. Creation, acceptance, expiry, verified-email matching, and role safeguards are implemented.
 
 Fields:
 
@@ -335,7 +346,7 @@ Fields:
 
 ### SourceReference
 
-Reference to an original source. Upload implementation is deferred until separately approved.
+Reference to an original source. Approved private uploads, camera capture, forwarded email, and review-first intake may attach a household-scoped `SourceAsset`.
 
 Fields:
 
@@ -409,7 +420,7 @@ Fields:
 
 ## Indexing And Access Notes
 
-Likely indexes:
+Representative implemented indexes:
 
 - householdId on all household-scoped entities
 - householdId + status on operational lists
@@ -425,9 +436,9 @@ Access checks:
 - Do not log sensitive source metadata or private household content.
 
 
-## Approved Expansion Entities
+## Implemented Expansion Entities
 
-These entities are architectural proposals for Phases 2-12. Prisma changes require scoped migrations and isolated-branch rehearsal.
+These entities were approved and implemented in Phases 2-12 through scoped, reviewed migrations. `prisma/schema.prisma` and the eight migration directories are canonical for exact field names, relationships, constraints, and indexes; the summaries below state their privacy and ownership responsibilities.
 
 ### SourceAsset
 
@@ -592,21 +603,21 @@ Fields:
 - createdAt
 - updatedAt
 
-### DevicePushToken
+### DeviceInstallation
 
-Private installation token mapping.
+Private household-scoped installation mapping for Expo push delivery.
 
 Fields:
 
 - id
+- householdId
 - userId
-- provider
-- tokenCiphertext
-- tokenFingerprint
+- memberId
+- installationKeyHash
+- expoPushToken
 - platform
 - state
 - lastSeenAt
-- revokedAt
 - createdAt
 - updatedAt
 
