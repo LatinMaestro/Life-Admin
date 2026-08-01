@@ -27,7 +27,7 @@ Review gates protect the product boundary, household privacy, and implementation
 
 - Sources remain private to authorized household members.
 - Summaries expose only necessary metadata.
-- Upload or device-permission behavior requires separate approval.
+- Upload, camera, microphone, and notification behaviour stays within the approved Phases 5 and 10-12 scope and must pass Gates 12-15.
 - Private API responses use no-store caching.
 
 ## Gate 5: Bill Payment Source Of Truth
@@ -115,4 +115,4 @@ Review gates protect the product boundary, household privacy, and implementation
 - Final UI passes phone, tablet, desktop, accessibility, and beginner-usability review.
 - A fictional-data client candidate is available without paid store enrollment.
 - Client feedback is resolved and affected gates rerun.
-- Explicit client approval is recorded before store accounts, uploads, or submission.
+- Explicit client approval is recorded before paid store-account operations, signed store uploads, or submission.

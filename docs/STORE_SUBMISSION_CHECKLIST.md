@@ -1,6 +1,6 @@
 # Store Submission Checklist
 
-This checklist separates completed repository work from release-owner steps that require external accounts, production credentials, signed builds, or physical devices.
+This checklist separates completed repository work from release-owner steps that require external accounts, production credentials, signed builds, or physical devices. A checked repository item records implemented configuration, not store approval or final-build QA.
 
 ## Repository Gates
 
@@ -8,78 +8,103 @@ This checklist separates completed repository work from release-owner steps that
 - [x] Version 1.0.0 and native build numbers are configured.
 - [x] EAS preview, production, and submission profiles are present.
 - [x] App icon, Android adaptive/monochrome icon, and splash artwork are configured.
-- [x] Camera, microphone, and notification permissions are blocked.
+- [x] Camera, photo-library, and microphone purpose strings are configured for optional user-initiated capture.
+- [x] Background audio recording is disabled.
+- [x] Notification support is configured for explicit opt-in; remote-notification background mode is disabled.
 - [x] Native typecheck and structural release checks run in CI.
 - [x] Privacy, support, and account-deletion pages exist in the web app.
 - [x] Account deletion has last-admin and household ownership safeguards.
 - [x] Native password recovery uses Clerk's email-code flow.
 - [x] Store listing copy and reviewer guidance are documented.
 - [x] Machine-readable Apple metadata is configured and checked in CI.
-- [x] Store privacy declarations are mapped to the current implementation.
 - [x] Bill/payment source-of-truth guardrails remain enforced.
+- [ ] Reconcile privacy declarations and reviewer guidance against the frozen production build and final provider settings.
+- [ ] Confirm every permission prompt is triggered only by a clear user action and has a usable denial/revocation path.
 
 ## Production Services
 
-- [x] Approve and connect `lifeadmin.grovekind.com` as the custom production domain.
-- [x] Confirm the privacy, support, and account-deletion URLs on `lifeadmin.grovekind.com`.
+- [x] Approve and connect lifeadmin.grovekind.com as the custom production domain.
+- [x] Confirm the privacy, support, and account-deletion URLs on lifeadmin.grovekind.com.
 - [x] Configure Clerk production keys, custom domain, and Native API.
 - [x] Configure the mobile production API URL and Clerk publishable key in EAS.
-- [x] Run `npm run release:check:live` from `mobile/` with production environment values.
-- [x] Baseline and verify Prisma migration history in the production database.
-- [x] Record the current Neon production state: the main branch is healthy but unprotected, and free-tier restore history is limited.
-- [ ] Decide whether to upgrade Neon for branch protection and a longer restore window before public launch.
-- [ ] Complete a production web smoke test after the final main deployment.
+- [x] Run the mobile live release check with production environment values.
+- [x] Baseline and verify all eight Prisma migrations in the production database.
+- [x] Record the current Neon state: PostgreSQL 17 is healthy, branch protection is disabled, and restore history is six hours.
+- [ ] Decide whether to upgrade Neon for branch protection and longer restore history before public launch.
+- [ ] Obtain passing exact-head CI for PR #113 and merge only after review.
+- [ ] Deploy the exact verified main candidate.
+- [ ] Verify signed service routes, invalid-request rejection, and Clerk protection for ordinary routes.
+- [ ] Verify private R2, email intake, OCR/classification, voice, notification, retention, and cleanup provider flows with fictional data.
+- [ ] Complete production web smoke tests.
 
 ## Developer Accounts And Signing
 
-- [x] Confirm the Expo account and EAS project are owned by `latinmaestro`.
-- [x] Add `extra.eas.projectId` to `mobile/app.json` after the EAS project is created.
+- [x] Confirm the Expo account and EAS project are owned by latinmaestro.
+- [x] Add the EAS project ID to mobile/app.json.
 - [ ] Enrol in and verify the Apple Developer Program account.
-- [ ] Create the App Store Connect app record for `com.latinmaestro.familylifeadmin`.
-- [ ] Create the Google Play Console app record with the same package identifier.
-- [x] Generate remote Android signing credentials through EAS.
-- [ ] Generate remote iOS signing credentials through EAS.
-- [ ] Store console access and recovery details outside the repository.
-- [ ] Never commit production keys, reviewer passwords, signing files, or service credentials.
+- [ ] Accept current Apple agreements.
+- [ ] Record the Apple Team ID and App Store Connect app ID privately.
+- [ ] Create the App Store Connect record for com.latinmaestro.familylifeadmin.
+- [ ] Create or approve App Store Connect API/submission access.
+- [ ] Generate Expo-managed iOS signing credentials.
+- [ ] Register the signed native iOS configuration with Clerk.
+- [ ] Keep console access, recovery details, reviewer credentials, signing files, and secrets outside the repository.
+- [ ] Create the Google Play Console app record when Android store delivery is authorised.
 
-## Internal Builds And QA
+## Client Candidate And Acceptance
 
-- [x] Produce the [Android preview APK](https://expo.dev/accounts/latinmaestro/projects/family-life-admin/builds/5a98428c-5f5b-4807-b246-5f88060d37c5).
-- [ ] Produce an EAS preview build for iOS.
-- [ ] Test on at least one physical iPhone and one physical Android phone.
-- [ ] Test a representative tablet layout or emulator for each supported platform.
-- [ ] Verify sign-in, sign-out, forgotten-password recovery, session recovery, and expired-session handling.
-- [ ] Verify household isolation with two households and two member roles.
-- [ ] Verify invitations, role changes, member removal safeguards, and last-admin recovery.
-- [ ] Verify task, reminder, shopping, bill, source, comment, and activity workflows.
-- [ ] Verify account deletion and retained/deleted data behaviour.
-- [ ] Verify source links reject unsafe schemes and expose no payment identifiers.
-- [ ] Verify loading, empty, validation, offline/error, retry, and accessibility states.
-- [ ] Confirm no camera, microphone, notification, contact, location, or photo permission prompt appears.
-- [ ] Resolve every release-blocking defect before production builds.
+- [ ] Create the fictional Rivera Household data set with no real personal data or payment identifiers.
+- [ ] Produce a current Android preview and iOS simulator candidate from the same exact verified commit.
+- [ ] Record immutable Git commit, CI run, Vercel deployment, migrations, provider checks, and EAS build references.
+- [ ] Execute the documented production web acceptance journey.
+- [ ] Execute the documented native acceptance journey.
+- [ ] Verify household isolation with two households and two roles.
+- [ ] Verify invitations, role changes, removal safeguards, and last-admin recovery.
+- [ ] Verify tasks, reminders, shopping, bills, sources, comments, activity, and recurrence.
+- [ ] Verify uploads/camera, forwarded email, bounded OCR/classification drafts, and voice drafts.
+- [ ] Verify opt-in notifications, deep links, offline/error/retry states, and accessibility.
+- [ ] Verify account/household deletion, retention, and cleanup behaviour.
+- [ ] Obtain explicit client acceptance of the production web and native candidate.
+- [ ] Resolve every release-blocking defect before freezing version 1.0.0.
+
+## TestFlight And Physical QA
+
+- [ ] Freeze the exact iOS release-candidate commit and rollback plan.
+- [ ] Produce the signed iOS production build from the frozen commit.
+- [ ] Upload the exact build to TestFlight and record immutable build references.
+- [ ] Test on at least one current physical iPhone.
+- [ ] Test a representative iPad layout.
+- [ ] Verify sign-in, sign-out, recovery, session restoration, and expiry.
+- [ ] Verify onboarding, household isolation, roles, invitations, and every household workflow.
+- [ ] Verify permission prompts appear only after the user chooses camera, photo upload, voice capture, or notification opt-in.
+- [ ] Verify permission denial, revocation, retry, and fallback to manual entry.
+- [ ] Verify camera/uploads, forwarded email, OCR/classification drafts, voice drafts, notifications, and deep links.
+- [ ] Verify account and household deletion plus documented retention.
+- [ ] Complete accessibility, performance, crash-readiness, offline, and error-state checks.
+- [ ] Rebuild and repeat affected regression gates after every release-blocking fix.
 
 ## Store Materials
 
-- [ ] Capture screenshots with fictional Rivera Household data.
-- [ ] Create a support email address owned by the product operator.
-- [x] Confirm every store URL in `docs/STORE_LISTING.md` uses the production Grovekind domain.
-- [x] Reconcile `docs/STORE_PRIVACY_DECLARATIONS.md` against production Clerk, Vercel, Neon, and Expo settings.
-- [ ] Complete Apple privacy details from the reconciled inventory.
-- [ ] Complete Google Play Data safety from the reconciled inventory.
-- [ ] Complete content-rating and encryption questionnaires truthfully.
-- [ ] Create a stable reviewer account with fictional data.
-- [ ] Supply reviewer credentials privately in each store console.
-- [ ] Confirm the listing does not promise deferred functionality.
+- [ ] Capture final fictional screenshots from the approved signed build.
+- [ ] Create a support email address owned and monitored by the product operator.
+- [x] Confirm store URLs use the production Grovekind domain.
+- [ ] Complete Apple privacy details from the frozen-build inventory.
+- [ ] Complete Google Play Data safety from the frozen-build inventory when authorised.
+- [ ] Complete age rating, encryption/export compliance, content-rights, category, and availability answers.
+- [ ] Confirm camera, photo, microphone, and notification purpose strings match actual use.
+- [ ] Create a stable fictional reviewer account.
+- [ ] Supply reviewer credentials only in App Store Connect.
+- [ ] Confirm review notes cover every gated feature and explain review-first automated drafts.
+- [ ] Confirm listing and screenshots make no finance, automatic-action, offline-write, or other unsupported claims.
 
 ## Submission
 
-- [x] Produce the signed [Android production AAB](https://expo.dev/accounts/latinmaestro/projects/family-life-admin/builds/54b18204-b548-46d9-8a60-72d81ab6e5b8) with an auto-incremented build number.
-- [ ] Produce the signed iOS production build.
-- [ ] Submit first to TestFlight and Google Play internal testing.
-- [ ] Complete a final release-candidate regression pass.
-- [ ] Confirm support monitoring and account-deletion operations are staffed.
-- [ ] Submit version 1.0.0 for store review.
-- [ ] Record store feedback and fixes in scoped GitHub issues and pull requests.
-- [ ] Promote only the exact approved build after review acceptance.
+- [ ] Tie the exact Git commit, CI, Vercel deployment, migrations, provider health, EAS build, TestFlight result, screenshots, declarations, reviewer access, support operations, and rollback evidence together.
+- [ ] Present the final go/no-go report.
+- [ ] Obtain explicit release-owner approval to submit version 1.0.0 to Apple App Review.
+- [ ] Submit version 1.0.0 only after that approval.
+- [ ] Record App Review state and feedback.
+- [ ] Resolve defects or metadata issues through scoped reviewed pull requests and rebuild/resubmit when required.
+- [ ] Obtain separate explicit approval before public release.
 
-The app is code-complete for a first store candidate when repository gates pass. It is release-ready only when every applicable external, QA, privacy, and submission item above is complete.
+The app is ready for App Review only when every applicable evidence, owner, QA, privacy, and submission gate above is complete.

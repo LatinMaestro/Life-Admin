@@ -5,7 +5,7 @@
       "en-AU": {
         "title": "Family Life Admin",
         "subtitle": "Household tasks and lists",
-        "description": "Family Life Admin gives your household one simple place to keep everyday admin organised.\n\nUse it together to:\n\n- see what needs attention today;\n- create and assign household tasks and reminders;\n- share shopping lists;\n- keep bills and renewals visible as due-date reminders;\n- collect inbox items and route them to the right place;\n- link back to original source documents and websites;\n- add comments and review household activity;\n- manage household members and roles.\n\nThe app is designed for families and shared households, with clear screens and only the actions you need. Information is kept within your household workspace.\n\nBills and renewals are reminders, not financial tracking. Family Life Admin does not provide budgets, bank connections, transaction tracking, cashflow analysis, tax reporting, or payment details. Payment-related reminders point back to the original source selected by the household.\n\nA Family Life Admin account and internet connection are required.",
+        "description": "Family Life Admin gives your household one simple place to keep everyday admin organised.\n\nUse it together to:\n\n- see what needs attention today;\n- create and assign household tasks and reminders;\n- share shopping lists;\n- keep bills and renewals visible as due-date reminders;\n- collect inbox items and route them to the right place;\n- attach or capture private household sources and return to the original;\n- forward selected household email for review-first intake;\n- turn selected documents or voice notes into drafts for a household member to review;\n- choose opt-in reminders for supported household items;\n- add comments and review household activity;\n- manage household members and roles.\n\nAutomated intake is bounded and review-first. It suggests a draft; an authorised household member decides whether to save or change it. Manual entry remains available.\n\nBills and renewals are administrative reminders, not financial tracking. Family Life Admin does not provide budgets, bank connections, transaction tracking, cashflow analysis, tax reporting, payment execution, or payment identifiers. Reminders return the household to its original source.\n\nA Family Life Admin account and internet connection are required. Camera, photo-library, microphone, and notification access is optional and requested only when a user chooses the related feature.",
         "keywords": [
           "family",
           "household",
@@ -16,7 +16,7 @@
           "renewals",
           "organiser"
         ],
-        "releaseNotes": "First release of Family Life Admin for shared household tasks, reminders, shopping, bills and renewals.",
+        "releaseNotes": "First release of Family Life Admin for private shared household tasks, reminders, shopping, bills, renewals and review-first intake.",
         "promoText": "Keep the household moving with shared tasks, reminders, shopping lists, bills and renewals in one private family workspace.",
         "supportUrl": "https://lifeadmin.grovekind.com/support",
         "privacyPolicyUrl": "https://lifeadmin.grovekind.com/privacy",
