@@ -92,6 +92,9 @@ jobs:
       - name: Check production migration baseline coverage
         run: pnpm guardrails:production-baseline
 
+      - name: Test production activation configuration
+        run: pnpm test:activation
+
       - name: Validate Prisma schema
         run: pnpm db:validate
         env:
