@@ -29,6 +29,7 @@ This checklist separates completed repository work from release-owner steps that
 - [x] Configure the mobile production API URL and Clerk publishable key in EAS.
 - [x] Run the mobile live release check with production environment values.
 - [x] Baseline and verify all eight Prisma migrations in the production database.
+- [x] Match all eight applied Neon migration SHA-256 checksums to the repository migration files at afa4724ba044250b017ae53029a7eb30d6534ec7; all records are finished and none is rolled back.
 - [x] Record the current Neon state: PostgreSQL 17 is healthy, branch protection is disabled, and restore history is six hours.
 - [ ] Decide whether to upgrade Neon for branch protection and longer restore history before public launch.
 - [x] Obtain passing exact-head CI for PR #113 and merge only after review.
