@@ -25,8 +25,10 @@ Use GitHub and hosted providers only. Do not require development, installation, 
 - PR #113 passed exact-head CI run 30207082000, including web/browser job 91330296765 and native job 91330296759, and was squash-merged as 2838a9fa55ae4f22feae0390284ca899b1efbe18.
 - PR #114 exact head f489e6887f5e9fbe53d78c2afa825aaad43985ed passed CI run 30687110059. Its intended eleven-file documentation/store-metadata diff had no reviews or unresolved threads and was squash-merged as 2de83f6315839bf1e1907e6d13dc0dc369f57e5d.
 - PR #115 exact head b8f8a2ef5a1a0adf1a5b2ca053d00f3b44b272d2 passed CI run 30689204206 and merged release-evidence reconciliation as 9d16c320a921fadf3be2d4ba3527babea5e78ae4.
-- PR #117 exact head 6577b816eb62557ee016ddc3edc2380b795d2ccc passed CI run 30689423957 and merged fail-closed provider activation checks as the latest executable candidate f042dd1baaf3e4db5d336c5d7605110fd3153573.
+- PR #117 exact head 6577b816eb62557ee016ddc3edc2380b795d2ccc passed CI run 30689423957 and merged fail-closed provider activation checks as f042dd1baaf3e4db5d336c5d7605110fd3153573.
 - PR #118 exact head e19d6677098c9689f7e7a8092fbb9d0670c8fb14 passed CI run 30689584408 and merged evidence-only plan updates as afa4724ba044250b017ae53029a7eb30d6534ec7.
+- PRs #119–#121 passed exact-head CI and merged migration checksum evidence, private-object orphan cleanup, and signed-email retry evidence through repository state 597744c45f09b64276d9c789b83a936b1170633b.
+- PR #122 exact head 08dc9f2398e26ffc2adddacc499b6a7dd964880f passed CI run 30695258402 and merged terminal intake-source lifecycle cleanup as the latest executable candidate 5dd94fdf5512abc83c96f824446e205d632f2d94.
 - No pull request is open. Issue #70 is the current Phase 16-to-App-Review delivery tracker.
 - Production Vercel deployment dpl_ADEQqtGDN5zqb99Jqenrk1XthcFL remains Ready on old main 4233d14e4f77d096120a3d90c4b42d2928779f3d. No deployment was triggered by integration.
 - Production runtime uses the supported Clerk authentication and Prisma persistence pair.
@@ -41,7 +43,7 @@ This state is evidence only. It does not approve a deployment, provider mutation
 
 Do not deploy until all of the following are true:
 
-1. The repository contains verified executable candidate f042dd1baaf3e4db5d336c5d7605110fd3153573 plus subsequent evidence-only merges; PRs #113, #114, #115, #117, and #118 passed exact-head CI and merged without triggering Vercel.
+1. The repository contains exact verified executable candidate 5dd94fdf5512abc83c96f824446e205d632f2d94; PRs #113–#115 and #117–#122 passed exact-head CI and merged without triggering Vercel.
 2. No open pull request or active implementation stack precedes provider preflight.
 3. All eight production migration records and repository migration checksums are reverified. Completed 1 August 2026: every applied checksum matches repository state afa4724ba044250b017ae53029a7eb30d6534ec7 and no migration is rolled back.
 4. Clerk, Neon, R2, Email Routing, Workers AI, Expo, and Vercel environment names are reconciled without exposing values.
