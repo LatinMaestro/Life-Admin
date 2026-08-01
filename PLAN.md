@@ -28,9 +28,12 @@ Previous signed builds are engineering evidence only. Client and store candidate
 ## Verified State — 1 August 2026
 
 - Phase 16 is in progress.
-- Main is 2de83f6315839bf1e1907e6d13dc0dc369f57e5d after the reviewed integration sequence completed.
+- Main is f042dd1baaf3e4db5d336c5d7605110fd3153573 after the reviewed integration and production-provider guard sequence completed.
 - PR #113 exact head e145e21873a34702a880984bb1e24c7b6181dcc9 passed CI run 30207082000. Web/browser job 91330296765 and native job 91330296759 passed every configured step; the PR had no reviews or unresolved threads and was squash-merged as 2838a9fa55ae4f22feae0390284ca899b1efbe18.
 - PR #114 exact head f489e6887f5e9fbe53d78c2afa825aaad43985ed passed CI run 30687110059. Its eleven-file documentation and store-metadata diff had no reviews or unresolved threads and was squash-merged as 2de83f6315839bf1e1907e6d13dc0dc369f57e5d.
+- PR #115 exact head b8f8a2ef5a1a0adf1a5b2ca053d00f3b44b272d2 passed CI run 30689204206 and merged the post-integration release evidence as 9d16c320a921fadf3be2d4ba3527babea5e78ae4.
+- PR #117 exact head 6577b816eb62557ee016ddc3edc2380b795d2ccc passed CI run 30689423957, including the new production activation regression suite, and merged as f042dd1baaf3e4db5d336c5d7605110fd3153573.
+- Clerk/Prisma live builds now fail closed unless the approved private R2, Cloudflare AI, signed-email, and operations configuration is present and internally consistent.
 - No pull request is open. Phase 16 and release branches outside main map to merged or deliberately closed historical pull requests; no additional active implementation stack was identified.
 - Issue #70 is the sole open issue and now tracks the current Phase 16-to-App-Review delivery sequence. Its obsolete feature-building backlog has been removed.
 - Vercel production remains unchanged on Ready deployment dpl_ADEQqtGDN5zqb99Jqenrk1XthcFL at old main 4233d14e4f77d096120a3d90c4b42d2928779f3d.
@@ -71,7 +74,7 @@ Exit gate: passed. Continue at Milestone 2 without consuming a Vercel deployment
 
 ### Milestone 2 — Pre-Deployment Production Readiness
 
-1. Reconcile Clerk, Neon, Cloudflare R2, Email Routing, Workers AI, Expo, and Vercel environment configuration without exposing secret values.
+1. Reconcile Clerk, Neon, Cloudflare R2, Email Routing, Workers AI, Expo, and Vercel environment configuration without exposing secret values. The merged live-mode activation guard must pass before the controlled deployment.
 2. Re-verify all eight migration records and repository checksums.
 3. Confirm private R2 access, bucket policy, CORS, lifecycle cleanup, quarantine, deletion, and orphan handling.
 4. Confirm signed inbound-email configuration, duplicate protection, size/type controls, original-source retention, and rotation/revocation paths.
